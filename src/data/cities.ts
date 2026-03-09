@@ -12,6 +12,10 @@ import dortmundArcade from "@/assets/cities/dortmund-arcade.jpg";
 import essenArcade from "@/assets/cities/essen-arcade.jpg";
 import bremenArcade from "@/assets/cities/bremen-arcade.jpg";
 import nuernbergArcade from "@/assets/cities/nuernberg-arcade.jpg";
+import bochumArcade from "@/assets/cities/bochum-arcade.jpg";
+import wuppertalArcade from "@/assets/cities/wuppertal-arcade.jpg";
+import bielefeldArcade from "@/assets/cities/bielefeld-arcade.jpg";
+import mannheimArcade from "@/assets/cities/mannheim-arcade.jpg";
 
 export interface CityData {
   slug: string;
