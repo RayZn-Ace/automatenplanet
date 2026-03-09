@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Play, MessageCircle } from "lucide-react";
+import { ChevronRight, MessageCircle } from "lucide-react";
+import arcadeHero from "@/assets/arcade-hero.jpg";
 
 const Hero = () => {
   return (
@@ -10,8 +11,8 @@ const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/90 to-background z-10" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/20 via-background to-background z-10" />
         
-        {/* Placeholder for video background, using an image for now or dark pattern */}
-        <div className="absolute inset-0 opacity-30 bg-[url('https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center" />
+        {/* Hero background image */}
+        <img src={arcadeHero} alt="Arcade Hall" className="absolute inset-0 w-full h-full object-cover opacity-40" />
         
         {/* Animated grid overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] z-10 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />

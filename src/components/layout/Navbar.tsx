@@ -34,12 +34,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         {/* Logo */}
         <a href="#" className="flex items-center gap-2 group">
-          <div className="bg-primary/20 p-2 rounded-lg group-hover:bg-primary/30 transition-colors">
-            <Gamepad2 className="w-6 h-6 text-primary" />
-          </div>
-          <span className="font-bold text-xl tracking-tight">
-            Automat<span className="text-primary text-glow">Planet</span>
-          </span>
+          <img src={logo} alt="AutomatPlanet" className="h-10 w-auto" />
         </a>
 
         {/* Desktop Nav */}

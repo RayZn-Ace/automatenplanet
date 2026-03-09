@@ -2,10 +2,17 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Zap, Ruler, Euro, MessageCircle } from "lucide-react";
 
+import clawMachine from "@/assets/claw-machine.jpg";
+import boxingMachine from "@/assets/boxing-machine.jpg";
+import basketballMachine from "@/assets/basketball-machine.jpg";
+import arcadeCabinet from "@/assets/arcade-cabinet.jpg";
+import miniClaw from "@/assets/mini-claw.jpg";
+import ticketMachine from "@/assets/ticket-machine.jpg";
+
 const products = [
   {
     name: "Premium Greifautomat",
-    image: "https://images.unsplash.com/photo-1632501641765-e568d28b0015?q=80&w=600&auto=format&fit=crop",
+    image: clawMachine,
     description: "Professioneller Greifautomat mit LED-Beleuchtung und einstellbarer Greifkraft.",
     dimensions: "80 × 80 × 180 cm",
     power: "220V / 200W",
@@ -14,7 +21,7 @@ const products = [
   },
   {
     name: "LED Boxing Machine",
-    image: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=600&auto=format&fit=crop",
+    image: boxingMachine,
     description: "Digitaler Boxautomat mit LED-Display, Highscore-System und robustem Boxpolster.",
     dimensions: "70 × 65 × 230 cm",
     power: "220V / 300W",
@@ -23,7 +30,7 @@ const products = [
   },
   {
     name: "Street Basketball Arcade",
-    image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=600&auto=format&fit=crop",
+    image: basketballMachine,
     description: "Arcade-Basketball mit Timer, Punktezähler und Multiplayer-Modus.",
     dimensions: "100 × 200 × 230 cm",
     power: "220V / 250W",
@@ -32,7 +39,7 @@ const products = [
   },
   {
     name: "Classic Arcade Machine",
-    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop",
+    image: arcadeCabinet,
     description: "Multi-Game Arcade-Automat mit 500+ klassischen Spielen und modernem Display.",
     dimensions: "60 × 70 × 170 cm",
     power: "220V / 150W",
@@ -41,7 +48,7 @@ const products = [
   },
   {
     name: "Mini Claw Machine",
-    image: "https://images.unsplash.com/photo-1563396983906-b3795482a59a?q=80&w=600&auto=format&fit=crop",
+    image: miniClaw,
     description: "Kompakter Greifautomat perfekt für kleine Standorte wie Kioske und Restaurants.",
     dimensions: "45 × 45 × 90 cm",
     power: "220V / 100W",
@@ -50,7 +57,7 @@ const products = [
   },
   {
     name: "Ticket Redemption Machine",
-    image: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=600&auto=format&fit=crop",
+    image: ticketMachine,
     description: "Gewinnspielautomat mit Ticket-System und Prämienshop-Integration.",
     dimensions: "90 × 85 × 200 cm",
     power: "220V / 200W",

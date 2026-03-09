@@ -2,25 +2,30 @@ import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { useState } from "react";
 
+import clawMachine from "@/assets/claw-machine.jpg";
+import boxingMachine from "@/assets/boxing-machine.jpg";
+import basketballMachine from "@/assets/basketball-machine.jpg";
+import arcadeCabinet from "@/assets/arcade-cabinet.jpg";
+
 const videos = [
   {
     title: "Greifautomat Gameplay",
-    thumbnail: "https://images.unsplash.com/photo-1632501641765-e568d28b0015?q=80&w=600&auto=format&fit=crop",
+    thumbnail: clawMachine,
     videoId: "dQw4w9WgXcQ",
   },
   {
     title: "Boxautomat Challenge",
-    thumbnail: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=600&auto=format&fit=crop",
+    thumbnail: boxingMachine,
     videoId: "dQw4w9WgXcQ",
   },
   {
     title: "Basketball Arcade Action",
-    thumbnail: "https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=600&auto=format&fit=crop",
+    thumbnail: basketballMachine,
     videoId: "dQw4w9WgXcQ",
   },
   {
     title: "Arcade in Aktion",
-    thumbnail: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop",
+    thumbnail: arcadeCabinet,
     videoId: "dQw4w9WgXcQ",
   },
 ];
