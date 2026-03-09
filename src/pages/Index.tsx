@@ -5,6 +5,7 @@ import Benefits from "@/components/sections/Benefits";
 import Products from "@/components/sections/Products";
 import Media from "@/components/sections/Media";
 import Business from "@/components/sections/Business";
+import BlogPreview from "@/components/sections/BlogPreview";
 import Contact from "@/components/sections/Contact";
 import FAQ from "@/components/sections/FAQ";
 import SEOInfo from "@/components/sections/SEOInfo";
@@ -21,6 +22,7 @@ const Index = () => {
         <Products />
         <Media />
         <Business />
+        <BlogPreview limit={3} />
         <Contact />
         <FAQ />
         <SEOInfo />
