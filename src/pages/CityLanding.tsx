@@ -51,6 +51,7 @@ const CityLanding = () => {
           <img 
             src={city.heroImage} 
             alt={city.heroAlt} 
+            loading="eager"
             className="w-full h-full object-cover opacity-30" 
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/90 to-background" />
