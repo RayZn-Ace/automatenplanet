@@ -8,6 +8,10 @@ import duesseldorfArcade from "@/assets/cities/duesseldorf-arcade.jpg";
 import stuttgartArcade from "@/assets/cities/stuttgart-arcade.jpg";
 import leipzigArcade from "@/assets/cities/leipzig-arcade.jpg";
 import dresdenArcade from "@/assets/cities/dresden-arcade.jpg";
+import dortmundArcade from "@/assets/cities/dortmund-arcade.jpg";
+import essenArcade from "@/assets/cities/essen-arcade.jpg";
+import bremenArcade from "@/assets/cities/bremen-arcade.jpg";
+import nuernbergArcade from "@/assets/cities/nuernberg-arcade.jpg";
 
 export interface CityData {
   slug: string;
