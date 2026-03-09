@@ -88,6 +88,16 @@ const CityLanding = () => {
               </Button>
             </div>
           </motion.div>
+          
+          {/* Hero Caption */}
+          <motion.figcaption
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="mt-8 text-sm text-muted-foreground italic border-l-2 border-primary/50 pl-4"
+          >
+            {city.heroCaption}
+          </motion.figcaption>
         </div>
       </section>
 
