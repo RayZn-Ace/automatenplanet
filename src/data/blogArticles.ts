@@ -1,11 +1,3 @@
-import clawMachine from "@/assets/claw-machine.jpg";
-import boxingMachine from "@/assets/boxing-machine.jpg";
-import basketballMachine from "@/assets/basketball-machine.jpg";
-import arcadeCabinet from "@/assets/arcade-cabinet.jpg";
-import miniClaw from "@/assets/mini-claw.jpg";
-import ticketMachine from "@/assets/ticket-machine.jpg";
-import arcadeHero from "@/assets/arcade-hero.jpg";
-
 export interface BlogArticle {
   slug: string;
   title: string;
@@ -24,7 +16,7 @@ export const blogArticles: BlogArticle[] = [
     category: "Greifautomaten",
     readTime: "8 Min.",
     date: "2026-03-01",
-    image: clawMachine,
+    image: "/images/blog/claw-machine.jpg",
   },
   {
     slug: "boxautomat-aufstellen-einnahmen-tipps",
@@ -33,7 +25,7 @@ export const blogArticles: BlogArticle[] = [
     category: "Boxautomaten",
     readTime: "7 Min.",
     date: "2026-02-25",
-    image: boxingMachine,
+    image: "/images/blog/boxing-machine.jpg",
   },
   {
     slug: "arcade-automaten-fuer-kioske-spaetis",
@@ -42,7 +34,7 @@ export const blogArticles: BlogArticle[] = [
     category: "Standorte",
     readTime: "6 Min.",
     date: "2026-02-20",
-    image: miniClaw,
+    image: "/images/blog/mini-claw.jpg",
   },
   {
     slug: "basketball-automaten-publikumsmagnet",
@@ -51,7 +43,7 @@ export const blogArticles: BlogArticle[] = [
     category: "Basketball",
     readTime: "5 Min.",
     date: "2026-02-15",
-    image: basketballMachine,
+    image: "/images/blog/basketball-machine.jpg",
   },
   {
     slug: "arcade-business-starten-deutschland",
@@ -60,7 +52,7 @@ export const blogArticles: BlogArticle[] = [
     category: "Business",
     readTime: "12 Min.",
     date: "2026-02-10",
-    image: arcadeHero,
+    image: "/images/blog/arcade-hero.jpg",
   },
   {
     slug: "welche-automaten-bringen-am-meisten-geld",
@@ -69,7 +61,7 @@ export const blogArticles: BlogArticle[] = [
     category: "Business",
     readTime: "9 Min.",
     date: "2026-02-05",
-    image: ticketMachine,
+    image: "/images/blog/ticket-machine.jpg",
   },
   {
     slug: "arcade-automaten-im-einkaufszentrum",
@@ -78,7 +70,7 @@ export const blogArticles: BlogArticle[] = [
     category: "Standorte",
     readTime: "7 Min.",
     date: "2026-01-30",
-    image: arcadeHero,
+    image: "/images/blog/arcade-hero.jpg",
   },
   {
     slug: "claw-machine-business-guide",
@@ -87,7 +79,7 @@ export const blogArticles: BlogArticle[] = [
     category: "Greifautomaten",
     readTime: "10 Min.",
     date: "2026-01-25",
-    image: clawMachine,
+    image: "/images/blog/claw-machine.jpg",
   },
   {
     slug: "arcade-automaten-events-messen",
@@ -96,7 +88,7 @@ export const blogArticles: BlogArticle[] = [
     category: "Events",
     readTime: "6 Min.",
     date: "2026-01-20",
-    image: arcadeCabinet,
+    image: "/images/blog/arcade-cabinet.jpg",
   },
   {
     slug: "wie-viel-umsatz-bringt-ein-greifautomat",
@@ -105,6 +97,6 @@ export const blogArticles: BlogArticle[] = [
     category: "Greifautomaten",
     readTime: "8 Min.",
     date: "2026-01-15",
-    image: miniClaw,
+    image: "/images/blog/mini-claw.jpg",
   },
 ];

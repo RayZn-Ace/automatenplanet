@@ -1,22 +1,3 @@
-import berlinArcade from "@/assets/cities/berlin-arcade.jpg";
-import hamburgArcade from "@/assets/cities/hamburg-arcade.jpg";
-import muenchenArcade from "@/assets/cities/muenchen-arcade.jpg";
-import koelnArcade from "@/assets/cities/koeln-arcade.jpg";
-import frankfurtArcade from "@/assets/cities/frankfurt-arcade.jpg";
-import hannoverArcade from "@/assets/cities/hannover-arcade.jpg";
-import duesseldorfArcade from "@/assets/cities/duesseldorf-arcade.jpg";
-import stuttgartArcade from "@/assets/cities/stuttgart-arcade.jpg";
-import leipzigArcade from "@/assets/cities/leipzig-arcade.jpg";
-import dresdenArcade from "@/assets/cities/dresden-arcade.jpg";
-import dortmundArcade from "@/assets/cities/dortmund-arcade.jpg";
-import essenArcade from "@/assets/cities/essen-arcade.jpg";
-import bremenArcade from "@/assets/cities/bremen-arcade.jpg";
-import nuernbergArcade from "@/assets/cities/nuernberg-arcade.jpg";
-import bochumArcade from "@/assets/cities/bochum-arcade.jpg";
-import wuppertalArcade from "@/assets/cities/wuppertal-arcade.jpg";
-import bielefeldArcade from "@/assets/cities/bielefeld-arcade.jpg";
-import mannheimArcade from "@/assets/cities/mannheim-arcade.jpg";
-
 export interface CityData {
   slug: string;
   name: string;
@@ -36,7 +17,7 @@ export const cities: CityData[] = [
     name: "Berlin",
     region: "Berlin",
     population: "3,7 Mio.",
-    heroImage: berlinArcade,
+    heroImage: "/images/cities/berlin-arcade.jpg",
     heroAlt: "Arcade-Automaten in Berlin mit Blick auf den Fernsehturm – Greifautomaten und Spielautomaten am Alexanderplatz",
     heroCaption: "Arcade-Entertainment in der Hauptstadt: Greifautomaten vor der Berliner Skyline",
     description: "Als Deutschlands größte Stadt bietet Berlin unzählige Möglichkeiten für Arcade-Automaten. Von Spätis in Kreuzberg bis zu Shoppingcentern am Alexanderplatz – die Nachfrage nach Entertainment ist enorm.",
@@ -48,7 +29,7 @@ export const cities: CityData[] = [
     name: "Hamburg",
     region: "Hamburg",
     population: "1,9 Mio.",
-    heroImage: hamburgArcade,
+    heroImage: "/images/cities/hamburg-arcade.jpg",
     heroAlt: "Arcade-Automaten in Hamburg mit Elbphilharmonie im Hintergrund – Greifautomaten und Basketball-Arcade am Hafen",
     heroCaption: "Spielautomaten an der Waterkant: Arcade-Entertainment mit Blick auf die Elbphilharmonie",
     description: "Die Hansestadt Hamburg ist bekannt für ihre lebendige Entertainment-Szene. Besonders auf der Reeperbahn und in den zahlreichen Einkaufszentren sind Arcade-Automaten absolute Publikumsmagnete.",
@@ -60,7 +41,7 @@ export const cities: CityData[] = [
     name: "München",
     region: "Bayern",
     population: "1,5 Mio.",
-    heroImage: muenchenArcade,
+    heroImage: "/images/cities/muenchen-arcade.jpg",
     heroAlt: "Premium Arcade-Automaten in München – Elegante Greifautomaten und Boxautomaten im bayerischen Stil",
     heroCaption: "Premium-Arcade in der bayerischen Metropole: Hochwertige Automaten für anspruchsvolle Standorte",
     description: "München steht für Qualität und Kaufkraft. Die bayerische Metropole bietet ideale Bedingungen für Premium-Automaten in gehobenen Einkaufszentren und trendigen Stadtvierteln.",
@@ -72,7 +53,7 @@ export const cities: CityData[] = [
     name: "Köln",
     region: "Nordrhein-Westfalen",
     population: "1,1 Mio.",
-    heroImage: koelnArcade,
+    heroImage: "/images/cities/koeln-arcade.jpg",
     heroAlt: "Arcade-Automaten in Köln vor dem Kölner Dom – Greifautomaten und Spielautomaten in der Domstadt",
     heroCaption: "Spielspaß am Rhein: Arcade-Automaten vor der ikonischen Kölner Skyline",
     description: "Köln ist bekannt für seine Lebensfreude und Feierkultur. Die Stadt am Rhein bietet perfekte Bedingungen für Unterhaltungsautomaten – besonders während der Karnevalszeit.",
@@ -84,7 +65,7 @@ export const cities: CityData[] = [
     name: "Frankfurt am Main",
     region: "Hessen",
     population: "760.000",
-    heroImage: frankfurtArcade,
+    heroImage: "/images/cities/frankfurt-arcade.jpg",
     heroAlt: "Arcade-Automaten in Frankfurt am Main – Moderne Greifautomaten vor der Skyline der Finanzmetropole",
     heroCaption: "Entertainment in der Skyline-City: Arcade-Automaten im Herzen des Bankenviertels",
     description: "Die Finanzmetropole Frankfurt bietet eine internationale Zielgruppe mit hoher Kaufkraft. Vom Flughafen bis zur Zeil – überall finden Arcade-Automaten begeisterte Spieler.",
@@ -96,7 +77,7 @@ export const cities: CityData[] = [
     name: "Hannover",
     region: "Niedersachsen",
     population: "540.000",
-    heroImage: hannoverArcade,
+    heroImage: "/images/cities/hannover-arcade.jpg",
     heroAlt: "Arcade-Automaten in Hannover – Familienfreundliche Greifautomaten und Basketball-Arcade in der Messestadt",
     heroCaption: "Arcade-Spaß für die ganze Familie: Entertainment in Deutschlands Messestadt Nr. 1",
     description: "Hannover ist die Messestadt Deutschlands. Während der zahlreichen Großveranstaltungen bieten Arcade-Automaten perfekte Unterhaltung für internationale Besucher.",
@@ -108,7 +89,7 @@ export const cities: CityData[] = [
     name: "Düsseldorf",
     region: "Nordrhein-Westfalen",
     population: "620.000",
-    heroImage: duesseldorfArcade,
+    heroImage: "/images/cities/duesseldorf-arcade.jpg",
     heroAlt: "Arcade-Automaten in Düsseldorf – Stilvolle Greifautomaten und Boxautomaten an der Königsallee",
     heroCaption: "Elegantes Entertainment in der Modestadt: Arcade-Automaten mit Düsseldorfer Flair",
     description: "Die Landeshauptstadt NRWs ist bekannt für Mode, Kunst und eine lebendige Altstadt. Die 'längste Theke der Welt' bietet ideale Standorte für Entertainment-Automaten.",
@@ -120,7 +101,7 @@ export const cities: CityData[] = [
     name: "Stuttgart",
     region: "Baden-Württemberg",
     population: "635.000",
-    heroImage: stuttgartArcade,
+    heroImage: "/images/cities/stuttgart-arcade.jpg",
     heroAlt: "Arcade-Automaten in Stuttgart – Moderne Racing-Arcades und Greifautomaten in der Automobilstadt",
     heroCaption: "High-Tech Entertainment im Schwabenland: Arcade-Automaten für die Automobilstadt",
     description: "Die schwäbische Metropole vereint Industrie und Lifestyle. Mit starker Kaufkraft und vielen Einkaufszentren bietet Stuttgart exzellente Bedingungen für Arcade-Automaten.",
@@ -132,7 +113,7 @@ export const cities: CityData[] = [
     name: "Leipzig",
     region: "Sachsen",
     population: "600.000",
-    heroImage: leipzigArcade,
+    heroImage: "/images/cities/leipzig-arcade.jpg",
     heroAlt: "Arcade-Automaten in Leipzig – Kreative Greifautomaten und Retro-Arcades in der Hipster-Hochburg",
     heroCaption: "Urban Arcade Culture: Spielautomaten im kreativen Herzen Leipzigs",
     description: "Leipzig ist eine der am schnellsten wachsenden Städte Deutschlands. Die junge, kreative Bevölkerung macht die Stadt zum perfekten Markt für Arcade-Entertainment.",
@@ -144,7 +125,7 @@ export const cities: CityData[] = [
     name: "Dresden",
     region: "Sachsen",
     population: "560.000",
-    heroImage: dresdenArcade,
+    heroImage: "/images/cities/dresden-arcade.jpg",
     heroAlt: "Arcade-Automaten in Dresden – Elegante Greifautomaten vor historischer Barockkulisse",
     heroCaption: "Arcade meets Barock: Moderne Spielautomaten in Dresdens historischem Ambiente",
     description: "Die sächsische Landeshauptstadt verbindet Kultur und moderne Lebensart. Touristen und Einheimische sorgen für konstante Nachfrage nach Entertainment.",
@@ -156,7 +137,7 @@ export const cities: CityData[] = [
     name: "Dortmund",
     region: "Nordrhein-Westfalen",
     population: "590.000",
-    heroImage: dortmundArcade,
+    heroImage: "/images/cities/dortmund-arcade.jpg",
     heroAlt: "Arcade-Automaten in Dortmund – Industrial-Style Greifautomaten und Arcades im Ruhrgebiet",
     heroCaption: "Ruhrpott-Entertainment: Arcade-Automaten mit echtem Dortmunder Charakter",
     description: "Dortmund ist das pulsierende Herz des Ruhrgebiets. Die Fußballstadt bietet mit ihrer jungen Bevölkerung und dem urbanen Lifestyle perfekte Bedingungen für Arcade-Automaten.",
@@ -168,7 +149,7 @@ export const cities: CityData[] = [
     name: "Essen",
     region: "Nordrhein-Westfalen",
     population: "580.000",
-    heroImage: essenArcade,
+    heroImage: "/images/cities/essen-arcade.jpg",
     heroAlt: "Arcade-Automaten in Essen – Moderne Greifautomaten im Shopping-Center mit Industriekultur-Flair",
     heroCaption: "Von Kohle zu Entertainment: Arcade-Spaß in Essens modernen Shopping-Centern",
     description: "Essen hat sich vom Industriestandort zur Kulturmetropole gewandelt. Das UNESCO-Welterbe Zollverein und moderne Shopping-Center bieten ideale Arcade-Standorte.",
@@ -180,7 +161,7 @@ export const cities: CityData[] = [
     name: "Bremen",
     region: "Bremen",
     population: "570.000",
-    heroImage: bremenArcade,
+    heroImage: "/images/cities/bremen-arcade.jpg",
     heroAlt: "Arcade-Automaten in Bremen – Maritime Greifautomaten und Basketball-Arcade am Weserufer",
     heroCaption: "Hanseatisches Entertainment: Arcade-Automaten mit Blick auf Bremens Hafenkulisse",
     description: "Die Hansestadt Bremen verbindet maritime Tradition mit modernem Lifestyle. Vom Schnoorviertel bis zur Waterfront – Bremen bietet charmante Standorte für Entertainment.",
@@ -192,7 +173,7 @@ export const cities: CityData[] = [
     name: "Nürnberg",
     region: "Bayern",
     population: "520.000",
-    heroImage: nuernbergArcade,
+    heroImage: "/images/cities/nuernberg-arcade.jpg",
     heroAlt: "Arcade-Automaten in Nürnberg – Greifautomaten und Boxautomaten vor mittelalterlicher Burgkulisse",
     heroCaption: "Mittelalter trifft Moderne: Arcade-Entertainment in Nürnbergs historischer Altstadt",
     description: "Nürnberg vereint mittelalterlichen Charme mit moderner Wirtschaftskraft. Die zweitgrößte Stadt Bayerns bietet in der Altstadt und modernen Centern attraktive Arcade-Standorte.",
@@ -204,7 +185,7 @@ export const cities: CityData[] = [
     name: "Bochum",
     region: "Nordrhein-Westfalen",
     population: "365.000",
-    heroImage: bochumArcade,
+    heroImage: "/images/cities/bochum-arcade.jpg",
     heroAlt: "Arcade-Automaten in Bochum – Industrial-Chic Greifautomaten und Retro-Arcades im Ruhrgebiet",
     heroCaption: "Industriekultur trifft Neon: Arcade-Entertainment mit echtem Ruhrpott-Charme in Bochum",
     description: "Bochum steht für Strukturwandel und neue Ideen. Die Universitätsstadt im Herzen des Ruhrgebiets bietet mit dem Bermuda3eck und modernen Centern spannende Arcade-Standorte.",
@@ -216,7 +197,7 @@ export const cities: CityData[] = [
     name: "Wuppertal",
     region: "Nordrhein-Westfalen",
     population: "355.000",
-    heroImage: wuppertalArcade,
+    heroImage: "/images/cities/wuppertal-arcade.jpg",
     heroAlt: "Arcade-Automaten in Wuppertal – Greifautomaten und Boxautomaten mit Schwebebahn im Hintergrund",
     heroCaption: "Entertainment über dem Tal: Arcade-Automaten in der Stadt der Schwebebahn",
     description: "Wuppertal ist einzigartig – genau wie seine berühmte Schwebebahn. Die bergische Metropole bietet mit ihren lebendigen Stadtteilen und Einkaufszentren ideale Arcade-Standorte.",
@@ -228,7 +209,7 @@ export const cities: CityData[] = [
     name: "Bielefeld",
     region: "Nordrhein-Westfalen",
     population: "340.000",
-    heroImage: bielefeldArcade,
+    heroImage: "/images/cities/bielefeld-arcade.jpg",
     heroAlt: "Arcade-Automaten in Bielefeld – Familienfreundliche Greifautomaten im Shopping-Center am Teutoburger Wald",
     heroCaption: "Spielspaß am Teutoburger Wald: Arcade-Entertainment für ganz Ostwestfalen-Lippe",
     description: "Bielefeld ist das Zentrum von Ostwestfalen-Lippe und überrascht mit urbanem Flair. Große Einkaufszentren und eine junge Studierendenszene sorgen für beste Arcade-Bedingungen.",
@@ -240,7 +221,7 @@ export const cities: CityData[] = [
     name: "Mannheim",
     region: "Baden-Württemberg",
     population: "310.000",
-    heroImage: mannheimArcade,
+    heroImage: "/images/cities/mannheim-arcade.jpg",
     heroAlt: "Arcade-Automaten in Mannheim – Stilvolle Greifautomaten und Arcades in der Quadratestadt am Wasserturm",
     heroCaption: "Quadratestadt meets Arcade: Moderne Spielautomaten im Herzen der Metropolregion Rhein-Neckar",
     description: "Mannheim ist die pulsierende Quadratestadt in der Metropolregion Rhein-Neckar. Mit dem Wasserturm als Wahrzeichen und einer lebendigen Kulturszene bietet die Stadt perfekte Arcade-Standorte.",
