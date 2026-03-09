@@ -9,6 +9,7 @@ import BlogArticle from "./pages/BlogArticle";
 import Standorte from "./pages/Standorte";
 import CityLanding from "./pages/CityLanding";
 import NotFound from "./pages/NotFound";
+import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <WhatsAppButton />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/blog" element={<Blog />} />
