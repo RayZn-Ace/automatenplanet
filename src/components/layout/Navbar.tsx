@@ -1,0 +1,107 @@
+import { useState, useEffect } from "react";
+import { Menu, X, Gamepad2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navLinks = [
+    { name: "Kategorien", href: "#kategorien" },
+    { name: "Vorteile", href: "#vorteile" },
+    { name: "Automaten", href: "#produkte" },
+    { name: "Business", href: "#business" },
+    { name: "FAQ", href: "#faq" },
+  ];
+
+  return (
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-background/90 backdrop-blur-md border-b border-white/10 py-3"
+          : "bg-transparent py-5"
+      }`}
+    >
+      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
+        {/* Logo */}
+        <a href="#" className="flex items-center gap-2 group">
+          <div className="bg-primary/20 p-2 rounded-lg group-hover:bg-primary/30 transition-colors">
+            <Gamepad2 className="w-6 h-6 text-primary" />
+          </div>
+          <span className="font-bold text-xl tracking-tight">
+            Automat<span className="text-primary text-glow">Planet</span>
+          </span>
+        </a>
+
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-8">
+          <ul className="flex items-center gap-6">
+            {navLinks.map((link) => (
+              <li key={link.name}>
+                <a
+                  href={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-white transition-colors"
+                >
+                  {link.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div className="flex items-center gap-4">
+            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white border-2">
+              Beratung
+            </Button>
+            <Button className="bg-primary hover:bg-primary/80 text-white shadow-neon">
+              Anfrage
+            </Button>
+          </div>
+        </div>
+
+        {/* Mobile Toggle */}
+        <button
+          className="md:hidden text-white"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-white/10 p-4 flex flex-col gap-4">
+          <ul className="flex flex-col gap-4">
+            {navLinks.map((link) => (
+              <li key={link.name}>
+                <a
+                  href={link.href}
+                  className="text-lg font-medium text-muted-foreground hover:text-white block py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div className="flex flex-col gap-3 mt-4">
+            <Button variant="outline" className="w-full border-primary text-primary border-2">
+              Beratung
+            </Button>
+            <Button className="w-full bg-primary text-white shadow-neon">
+              Anfrage
+            </Button>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+};
+
+export default Navbar;

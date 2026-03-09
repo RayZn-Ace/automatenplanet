@@ -57,6 +57,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        boxShadow: {
+          'neon': '0 0 10px hsl(var(--primary) / 0.5), 0 0 20px hsl(var(--primary) / 0.3)',
+          'neon-blue': '0 0 10px hsl(var(--secondary) / 0.5), 0 0 20px hsl(var(--secondary) / 0.3)',
+          'neon-purple': '0 0 10px hsl(var(--accent) / 0.5), 0 0 20px hsl(var(--accent) / 0.3)',
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
