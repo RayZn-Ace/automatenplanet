@@ -46,7 +46,11 @@ const CityLanding = () => {
       {/* Hero */}
       <section className="relative pt-28 pb-20">
         <div className="absolute inset-0 z-0">
-          <img src={city.heroImage} alt={city.name} className="w-full h-full object-cover opacity-30" />
+          <img 
+            src={city.heroImage} 
+            alt={city.heroAlt} 
+            className="w-full h-full object-cover opacity-30" 
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/90 to-background" />
         </div>
         
@@ -84,6 +88,16 @@ const CityLanding = () => {
               </Button>
             </div>
           </motion.div>
+          
+          {/* Hero Caption */}
+          <motion.figcaption
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="mt-8 text-sm text-muted-foreground italic border-l-2 border-primary/50 pl-4"
+          >
+            {city.heroCaption}
+          </motion.figcaption>
         </div>
       </section>
 
