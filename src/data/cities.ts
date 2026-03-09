@@ -8,6 +8,10 @@ import duesseldorfArcade from "@/assets/cities/duesseldorf-arcade.jpg";
 import stuttgartArcade from "@/assets/cities/stuttgart-arcade.jpg";
 import leipzigArcade from "@/assets/cities/leipzig-arcade.jpg";
 import dresdenArcade from "@/assets/cities/dresden-arcade.jpg";
+import dortmundArcade from "@/assets/cities/dortmund-arcade.jpg";
+import essenArcade from "@/assets/cities/essen-arcade.jpg";
+import bremenArcade from "@/assets/cities/bremen-arcade.jpg";
+import nuernbergArcade from "@/assets/cities/nuernberg-arcade.jpg";
 
 export interface CityData {
   slug: string;
@@ -120,6 +124,46 @@ export const cities: CityData[] = [
     description: "Die sächsische Landeshauptstadt verbindet Kultur und moderne Lebensart. Touristen und Einheimische sorgen für konstante Nachfrage nach Entertainment.",
     highlights: ["Touristenmagnet", "Altmarkt-Galerie", "Studentenstadt"],
     topLocations: ["Altstadt", "Neustadt", "Altmarkt-Galerie", "Prager Straße", "Striesen"],
+  },
+  {
+    slug: "dortmund",
+    name: "Dortmund",
+    region: "Nordrhein-Westfalen",
+    population: "590.000",
+    heroImage: dortmundArcade,
+    description: "Dortmund ist das pulsierende Herz des Ruhrgebiets. Die Fußballstadt bietet mit ihrer jungen Bevölkerung und dem urbanen Lifestyle perfekte Bedingungen für Arcade-Automaten.",
+    highlights: ["Fußball-Hochburg BVB", "Westfalenhallen Events", "Junge Bevölkerung"],
+    topLocations: ["Innenstadt", "Westenhellweg", "Thier-Galerie", "Kreuzviertel", "Hörde"],
+  },
+  {
+    slug: "essen",
+    name: "Essen",
+    region: "Nordrhein-Westfalen",
+    population: "580.000",
+    heroImage: essenArcade,
+    description: "Essen hat sich vom Industriestandort zur Kulturmetropole gewandelt. Das UNESCO-Welterbe Zollverein und moderne Shopping-Center bieten ideale Arcade-Standorte.",
+    highlights: ["UNESCO-Welterbe Zollverein", "Limbecker Platz Shopping", "Grüne Hauptstadt 2017"],
+    topLocations: ["Innenstadt", "Limbecker Platz", "Rüttenscheid", "Werden", "Steele"],
+  },
+  {
+    slug: "bremen",
+    name: "Bremen",
+    region: "Bremen",
+    population: "570.000",
+    heroImage: bremenArcade,
+    description: "Die Hansestadt Bremen verbindet maritime Tradition mit modernem Lifestyle. Vom Schnoorviertel bis zur Waterfront – Bremen bietet charmante Standorte für Entertainment.",
+    highlights: ["Historische Altstadt", "Weserpark Shopping", "Maritime Atmosphäre"],
+    topLocations: ["Innenstadt", "Schnoorviertel", "Weserpark", "Überseestadt", "Viertel"],
+  },
+  {
+    slug: "nuernberg",
+    name: "Nürnberg",
+    region: "Bayern",
+    population: "520.000",
+    heroImage: nuernbergArcade,
+    description: "Nürnberg vereint mittelalterlichen Charme mit moderner Wirtschaftskraft. Die zweitgrößte Stadt Bayerns bietet in der Altstadt und modernen Centern attraktive Arcade-Standorte.",
+    highlights: ["Historische Kaiserburg", "Christkindlesmarkt-Stadt", "Starke Wirtschaft"],
+    topLocations: ["Altstadt", "Hauptbahnhof", "Franken-Center", "Langwasser", "Gostenhof"],
   },
 ];
 
