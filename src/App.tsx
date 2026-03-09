@@ -9,6 +9,8 @@ import BlogArticle from "./pages/BlogArticle";
 import Standorte from "./pages/Standorte";
 import CityLanding from "./pages/CityLanding";
 import NotFound from "./pages/NotFound";
+import Impressum from "./pages/Impressum";
+import Datenschutz from "./pages/Datenschutz";
 import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
           <Route path="/blog/:slug" element={<BlogArticle />} />
           <Route path="/standorte" element={<Standorte />} />
           <Route path="/standorte/:slug" element={<CityLanding />} />
+          <Route path="/impressum" element={<Impressum />} />
+          <Route path="/datenschutz" element={<Datenschutz />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
