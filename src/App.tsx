@@ -9,6 +9,8 @@ import BlogArticle from "./pages/BlogArticle";
 import Standorte from "./pages/Standorte";
 import CityLanding from "./pages/CityLanding";
 import NotFound from "./pages/NotFound";
+import Impressum from "./pages/Impressum";
+import Datenschutz from "./pages/Datenschutz";
 import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
