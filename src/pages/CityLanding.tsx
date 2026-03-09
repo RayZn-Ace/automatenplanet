@@ -46,7 +46,11 @@ const CityLanding = () => {
       {/* Hero */}
       <section className="relative pt-28 pb-20">
         <div className="absolute inset-0 z-0">
-          <img src={city.heroImage} alt={city.name} className="w-full h-full object-cover opacity-30" />
+          <img 
+            src={city.heroImage} 
+            alt={city.heroAlt} 
+            className="w-full h-full object-cover opacity-30" 
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/90 to-background" />
         </div>
         
