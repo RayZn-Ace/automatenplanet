@@ -51,6 +51,7 @@ const CityLanding = () => {
           <img 
             src={city.heroImage} 
             alt={city.heroAlt} 
+            loading="eager"
             className="w-full h-full object-cover opacity-30" 
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/90 to-background" />
@@ -167,7 +168,7 @@ const CityLanding = () => {
                 className="group rounded-xl border border-white/10 bg-card/40 overflow-hidden hover:border-primary/40 transition-all"
               >
                 <div className="h-40 overflow-hidden">
-                  <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={product.image} alt={product.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <div className="p-4">
                   <h3 className="font-bold mb-1">{product.name}</h3>
