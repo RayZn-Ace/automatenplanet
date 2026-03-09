@@ -81,7 +81,7 @@ export const cities: CityData[] = [
     region: "Nordrhein-Westfalen",
     population: "620.000",
     heroImage: boxingMachine,
-    description: "Die Landeshauptstadt NRWs ist bekannt für Mode, Kunst und eine lebendige Altstadt. Die „längste Theke der Welt" bietet ideale Standorte für Entertainment-Automaten.",
+    description: "Die Landeshauptstadt NRWs ist bekannt für Mode, Kunst und eine lebendige Altstadt. Die 'längste Theke der Welt' bietet ideale Standorte für Entertainment-Automaten.",
     highlights: ["Altstadt-Gastronomie", "Königsallee Shopping", "Japanische Community"],
     topLocations: ["Altstadt", "Königsallee", "Bilk", "Flingern", "Oberkassel"],
   },
