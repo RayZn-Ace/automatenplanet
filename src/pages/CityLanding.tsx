@@ -42,6 +42,7 @@ const CityLanding = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <CityJsonLd city={city} />
       <Navbar />
       
       {/* Hero */}
