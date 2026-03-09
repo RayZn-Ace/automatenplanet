@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
-
-const cities = [
-  "Berlin", "Hamburg", "München", "Köln", "Frankfurt", "Hannover", "Stuttgart", "Düsseldorf", "Leipzig", "Dresden",
-];
+import { Link } from "react-router-dom";
+import { MapPin, ArrowRight } from "lucide-react";
+import { cities } from "@/data/cities";
+import { Button } from "@/components/ui/button";
 
 const SEOInfo = () => {
   return (
@@ -23,13 +22,25 @@ const SEOInfo = () => {
           </p>
         </motion.div>
 
-        <div className="flex flex-wrap justify-center gap-3">
+        <div className="flex flex-wrap justify-center gap-3 mb-8">
           {cities.map((city) => (
-            <span key={city} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-card/40 text-sm hover:border-primary/30 transition-colors cursor-default">
+            <Link
+              key={city.slug}
+              to={`/standorte/${city.slug}`}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-card/40 text-sm hover:border-primary/30 hover:text-primary transition-all"
+            >
               <MapPin className="w-3 h-3 text-primary" />
-              Arcade Automaten {city}
-            </span>
+              Arcade Automaten {city.name}
+            </Link>
           ))}
+        </div>
+
+        <div className="text-center">
+          <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white border-2">
+            <Link to="/standorte">
+              Alle Standorte ansehen <ArrowRight className="ml-2 w-4 h-4" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
