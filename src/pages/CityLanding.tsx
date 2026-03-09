@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { getCityBySlug, cities } from "@/data/cities";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import CityJsonLd from "@/components/seo/CityJsonLd";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MapPin, Users, Building2, CheckCircle, Phone, MessageCircle } from "lucide-react";
 
