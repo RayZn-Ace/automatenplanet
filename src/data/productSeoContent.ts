@@ -734,6 +734,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 5,
+    lifestyleImage: "/images/products/lifestyle/helicopter-ride-supermarket.jpg",
   },
 
   "helicopter-ride": {
