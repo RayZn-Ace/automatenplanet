@@ -19,11 +19,12 @@ import WhatsAppButton from "./components/WhatsAppButton";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <I18nProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <I18nProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
         <BrowserRouter>
           <WhatsAppButton />
           <Routes>
