@@ -348,6 +348,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "Starterset mit Plüschtieren", en: "Starter set with plush toys" },
     ],
     roiMonths: 4,
+    lifestyleImage: "/images/products/lifestyle/pink-date-machine-mall.jpg",
   },
 
   "lucky-7-machine": {
