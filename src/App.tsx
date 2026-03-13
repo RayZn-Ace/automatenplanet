@@ -8,6 +8,7 @@ import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
 import Standorte from "./pages/Standorte";
 import CityLanding from "./pages/CityLanding";
+import ProductPage from "./pages/ProductPage";
 import NotFound from "./pages/NotFound";
 import Impressum from "./pages/Impressum";
 import Datenschutz from "./pages/Datenschutz";
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/blog/:slug" element={<BlogArticle />} />
           <Route path="/standorte" element={<Standorte />} />
           <Route path="/standorte/:slug" element={<CityLanding />} />
+          <Route path="/produkte/:slug" element={<ProductPage />} />
           <Route path="/impressum" element={<Impressum />} />
           <Route path="/datenschutz" element={<Datenschutz />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
