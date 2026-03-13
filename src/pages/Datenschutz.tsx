@@ -9,6 +9,12 @@ const Datenschutz = () => {
         <title>Datenschutzerklärung | AutomatPlanet.de</title>
         <meta name="description" content="Datenschutzerklärung von AutomatPlanet.de – Informationen zum Schutz Ihrer personenbezogenen Daten." />
         <link rel="canonical" href="https://automatplanet.de/datenschutz" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://automatplanet.de/datenschutz" />
+        <meta property="og:title" content="Datenschutzerklärung | AutomatPlanet.de" />
+        <meta property="og:image" content="https://automatplanet.de/images/og/og-default.jpg" />
+        <meta property="og:site_name" content="AutomatPlanet" />
+        <meta name="twitter:card" content="summary" />
       </Helmet>
       <Navbar />
       <main className="min-h-screen pt-28 pb-16 bg-background">
