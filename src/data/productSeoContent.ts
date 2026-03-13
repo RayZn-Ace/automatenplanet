@@ -153,6 +153,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "1x Bedienungsanleitung", en: "1x User manual" },
     ],
     roiMonths: 3,
+    lifestyleImage: "/images/products/lifestyle/boxing-machine-bar.jpg",
   },
 
   "boxautomat-ohne-geldscheinakzeptor": {
@@ -191,6 +192,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "1x Bedienungsanleitung", en: "1x User manual" },
     ],
     roiMonths: 4,
+    lifestyleImage: "/images/products/lifestyle/boxing-machine-bar.jpg",
   },
 
   "basketball-machine": {
@@ -268,6 +270,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "1x Münzprüfer", en: "1x Coin validator" },
     ],
     roiMonths: 5,
+    lifestyleImage: "/images/products/lifestyle/air-hockey-arcade.jpg",
   },
 
   "arcade-machine": {
@@ -306,6 +309,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 5,
+    lifestyleImage: "/images/products/lifestyle/arcade-machine-bar.jpg",
   },
 
   "pink-date-machine": {
@@ -344,6 +348,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "Starterset mit Plüschtieren", en: "Starter set with plush toys" },
     ],
     roiMonths: 4,
+    lifestyleImage: "/images/products/lifestyle/pink-date-machine-mall.jpg",
   },
 
   "lucky-7-machine": {
@@ -382,6 +387,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "Starterset mit Plüschtieren", en: "Starter set with plush toys" },
     ],
     roiMonths: 3,
+    lifestyleImage: "/images/products/lifestyle/claw-machine-supermarket.jpg",
   },
 
   "elektronischer-hau-den-lukas": {
@@ -419,6 +425,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 5,
+    lifestyleImage: "/images/products/lifestyle/hau-den-lukas-festival.jpg",
   },
 
   "air-hockey": {
@@ -457,6 +464,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "1x Münzprüfer", en: "1x Coin validator" },
     ],
     roiMonths: 5,
+    lifestyleImage: "/images/products/lifestyle/air-hockey-arcade.jpg",
   },
 
   "air-hockey-premium": {
@@ -495,6 +503,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "1x Münzprüfer", en: "1x Coin validator" },
     ],
     roiMonths: 6,
+    lifestyleImage: "/images/products/lifestyle/air-hockey-arcade.jpg",
   },
 
   "basketball-arcade": {
@@ -533,6 +542,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 4,
+    lifestyleImage: "/images/products/lifestyle/basketball-arcade.jpg",
   },
 
   "champions-league-tischkicker": {
@@ -570,6 +580,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 6,
+    lifestyleImage: "/images/products/lifestyle/foosball-office.jpg",
   },
 
   "kinderkarussell": {
@@ -646,6 +657,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 3,
+    lifestyleImage: "/images/products/lifestyle/perfume-machine-hotel.jpg",
   },
 
   "snack-automat": {
@@ -722,6 +734,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 5,
+    lifestyleImage: "/images/products/lifestyle/helicopter-ride-supermarket.jpg",
   },
 
   "helicopter-ride": {
@@ -759,6 +772,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 5,
+    lifestyleImage: "/images/products/lifestyle/helicopter-ride-supermarket.jpg",
   },
 
   "electric-dino-ride": {
@@ -796,6 +810,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 5,
+    lifestyleImage: "/images/products/lifestyle/dino-ride-mall.jpg",
   },
 };
 
