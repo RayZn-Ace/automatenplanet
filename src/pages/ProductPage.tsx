@@ -151,7 +151,7 @@ const ProductPage = () => {
                 )}
                 {product.power && (
                   <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card/40">
-                    <Zap className="w-5 h-5 text-yellow-400 shrink-0" />
+                    <Zap className="w-5 h-5 text-secondary shrink-0" />
                     <div>
                       <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{t("product.power")}</p>
                       <p className="text-sm font-bold">{product.power}</p>
