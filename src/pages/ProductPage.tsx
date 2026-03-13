@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { getProductBySlug, products } from "@/data/products";
 import { getSeoContent } from "@/data/productSeoContent";
 import Navbar from "@/components/layout/Navbar";
