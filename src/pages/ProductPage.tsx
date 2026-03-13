@@ -1,11 +1,13 @@
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { getProductBySlug, products } from "@/data/products";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductJsonLd from "@/components/seo/ProductJsonLd";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Ruler, Zap, Euro, ShoppingCart, Download, Truck, Phone, MessageCircle } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { ArrowLeft, Ruler, Zap, Euro, ShoppingCart, Download, Truck, Phone, MessageCircle, ZoomIn } from "lucide-react";
 
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
