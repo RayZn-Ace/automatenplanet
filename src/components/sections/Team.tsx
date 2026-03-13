@@ -1,11 +1,10 @@
 import { motion } from "framer-motion";
-import { Users } from "lucide-react";
 
 const teamMembers = [
-  { name: "Dennis P.", role: "Geschäftsführung" },
-  { name: "Ufuk C.", role: "Vertrieb" },
-  { name: "Kay E.", role: "Technik & Service" },
-  { name: "Raphael K.", role: "Logistik" },
+  { name: "Dennis P.", role: "Geschäftsführung", image: "/images/team/dennis-p.png" },
+  { name: "Ufuk C.", role: "Vertrieb", image: "/images/team/ufuk-c.png" },
+  { name: "Kay E.", role: "Technik & Service", image: "/images/team/kay-e.png" },
+  { name: "Raphael K.", role: "Logistik", image: "/images/team/raphael-k.png" },
 ];
 
 const Team = () => {
@@ -36,8 +35,13 @@ const Team = () => {
               transition={{ delay: i * 0.1 }}
               className="text-center rounded-2xl border border-white/10 bg-card/40 backdrop-blur-sm p-8 hover:border-secondary/40 transition-all"
             >
-              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-secondary/20 flex items-center justify-center">
-                <Users className="w-8 h-8 text-secondary" />
+              <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border border-white/10">
+                <img
+                  src={member.image}
+                  alt={`${member.name} - Team AutomatPlanet`}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <h3 className="text-lg font-bold">{member.name}</h3>
               <p className="text-sm text-muted-foreground">{member.role}</p>
