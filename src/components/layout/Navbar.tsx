@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n";
 import logo from "@/assets/logo-automatplanet.jpg";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { lang, setLang, t } = useI18n();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,11 +18,11 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: "Kategorien", href: "#kategorien" },
-    { name: "Vorteile", href: "#vorteile" },
-    { name: "Automaten", href: "#produkte" },
-    { name: "Business", href: "#business" },
-    { name: "FAQ", href: "#faq" },
+    { name: t("nav.categories"), href: "#kategorien" },
+    { name: t("nav.benefits"), href: "#vorteile" },
+    { name: t("nav.products"), href: "#produkte" },
+    { name: t("nav.business"), href: "#business" },
+    { name: t("nav.faq"), href: "#faq" },
   ];
 
   return (
@@ -51,12 +53,20 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setLang(lang === "de" ? "en" : "de")}
+              className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-white transition-colors px-2 py-1 rounded border border-white/10"
+              aria-label="Switch language"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              {lang.toUpperCase()}
+            </button>
             <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white border-2">
-              Beratung
+              {t("nav.consultation")}
             </Button>
             <Button className="bg-primary hover:bg-primary/80 text-white shadow-neon">
-              Anfrage
+              {t("nav.inquiry")}
             </Button>
           </div>
         </div>
@@ -86,12 +96,19 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
+          <button
+            onClick={() => setLang(lang === "de" ? "en" : "de")}
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-white py-2"
+          >
+            <Globe className="w-4 h-4" />
+            {lang === "de" ? "English" : "Deutsch"}
+          </button>
           <div className="flex flex-col gap-3 mt-4">
             <Button variant="outline" className="w-full border-primary text-primary border-2">
-              Beratung
+              {t("nav.consultation")}
             </Button>
             <Button className="w-full bg-primary text-white shadow-neon">
-              Anfrage
+              {t("nav.inquiry")}
             </Button>
           </div>
         </div>
