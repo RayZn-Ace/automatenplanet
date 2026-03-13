@@ -211,6 +211,27 @@ const BlogArticlePage = () => {
         <title>{article.title} | AutomatPlanet Blog</title>
         <meta name="description" content={article.excerpt} />
         <link rel="canonical" href={`https://automatplanet.de/blog/${article.slug}`} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={`https://automatplanet.de/blog/${article.slug}`} />
+        <meta property="og:title" content={`${article.title} | AutomatPlanet Blog`} />
+        <meta property="og:description" content={article.excerpt} />
+        <meta property="og:image" content={`https://automatplanet.de${article.image}`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="AutomatPlanet" />
+        <meta property="og:locale" content="de_DE" />
+        <meta property="article:published_time" content={article.date} />
+        <meta property="article:author" content="AutomatPlanet Team" />
+        <meta property="article:section" content={article.category} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@automatplanet" />
+        <meta name="twitter:title" content={`${article.title} | AutomatPlanet Blog`} />
+        <meta name="twitter:description" content={article.excerpt} />
+        <meta name="twitter:image" content={`https://automatplanet.de${article.image}`} />
       </Helmet>
       <Navbar />
       <article className="pt-28 pb-16">
