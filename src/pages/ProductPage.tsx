@@ -12,7 +12,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useI18n } from "@/lib/i18n";
 import {
   ArrowLeft, Ruler, Zap, ShoppingCart, Download, Truck, Phone,
-  ZoomIn, CheckCircle, MapPin, Star, Package, TrendingUp, MessageCircle
+  ZoomIn, CheckCircle, MapPin, Star, Package, TrendingUp, MessageCircle,
+  Shield, Clock, Award, ChevronRight
 } from "lucide-react";
 
 const ProductPage = () => {
@@ -47,114 +48,144 @@ const ProductPage = () => {
       <ProductJsonLd product={product} />
       <Navbar />
 
-      {/* Hero */}
-      <section className="pt-28 pb-16">
+      {/* Breadcrumb */}
+      <div className="pt-24 pb-2">
         <div className="container mx-auto px-4 md:px-6">
-          <Link to="/#produkte" className="inline-flex items-center gap-2 text-sm text-primary hover:underline mb-6">
-            <ArrowLeft className="w-4 h-4" /> {t("product.backToProducts")}
-          </Link>
+          <nav className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+            <ChevronRight className="w-3 h-3" />
+            <Link to="/#produkte" className="hover:text-primary transition-colors">
+              {lang === "de" ? "Produkte" : "Products"}
+            </Link>
+            <ChevronRight className="w-3 h-3" />
+            <span className="text-foreground font-medium">{product.name}</span>
+          </nav>
+        </div>
+      </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      {/* Hero Section */}
+      <section className="pb-20">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
             {/* Image */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
-              className="rounded-2xl border border-white/10 bg-card/40 overflow-hidden"
+              transition={{ duration: 0.5 }}
+              className="relative"
             >
-              <div
-                className="h-[420px] md:h-[520px] bg-background/30 p-4 flex items-center justify-center cursor-zoom-in relative group/img"
-                onClick={() => setImageOpen(true)}
-              >
-                <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/img:bg-black/20 transition-colors">
-                  <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover/img:opacity-100 transition-opacity" />
+              <div className="sticky top-28">
+                <div
+                  className="rounded-2xl border border-border bg-card/60 overflow-hidden cursor-zoom-in relative group/img"
+                  onClick={() => setImageOpen(true)}
+                >
+                  <div className="h-[400px] md:h-[520px] p-6 flex items-center justify-center bg-gradient-to-b from-card/80 to-background/40">
+                    <img src={product.image} alt={product.name} className="w-full h-full object-contain drop-shadow-2xl" />
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/img:bg-black/20 transition-colors rounded-2xl">
+                    <ZoomIn className="w-8 h-8 text-foreground opacity-0 group-hover/img:opacity-100 transition-opacity" />
+                  </div>
+                </div>
+
+                {/* Trust Badges under image */}
+                <div className="grid grid-cols-3 gap-3 mt-4">
+                  {[
+                    { icon: Shield, label: lang === "de" ? "12 Monate Garantie" : "12 Month Warranty" },
+                    { icon: Truck, label: lang === "de" ? "Versand in 24h" : "Ships in 24h" },
+                    { icon: Award, label: lang === "de" ? "Geprüfte Qualität" : "Certified Quality" },
+                  ].map(({ icon: Icon, label }, i) => (
+                    <div key={i} className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-border bg-card/40 text-center">
+                      <Icon className="w-4 h-4 text-primary" />
+                      <span className="text-[10px] font-medium text-muted-foreground leading-tight">{label}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               <Dialog open={imageOpen} onOpenChange={setImageOpen}>
-                <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 bg-background/95 border-white/10">
+                <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 bg-background/95 border-border">
                   <img src={product.image} alt={product.name} className="w-full h-full object-contain max-h-[85vh]" />
                 </DialogContent>
               </Dialog>
             </motion.div>
 
             {/* Details */}
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-              <span className="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-semibold mb-4">
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
+              <span className="inline-block px-3 py-1 rounded-full bg-primary/15 text-primary text-xs font-bold tracking-wide uppercase mb-4">
                 {product.category}
               </span>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">{product.name}</h1>
-              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">{product.description}</p>
 
-              {/* Price */}
-              <div className="rounded-xl border border-primary/30 bg-primary/5 p-6 mb-6">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-primary text-glow">
+              <h1 className="text-3xl md:text-5xl font-extrabold mb-5 leading-tight">{product.name}</h1>
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">{product.description}</p>
+
+              {/* Price Card */}
+              <div className="rounded-2xl border-2 border-primary/40 bg-gradient-to-br from-primary/10 to-primary/5 p-6 mb-6">
+                <div className="flex items-baseline gap-3 mb-2">
+                  <span className="text-5xl font-black text-primary text-glow tracking-tight">
                     {product.price.toLocaleString("de-DE")} €
                   </span>
-                  <span className="text-muted-foreground text-sm">{t("product.net")}</span>
+                  <span className="text-muted-foreground text-sm font-medium">{t("product.net")}</span>
                 </div>
+                {seoContent?.roiMonths && (
+                  <div className="flex items-center gap-2 mt-3 text-sm">
+                    <TrendingUp className="w-4 h-4 text-accent" />
+                    <span className="text-accent font-semibold">
+                      {lang === "de"
+                        ? `ROI in ca. ${seoContent.roiMonths} Monaten`
+                        : `ROI in approx. ${seoContent.roiMonths} months`}
+                    </span>
+                  </div>
+                )}
               </div>
 
-              {/* Specs */}
-              <div className="space-y-3 mb-6">
+              {/* Specs Grid */}
+              <div className="grid grid-cols-2 gap-3 mb-6">
                 {product.dimensions && (
-                  <div className="flex items-center gap-3 text-sm">
-                    <Ruler className="w-5 h-5 text-secondary" />
-                    <span className="text-muted-foreground">{t("product.dimensions")}:</span>
-                    <span className="font-semibold">{product.dimensions}</span>
+                  <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card/40">
+                    <Ruler className="w-5 h-5 text-secondary shrink-0" />
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{t("product.dimensions")}</p>
+                      <p className="text-sm font-bold">{product.dimensions}</p>
+                    </div>
                   </div>
                 )}
                 {product.power && (
-                  <div className="flex items-center gap-3 text-sm">
-                    <Zap className="w-5 h-5 text-yellow-400" />
-                    <span className="text-muted-foreground">{t("product.power")}:</span>
-                    <span className="font-semibold">{product.power}</span>
+                  <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card/40">
+                    <Zap className="w-5 h-5 text-secondary shrink-0" />
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{t("product.power")}</p>
+                      <p className="text-sm font-bold">{product.power}</p>
+                    </div>
                   </div>
                 )}
               </div>
 
-              {/* ROI Badge */}
-              {seoContent?.roiMonths && (
-                <div className="flex items-center gap-3 p-4 rounded-xl border border-accent/30 bg-accent/5 mb-4">
-                  <TrendingUp className="w-5 h-5 text-accent" />
-                  <div className="text-sm">
-                    <p className="font-semibold text-accent">{t("seo.roi")}</p>
-                    <p className="text-muted-foreground">
-                      {lang === "de"
-                        ? `Amortisation in ca. ${seoContent.roiMonths} Monaten`
-                        : `Pays for itself in approx. ${seoContent.roiMonths} months`}
-                    </p>
-                  </div>
-                </div>
-              )}
-
               {/* Shipping */}
-              <div className="flex items-center gap-3 p-4 rounded-xl border border-white/10 bg-card/40 mb-6">
-                <Truck className="w-5 h-5 text-secondary" />
+              <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card/40 mb-6">
+                <Truck className="w-5 h-5 text-secondary shrink-0" />
                 <div className="text-sm">
                   <p className="font-semibold">{t("product.shippingTitle")}</p>
                   <p className="text-muted-foreground">{t("product.shippingCost")}</p>
                 </div>
               </div>
 
-              {/* Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button size="lg" className="flex-1 bg-primary hover:bg-primary/80 text-white shadow-neon" asChild>
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                <Button size="lg" className="flex-1 bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon text-base h-14" asChild>
                   <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
                     <ShoppingCart className="mr-2 w-5 h-5" /> {t("product.buyNow")}
                   </a>
                 </Button>
-                <Button size="lg" variant="outline" className="flex-1 border-white/10">
+                <Button size="lg" variant="outline" className="flex-1 border-border h-14 text-base">
                   <Download className="mr-2 w-5 h-5" /> {t("product.datasheet")}
                 </Button>
               </div>
 
               {/* Phone */}
-              <div className="mt-6 flex items-center gap-3 text-sm text-muted-foreground">
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4 text-primary" />
                 {t("product.callUs")}
-                <a href="tel:+4905111228957" className="text-primary font-semibold hover:underline">
+                <a href="tel:+4905111228957" className="text-primary font-bold hover:underline">
                   0511 12282957
                 </a>
               </div>
@@ -165,44 +196,55 @@ const ProductPage = () => {
 
       {/* Extended Description */}
       {seoContent && (
-        <section className="py-16 border-t border-white/5">
-          <div className="container mx-auto px-4 md:px-6">
-            <motion.p
+        <section className="py-20 border-t border-border">
+          <div className="container mx-auto px-4 md:px-6 max-w-4xl">
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-lg text-muted-foreground leading-relaxed max-w-4xl"
             >
-              {txt(seoContent.longDescription)}
-            </motion.p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                {lang === "de" ? `Alles über den ${product.name}` : `Everything about the ${product.name}`}
+              </h2>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                {txt(seoContent.longDescription)}
+              </p>
+            </motion.div>
           </div>
         </section>
       )}
 
-      {/* Features */}
+      {/* Features Grid */}
       {seoContent && (
-        <section className="py-16 bg-card/30">
+        <section className="py-20 bg-card/30 border-t border-border">
           <div className="container mx-auto px-4 md:px-6">
-            <motion.h2
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-3xl font-bold mb-8"
+              className="text-center mb-12"
             >
-              {t("seo.features")}
-            </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">{t("seo.features")}</h2>
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                {lang === "de"
+                  ? `Was den ${product.name} besonders macht`
+                  : `What makes the ${product.name} special`}
+              </p>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {seoContent.features.map((feature, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
-                  className="flex items-start gap-3 p-4 rounded-xl border border-white/10 bg-card/40"
+                  className="flex items-start gap-4 p-5 rounded-2xl border border-border bg-card/60 hover:border-primary/30 transition-colors"
                 >
-                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                  <span className="text-sm">{txt(feature)}</span>
+                  <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center shrink-0">
+                    <CheckCircle className="w-4 h-4 text-primary" />
+                  </div>
+                  <span className="text-sm font-medium leading-relaxed">{txt(feature)}</span>
                 </motion.div>
               ))}
             </div>
@@ -212,26 +254,26 @@ const ProductPage = () => {
 
       {/* Use Cases */}
       {seoContent && (
-        <section className="py-16">
+        <section className="py-20 border-t border-border">
           <div className="container mx-auto px-4 md:px-6">
-            <motion.h2
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-3xl font-bold mb-2"
+              className="text-center mb-12"
             >
-              {t("seo.perfectFor")}
-            </motion.h2>
-            <p className="text-muted-foreground mb-8">{t("seo.useCases")}</p>
-            <div className="flex flex-wrap gap-3">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">{t("seo.perfectFor")}</h2>
+              <p className="text-muted-foreground">{t("seo.useCases")}</p>
+            </motion.div>
+            <div className="flex flex-wrap justify-center gap-4">
               {seoContent.useCases.map((useCase, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                  className="flex items-center gap-2 px-4 py-3 rounded-full border border-primary/30 bg-primary/5 text-sm font-medium"
+                  transition={{ delay: i * 0.06 }}
+                  className="flex items-center gap-3 px-6 py-4 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/8 to-primary/3 text-sm font-semibold hover:border-primary/40 transition-colors"
                 >
                   <MapPin className="w-4 h-4 text-primary" />
                   {txt(useCase)}
@@ -244,28 +286,30 @@ const ProductPage = () => {
 
       {/* Benefits */}
       {seoContent && (
-        <section className="py-16 bg-card/30">
+        <section className="py-20 bg-card/30 border-t border-border">
           <div className="container mx-auto px-4 md:px-6">
-            <motion.h2
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-3xl font-bold mb-8"
+              className="text-center mb-12"
             >
-              {t("seo.whyChoose")}
-            </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">{t("seo.whyChoose")}</h2>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
               {seoContent.benefits.map((benefit, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, x: -10 }}
+                  initial={{ opacity: 0, x: i % 2 === 0 ? -15 : 15 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="flex items-center gap-4 p-5 rounded-xl border border-white/10 bg-card/60"
+                  transition={{ delay: i * 0.08 }}
+                  className="flex items-center gap-4 p-6 rounded-2xl border border-border bg-card/60"
                 >
-                  <Star className="w-6 h-6 text-accent shrink-0" />
-                  <span className="font-medium">{txt(benefit)}</span>
+                  <div className="w-10 h-10 rounded-xl bg-accent/15 flex items-center justify-center shrink-0">
+                    <Star className="w-5 h-5 text-accent" />
+                  </div>
+                  <span className="font-semibold">{txt(benefit)}</span>
                 </motion.div>
               ))}
             </div>
@@ -275,13 +319,13 @@ const ProductPage = () => {
 
       {/* Lifestyle Image */}
       {seoContent?.lifestyleImage && (
-        <section className="py-16">
+        <section className="py-20 border-t border-border">
           <div className="container mx-auto px-4 md:px-6">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-3xl font-bold mb-8"
+              className="text-3xl md:text-4xl font-bold mb-8 text-center"
             >
               {t("seo.gallery")}
             </motion.h2>
@@ -289,12 +333,12 @@ const ProductPage = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="rounded-2xl overflow-hidden border border-white/10"
+              className="rounded-2xl overflow-hidden border border-border"
             >
               <img
                 src={seoContent.lifestyleImage}
                 alt={`${product.name} im Einsatz`}
-                className="w-full h-[300px] md:h-[450px] object-cover"
+                className="w-full h-[300px] md:h-[480px] object-cover"
                 loading="lazy"
               />
             </motion.div>
@@ -304,17 +348,17 @@ const ProductPage = () => {
 
       {/* Included */}
       {seoContent && (
-        <section className="py-16 bg-card/30">
+        <section className="py-20 bg-card/30 border-t border-border">
           <div className="container mx-auto px-4 md:px-6">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-3xl font-bold mb-8"
+              className="text-3xl md:text-4xl font-bold mb-10 text-center"
             >
               {t("seo.included")}
             </motion.h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
               {seoContent.included.map((item, i) => (
                 <motion.div
                   key={i}
@@ -322,10 +366,10 @@ const ProductPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
-                  className="flex items-center gap-3 p-4 rounded-xl border border-white/10 bg-card/40"
+                  className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card/60"
                 >
                   <Package className="w-5 h-5 text-secondary shrink-0" />
-                  <span className="text-sm">{txt(item)}</span>
+                  <span className="text-sm font-medium">{txt(item)}</span>
                 </motion.div>
               ))}
             </div>
@@ -335,13 +379,13 @@ const ProductPage = () => {
 
       {/* FAQ */}
       {seoContent && seoContent.faq.length > 0 && (
-        <section className="py-16">
+        <section className="py-20 border-t border-border">
           <div className="container mx-auto px-4 md:px-6 max-w-3xl">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-3xl font-bold mb-8"
+              className="text-3xl md:text-4xl font-bold mb-10 text-center"
             >
               {t("seo.faq")}
             </motion.h2>
@@ -350,12 +394,12 @@ const ProductPage = () => {
                 <AccordionItem
                   key={i}
                   value={`faq-${i}`}
-                  className="border border-white/10 rounded-xl px-6 bg-card/40"
+                  className="border border-border rounded-2xl px-6 bg-card/60 data-[state=open]:border-primary/30"
                 >
-                  <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                  <AccordionTrigger className="text-left font-bold hover:no-underline py-5">
                     {txt(item.question)}
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
+                  <AccordionContent className="text-muted-foreground pb-5 leading-relaxed">
                     {txt(item.answer)}
                   </AccordionContent>
                 </AccordionItem>
@@ -366,49 +410,55 @@ const ProductPage = () => {
       )}
 
       {/* CTA */}
-      <section className="py-16 bg-primary/5 border-t border-primary/20">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            {lang === "de" ? `${product.name} jetzt bestellen` : `Order ${product.name} now`}
-          </h2>
-          <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-            {lang === "de"
-              ? "Kontaktieren Sie uns für ein individuelles Angebot. Europaweiter Versand in 24 Stunden."
-              : "Contact us for a custom quote. Europe-wide shipping within 24 hours."}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-primary hover:bg-primary/80 text-white shadow-neon" asChild>
-              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="mr-2 w-5 h-5" /> WhatsApp
-              </a>
-            </Button>
-            <Button size="lg" variant="outline" className="border-white/10" asChild>
-              <a href="tel:+4905111228957">
-                <Phone className="mr-2 w-5 h-5" /> 0511 12282957
-              </a>
-            </Button>
-          </div>
+      <section className="py-20 border-t border-primary/20 bg-gradient-to-b from-primary/8 to-background">
+        <div className="container mx-auto px-4 md:px-6 text-center max-w-2xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              {lang === "de" ? `${product.name} jetzt bestellen` : `Order ${product.name} now`}
+            </h2>
+            <p className="text-muted-foreground mb-8 text-lg">
+              {lang === "de"
+                ? "Kontaktieren Sie uns für ein individuelles Angebot. Europaweiter Versand in 24 Stunden."
+                : "Contact us for a custom quote. Europe-wide shipping within 24 hours."}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon h-14 text-base px-8" asChild>
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                  <MessageCircle className="mr-2 w-5 h-5" /> WhatsApp
+                </a>
+              </Button>
+              <Button size="lg" variant="outline" className="border-border h-14 text-base px-8" asChild>
+                <a href="tel:+4905111228957">
+                  <Phone className="mr-2 w-5 h-5" /> 0511 12282957
+                </a>
+              </Button>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <section className="py-16 bg-card/30">
+        <section className="py-20 bg-card/30 border-t border-border">
           <div className="container mx-auto px-4 md:px-6">
-            <h2 className="text-2xl font-bold mb-8">{t("product.relatedProducts")}</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-10">{t("product.relatedProducts")}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts.map((p) => (
                 <Link
                   key={p.slug}
                   to={`/produkte/${p.slug}`}
-                  className="group rounded-xl border border-white/10 bg-card/40 overflow-hidden hover:border-primary/40 transition-all"
+                  className="group rounded-2xl border border-border bg-card/40 overflow-hidden hover:border-primary/40 transition-all"
                 >
-                  <div className="h-44 overflow-hidden bg-background/30 p-2">
+                  <div className="h-44 overflow-hidden bg-background/30 p-4">
                     <img src={p.image} alt={p.name} loading="lazy" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                   </div>
-                  <div className="p-4">
+                  <div className="p-5">
                     <h3 className="font-bold mb-1">{p.name}</h3>
-                    <p className="text-primary font-semibold">{p.price.toLocaleString("de-DE")} € {t("product.net")}</p>
+                    <p className="text-primary font-bold text-lg">{p.price.toLocaleString("de-DE")} € <span className="text-sm font-normal text-muted-foreground">{t("product.net")}</span></p>
                   </div>
                 </Link>
               ))}

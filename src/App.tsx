@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { I18nProvider } from "@/lib/i18n";
 import Index from "./pages/Index";
 import Blog from "./pages/Blog";
@@ -18,11 +19,12 @@ import WhatsAppButton from "./components/WhatsAppButton";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <I18nProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <I18nProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
         <BrowserRouter>
           <WhatsAppButton />
           <Routes>
@@ -38,9 +40,10 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
-      </TooltipProvider>
-    </I18nProvider>
-  </QueryClientProvider>
+        </TooltipProvider>
+      </I18nProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;
