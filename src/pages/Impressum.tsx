@@ -9,6 +9,12 @@ const Impressum = () => {
         <title>Impressum | AutomatPlanet.de</title>
         <meta name="description" content="Impressum von AutomatPlanet.de – Angaben gemäß § 5 TMG." />
         <link rel="canonical" href="https://automatplanet.de/impressum" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://automatplanet.de/impressum" />
+        <meta property="og:title" content="Impressum | AutomatPlanet.de" />
+        <meta property="og:image" content="https://automatplanet.de/images/og/og-default.jpg" />
+        <meta property="og:site_name" content="AutomatPlanet" />
+        <meta name="twitter:card" content="summary" />
       </Helmet>
       <Navbar />
       <main className="min-h-screen pt-28 pb-16 bg-background">

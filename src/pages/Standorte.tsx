@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { ArrowLeft, MapPin } from "lucide-react";
 import { cities } from "@/data/cities";
 import Navbar from "@/components/layout/Navbar";
@@ -9,6 +10,27 @@ import { Button } from "@/components/ui/button";
 const Standorte = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <Helmet>
+        <title>Arcade-Automaten Standorte in Deutschland | AutomatPlanet</title>
+        <meta name="description" content="Arcade-Automaten in ganz Deutschland: Lieferung, Aufstellung und Service in 18+ Großstädten. Finden Sie Ihren Standort." />
+        <link rel="canonical" href="https://automatplanet.de/standorte" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://automatplanet.de/standorte" />
+        <meta property="og:title" content="Arcade-Automaten Standorte in Deutschland" />
+        <meta property="og:description" content="Arcade-Automaten in ganz Deutschland: Lieferung, Aufstellung und Service in 18+ Großstädten." />
+        <meta property="og:image" content="https://automatplanet.de/images/og/og-standorte.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="AutomatPlanet" />
+        <meta property="og:locale" content="de_DE" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@automatplanet" />
+        <meta name="twitter:title" content="Arcade-Automaten Standorte in Deutschland" />
+        <meta name="twitter:description" content="Arcade-Automaten in ganz Deutschland: Lieferung und Service in 18+ Großstädten." />
+        <meta name="twitter:image" content="https://automatplanet.de/images/og/og-standorte.jpg" />
+      </Helmet>
       <Navbar />
       <main className="pt-28 pb-16">
         <div className="container mx-auto px-4 md:px-6">
