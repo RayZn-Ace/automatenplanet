@@ -52,13 +52,29 @@ const ProductPage = () => {
               animate={{ opacity: 1, x: 0 }}
               className="rounded-2xl border border-white/10 bg-card/40 overflow-hidden"
             >
-              <div className="h-[420px] md:h-[520px] bg-background/30 p-4 flex items-center justify-center">
+              <div
+                className="h-[420px] md:h-[520px] bg-background/30 p-4 flex items-center justify-center cursor-zoom-in relative group/img"
+                onClick={() => setImageOpen(true)}
+              >
                 <img
                   src={product.image}
                   alt={product.name}
                   className="w-full h-full object-contain"
                 />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/img:bg-black/20 transition-colors">
+                  <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover/img:opacity-100 transition-opacity" />
+                </div>
               </div>
+
+              <Dialog open={imageOpen} onOpenChange={setImageOpen}>
+                <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 bg-background/95 border-white/10">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-contain max-h-[85vh]"
+                  />
+                </DialogContent>
+              </Dialog>
             </motion.div>
 
             {/* Details */}
