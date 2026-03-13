@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const teamMembers = [
   { name: "Dennis P.", role: "Geschäftsführung", image: "/images/team/dennis-p.png" },
-  { name: "Ufuk C.", role: "Vertrieb", image: "/images/team/ufuk-c.png" },
+  { name: "Ufuk C.", role: "Account Manager", image: "/images/team/ufuk-c.png" },
   { name: "Kay E.", role: "Technik & Service", image: "/images/team/kay-e.png" },
   { name: "Raphael K.", role: "Logistik", image: "/images/team/raphael-k.png" },
 ];
