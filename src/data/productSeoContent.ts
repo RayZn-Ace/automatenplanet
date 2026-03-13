@@ -387,6 +387,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "Starterset mit Plüschtieren", en: "Starter set with plush toys" },
     ],
     roiMonths: 3,
+    lifestyleImage: "/images/products/lifestyle/claw-machine-supermarket.jpg",
   },
 
   "elektronischer-hau-den-lukas": {
