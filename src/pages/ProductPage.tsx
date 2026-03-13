@@ -44,8 +44,39 @@ const ProductPage = () => {
   const relatedProducts = products.filter((p) => p.slug !== product.slug && p.category === product.category).slice(0, 4);
   const txt = (item: { de: string; en: string }) => item[lang];
 
+  const ogImage = seoContent?.lifestyleImage || product.image;
+  const ogTitle = lang === "de" 
+    ? `${product.name} kaufen | AutomatPlanet`
+    : `Buy ${product.name} | AutomatPlanet`;
+  const ogDescription = product.description;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <Helmet>
+        <title>{ogTitle}</title>
+        <meta name="description" content={ogDescription} />
+        <link rel="canonical" href={`https://automatplanet.de/produkte/${product.slug}`} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content={`https://automatplanet.de/produkte/${product.slug}`} />
+        <meta property="og:title" content={ogTitle} />
+        <meta property="og:description" content={ogDescription} />
+        <meta property="og:image" content={`https://automatplanet.de${ogImage}`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="AutomatPlanet" />
+        <meta property="og:locale" content={lang === "de" ? "de_DE" : "en_US"} />
+        <meta property="product:price:amount" content={product.price.toString()} />
+        <meta property="product:price:currency" content="EUR" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@automatplanet" />
+        <meta name="twitter:title" content={ogTitle} />
+        <meta name="twitter:description" content={ogDescription} />
+        <meta name="twitter:image" content={`https://automatplanet.de${ogImage}`} />
+      </Helmet>
       <ProductJsonLd product={product} />
       <Navbar />
 
