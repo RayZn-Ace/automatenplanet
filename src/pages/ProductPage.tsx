@@ -12,6 +12,7 @@ import { ArrowLeft, Ruler, Zap, Euro, ShoppingCart, Download, Truck, Phone, Mess
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const product = getProductBySlug(slug || "");
+  const [imageOpen, setImageOpen] = useState(false);
 
   const whatsappUrl = `https://wa.me/4905111228957?text=${encodeURIComponent(`Hallo, ich interessiere mich für: ${product?.name || "ein Produkt"}`)}`;
 
