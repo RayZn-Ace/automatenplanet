@@ -35,11 +35,11 @@ const Products = () => {
               className="group rounded-2xl border border-white/10 bg-card/40 backdrop-blur-sm overflow-hidden hover:border-accent/40 transition-all"
             >
               <Link to={`/produkte/${p.slug}`} className="block">
-                <div className="relative h-52 overflow-hidden">
+                <div className="relative h-64 overflow-hidden bg-background/30">
                   <img
                     src={p.image}
                     alt={p.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
