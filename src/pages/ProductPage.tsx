@@ -49,11 +49,13 @@ const ProductPage = () => {
               animate={{ opacity: 1, x: 0 }}
               className="rounded-2xl border border-white/10 bg-card/40 overflow-hidden"
             >
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-full object-cover max-h-[500px]"
-              />
+              <div className="h-[420px] md:h-[520px] bg-background/30 p-4 flex items-center justify-center">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-contain"
+                />
+              </div>
             </motion.div>
 
             {/* Details */}
