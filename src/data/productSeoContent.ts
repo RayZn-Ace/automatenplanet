@@ -580,6 +580,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 6,
+    lifestyleImage: "/images/products/lifestyle/foosball-office.jpg",
   },
 
   "kinderkarussell": {
