@@ -503,6 +503,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "1x Münzprüfer", en: "1x Coin validator" },
     ],
     roiMonths: 6,
+    lifestyleImage: "/images/products/lifestyle/air-hockey-arcade.jpg",
   },
 
   "basketball-arcade": {
