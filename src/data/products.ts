@@ -44,7 +44,7 @@ export const products: ProductData[] = [
     name: "Combo Boxing Machine",
     description: "Premium Combo-Boxautomat mit erweitertem Funktionsumfang. Kombination aus Schlagkraftmessung und interaktiven Spielmodi. Ideal für Arcades, Events und Gastronomie.",
     price: 2949,
-    image: "/images/products/boxing-machine-new.png",
+    image: "/images/products/combo-boxing-machine.png",
     dimensions: "75 × 70 × 235 cm",
     power: "220V / 350W",
     category: "Boxautomaten",
