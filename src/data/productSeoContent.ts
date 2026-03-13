@@ -153,6 +153,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "1x Bedienungsanleitung", en: "1x User manual" },
     ],
     roiMonths: 3,
+    lifestyleImage: "/images/products/lifestyle/boxing-machine-bar.jpg",
   },
 
   "boxautomat-ohne-geldscheinakzeptor": {
