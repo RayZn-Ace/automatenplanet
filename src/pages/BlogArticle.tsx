@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { blogArticles } from "@/data/blogArticles";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -99,7 +100,7 @@ const articleContent: Record<string, string[]> = {
   ],
   "arcade-automaten-im-einkaufszentrum": [
     "## Arcade Automaten im Einkaufszentrum aufstellen",
-    "Einkaufszentren sind Premium-Standorte für Arcade-Automaten. Die hohe Kundenfrequenz, lange Verweildauer und die familien freundliche Atmosphäre schaffen ideale Bedingungen.",
+    "Einkaufszentren sind Premium-Standorte für Arcade-Automaten. Die hohe Kundenfrequenz, lange Verweildauer und die familienfreundliche Atmosphäre schaffen ideale Bedingungen.",
     "### Warum Einkaufszentren perfekt sind",
     "- **Hohe Frequenz**: Tausende Besucher täglich\n- **Lange Verweildauer**: Begleiter warten → spielen\n- **Familien**: Kinder sind die beste Zielgruppe für Greifautomaten\n- **Impulskäufe**: Spielen als Spontanentscheidung",
     "### Die besten Zonen im Einkaufszentrum",
@@ -161,6 +162,28 @@ const articleContent: Record<string, string[]> = {
   ],
 };
 
+function renderMarkdown(text: string): string {
+  return text
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n- (.+)/g, '<li>$1</li>')
+    .replace(/\n\d+\. (.+)/g, '<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>')
+    .replace(/<\/ul>\s*<ul>/g, '')
+    .replace(/\|(.+)\|/g, (match) => {
+      if (match.includes('---')) return '';
+      const cells = match.split('|').filter(Boolean).map(c => c.trim());
+      const isHeader = cells.some(c => c.startsWith('**') || ['Position', 'Item', 'Standort'].includes(c));
+      const tag = isHeader ? 'th' : 'td';
+      return `<tr>${cells.map(c => `<${tag}>${c}</${tag}>`).join('')}</tr>`;
+    })
+    .replace(/(<tr>[\s\S]*?<\/tr>)/g, '<table>$1</table>')
+    .replace(/<\/table>\s*<table>/g, '')
+    .replace(/\n/g, '<br/>');
+}
+
 const BlogArticlePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const article = blogArticles.find((a) => a.slug === slug);
@@ -184,6 +207,11 @@ const BlogArticlePage = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <Helmet>
+        <title>{article.title} | AutomatPlanet Blog</title>
+        <meta name="description" content={article.excerpt} />
+        <link rel="canonical" href={`https://automatplanet.de/blog/${article.slug}`} />
+      </Helmet>
       <Navbar />
       <article className="pt-28 pb-16">
         {/* Hero */}
@@ -213,35 +241,32 @@ const BlogArticlePage = () => {
 
         {/* Content */}
         <div className="container mx-auto max-w-3xl px-4">
-          <div className="prose prose-invert prose-lg max-w-none [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-8 [&_h3]:mb-3 [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-4 [&_li]:text-muted-foreground [&_strong]:text-foreground [&_table]:w-full [&_th]:text-left [&_th]:p-2 [&_th]:border-b [&_th]:border-white/10 [&_td]:p-2 [&_td]:border-b [&_td]:border-white/5 [&_td]:text-muted-foreground">
-            {content.map((block, i) => {
-              // Render markdown-like content as HTML
-              const html = block
-                .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\n- /g, '\n<li>')
-                .replace(/\n\d+\. /g, '\n<li>')
-                .replace(/\n/g, '<br/>')
-                .replace(/<li>/g, '</p><ul><li>')
-                .replace(/<\/li><br\/>/g, '</li>')
-                .replace(/\|(.+)\|/g, (match) => {
-                  const cells = match.split('|').filter(Boolean).map(c => c.trim());
-                  return `<tr>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
-                });
-
-              return (
-                <div key={i} dangerouslySetInnerHTML={{ __html: html }} />
-              );
-            })}
+          <div className="prose prose-invert prose-lg max-w-none
+            [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-4
+            [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-8 [&_h3]:mb-3
+            [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-4
+            [&_li]:text-muted-foreground [&_strong]:text-foreground
+            [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ul]:space-y-1
+            [&_table]:w-full [&_table]:my-6 [&_table]:border-collapse
+            [&_th]:text-left [&_th]:p-3 [&_th]:border-b [&_th]:border-border [&_th]:font-bold
+            [&_td]:p-3 [&_td]:border-b [&_td]:border-border/50 [&_td]:text-muted-foreground">
+            {content.map((block, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.03 }}
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(block) }}
+              />
+            ))}
           </div>
 
           {/* CTA */}
-          <div className="mt-16 p-8 rounded-2xl border border-primary/30 bg-primary/5 text-center">
+          <div className="mt-16 p-8 rounded-2xl border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-primary/5 text-center">
             <h3 className="text-2xl font-bold mb-4">Interesse an Arcade-Automaten?</h3>
             <p className="text-muted-foreground mb-6">Lassen Sie sich unverbindlich beraten – wir finden den perfekten Automaten für Ihr Business.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild className="bg-primary hover:bg-primary/80 text-white shadow-neon">
+              <Button asChild className="bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon">
                 <Link to="/#kontakt">Jetzt anfragen</Link>
               </Button>
               <Button asChild variant="outline" className="border-primary text-primary border-2">
