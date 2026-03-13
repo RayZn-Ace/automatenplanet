@@ -437,7 +437,7 @@ const ProductPage = () => {
                 </a>
               </Button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
