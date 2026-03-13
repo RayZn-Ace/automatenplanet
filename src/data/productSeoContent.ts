@@ -425,6 +425,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 5,
+    lifestyleImage: "/images/products/lifestyle/hau-den-lukas-festival.jpg",
   },
 
   "air-hockey": {
