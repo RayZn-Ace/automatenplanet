@@ -657,6 +657,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "2x Schlüssel", en: "2x Keys" },
     ],
     roiMonths: 3,
+    lifestyleImage: "/images/products/lifestyle/perfume-machine-hotel.jpg",
   },
 
   "snack-automat": {
