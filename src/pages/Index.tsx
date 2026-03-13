@@ -4,6 +4,7 @@ import PhoneBanner from "@/components/sections/PhoneBanner";
 import Categories from "@/components/sections/Categories";
 import Benefits from "@/components/sections/Benefits";
 import Products from "@/components/sections/Products";
+import ProductSlideshow from "@/components/sections/ProductSlideshow";
 import Media from "@/components/sections/Media";
 import Business from "@/components/sections/Business";
 import Team from "@/components/sections/Team";
@@ -23,6 +24,7 @@ const Index = () => {
         <Categories />
         <Benefits />
         <Products />
+        <ProductSlideshow />
         <Media />
         <Business />
         <Team />
