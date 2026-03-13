@@ -1,15 +1,18 @@
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { getProductBySlug, products } from "@/data/products";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductJsonLd from "@/components/seo/ProductJsonLd";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Ruler, Zap, Euro, ShoppingCart, Download, Truck, Phone, MessageCircle } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { ArrowLeft, Ruler, Zap, Euro, ShoppingCart, Download, Truck, Phone, MessageCircle, ZoomIn } from "lucide-react";
 
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const product = getProductBySlug(slug || "");
+  const [imageOpen, setImageOpen] = useState(false);
 
   const whatsappUrl = `https://wa.me/4905111228957?text=${encodeURIComponent(`Hallo, ich interessiere mich für: ${product?.name || "ein Produkt"}`)}`;
 
@@ -49,13 +52,29 @@ const ProductPage = () => {
               animate={{ opacity: 1, x: 0 }}
               className="rounded-2xl border border-white/10 bg-card/40 overflow-hidden"
             >
-              <div className="h-[420px] md:h-[520px] bg-background/30 p-4 flex items-center justify-center">
+              <div
+                className="h-[420px] md:h-[520px] bg-background/30 p-4 flex items-center justify-center cursor-zoom-in relative group/img"
+                onClick={() => setImageOpen(true)}
+              >
                 <img
                   src={product.image}
                   alt={product.name}
                   className="w-full h-full object-contain"
                 />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/img:bg-black/20 transition-colors">
+                  <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover/img:opacity-100 transition-opacity" />
+                </div>
               </div>
+
+              <Dialog open={imageOpen} onOpenChange={setImageOpen}>
+                <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 bg-background/95 border-white/10">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-contain max-h-[85vh]"
+                  />
+                </DialogContent>
+              </Dialog>
             </motion.div>
 
             {/* Details */}
