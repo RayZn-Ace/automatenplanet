@@ -192,6 +192,7 @@ export const productSeoContent: SeoContentMap = {
       { de: "1x Bedienungsanleitung", en: "1x User manual" },
     ],
     roiMonths: 4,
+    lifestyleImage: "/images/products/lifestyle/boxing-machine-bar.jpg",
   },
 
   "basketball-machine": {
