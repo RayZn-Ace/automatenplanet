@@ -278,7 +278,7 @@ const HandbuchBoxautomat = () => {
           <section className="prose prose-invert max-w-none space-y-8 text-muted-foreground">
             {HANDBUCH_BOXAUTOMAT_SECTIONS.map(renderSection)}
 
-            <div>
+            <div id="faq" className="scroll-mt-28">
               <h2 className="text-2xl font-semibold text-foreground mb-3">
                 ❓ Häufig gestellte Fragen zum Boxautomat
               </h2>
