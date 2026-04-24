@@ -525,7 +525,7 @@ for (let i = range.start; i < range.start + range.count; i++) {
   );
   // Center: version + date
   doc.text(
-    `Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated} - v${HANDBUCH_BOXAUTOMAT_META.version}`,
+    `Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated} - v${HANDBUCH_BOXAUTOMAT_META.version} - ${contentHash}`,
     MARGIN.left,
     footerY,
     { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W, align: "center", lineBreak: false },
