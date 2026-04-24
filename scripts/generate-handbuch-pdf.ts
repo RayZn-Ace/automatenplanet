@@ -30,7 +30,6 @@ const outFile = resolve(outDir, "handbuch-boxautomat.pdf");
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
 
 // ---- Theme ------------------------------------------------------------------
-// Keep the PDF visually neutral and legible — it is a handbook, not a brochure.
 const COLORS = {
   text: "#1a1a1a",
   muted: "#555555",
@@ -45,26 +44,26 @@ const COLORS = {
 const FONT_REGULAR = "Helvetica";
 const FONT_BOLD = "Helvetica-Bold";
 const FONT_ITALIC = "Helvetica-Oblique";
+const BODY_SIZE = 10.5;
 
-// pdfkit uses WinAnsi for built-in fonts — strip emoji/non-WinAnsi glyphs that
-// would otherwise crash the encoder.
+// pdfkit's built-in fonts use WinAnsi — strip emoji/non-WinAnsi glyphs.
 const sanitize = (s: string): string =>
   s
-    // Remove emoji and most pictographic ranges.
     .replace(
       /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F000}-\u{1F2FF}\u{2300}-\u{23FF}]/gu,
       "",
     )
-    // Variation selectors / zero-width joiners.
     .replace(/[\u200D\uFE0F]/g, "")
     .replace(/\s+/g, " ")
     .trim();
 
 // ---- Document setup ---------------------------------------------------------
+const MARGIN = { top: 60, bottom: 75, left: 60, right: 60 };
 const doc = new PDFDocument({
   size: "A4",
-  margins: { top: 60, bottom: 70, left: 60, right: 60 },
+  margins: MARGIN,
   bufferPages: true,
+  autoFirstPage: true,
   info: {
     Title: HANDBUCH_BOXAUTOMAT_META.title,
     Author: HANDBUCH_BOXAUTOMAT_META.publisher.name,
@@ -75,106 +74,73 @@ const doc = new PDFDocument({
   },
 });
 
-doc.pipe(createWriteStream(outFile));
+const stream = createWriteStream(outFile);
+doc.pipe(stream);
 
-const pageWidth = doc.page.width;
-const pageHeight = doc.page.height;
-const contentWidth = pageWidth - doc.page.margins.left - doc.page.margins.right;
+const PAGE_W = doc.page.width;
+const PAGE_H = doc.page.height;
+const CONTENT_W = PAGE_W - MARGIN.left - MARGIN.right;
+const CONTENT_BOTTOM = PAGE_H - MARGIN.bottom;
 
-// ---- Footer hook ------------------------------------------------------------
-const drawFooter = (pageNumber: number, totalPages: number) => {
-  const y = pageHeight - 45;
-  doc
-    .save()
-    .lineWidth(0.5)
-    .strokeColor(COLORS.rule)
-    .moveTo(doc.page.margins.left, y)
-    .lineTo(pageWidth - doc.page.margins.right, y)
-    .stroke()
-    .restore();
-
-  const leftBlock = `${HANDBUCH_BOXAUTOMAT_META.publisher.name} · ${HANDBUCH_BOXAUTOMAT_META.publisher.website} · ${HANDBUCH_BOXAUTOMAT_META.publisher.email}`;
-  const dateBlock = `Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated} · Version ${HANDBUCH_BOXAUTOMAT_META.version}`;
-  const pageBlock = `Seite ${pageNumber} / ${totalPages}`;
-
-  doc
-    .font(FONT_REGULAR)
-    .fontSize(8)
-    .fillColor(COLORS.muted)
-    .text(leftBlock, doc.page.margins.left, y + 6, {
-      width: contentWidth,
-      align: "left",
-      lineBreak: false,
-    })
-    .text(dateBlock, doc.page.margins.left, y + 18, {
-      width: contentWidth,
-      align: "left",
-      lineBreak: false,
-    })
-    .text(pageBlock, doc.page.margins.left, y + 6, {
-      width: contentWidth,
-      align: "right",
-      lineBreak: false,
-    });
+// Reset text style helper – call before every block to neutralise leftover state.
+const resetStyle = () => {
+  doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
+  // characterSpacing leaks across calls – always reset.
+  (doc as unknown as { _textOptions?: Record<string, unknown> })._textOptions = {};
 };
 
-doc.on("pageAdded", () => {
-  // Reset position to top of writable area on every new page.
-  doc.x = doc.page.margins.left;
-  doc.y = doc.page.margins.top;
-});
-
-// ---- Helpers ----------------------------------------------------------------
+// Add a manual page when remaining vertical space is too small.
 const ensureSpace = (needed: number) => {
-  const limit = pageHeight - doc.page.margins.bottom - 20;
-  if (doc.y + needed > limit) doc.addPage();
+  if (doc.y + needed > CONTENT_BOTTOM) {
+    doc.addPage();
+    doc.x = MARGIN.left;
+    doc.y = MARGIN.top;
+  }
 };
 
+// ---- Block writers ----------------------------------------------------------
 const writeParagraph = (
   text: string,
-  opts: { font?: string; size?: number; color?: string; gap?: number; indent?: number } = {},
+  opts: { font?: string; size?: number; color?: string; gapAfter?: number } = {},
 ) => {
-  const {
-    font = FONT_REGULAR,
-    size = 10.5,
-    color = COLORS.text,
-    gap = 4,
-    indent = 0,
-  } = opts;
-  const x = doc.page.margins.left + indent;
-  const width = contentWidth - indent;
+  const { font = FONT_REGULAR, size = BODY_SIZE, color = COLORS.text, gapAfter = 6 } = opts;
+  resetStyle();
   doc.font(font).fontSize(size).fillColor(color);
-  const height = doc.heightOfString(sanitize(text), { width });
-  ensureSpace(height + gap);
-  doc.text(sanitize(text), x, doc.y, { width, align: "left" });
-  doc.moveDown(0.2);
-  doc.y += gap;
+  const txt = sanitize(text);
+  const h = doc.heightOfString(txt, { width: CONTENT_W });
+  ensureSpace(h);
+  doc.text(txt, MARGIN.left, doc.y, { width: CONTENT_W, align: "left" });
+  doc.y += gapAfter;
 };
 
 const writeBullet = (item: string, ordered: boolean, index: number) => {
+  resetStyle();
   const marker = ordered ? `${index + 1}.` : "•";
-  const bulletWidth = 18;
-  const x = doc.page.margins.left + 6;
-  const textX = x + bulletWidth;
-  const width = contentWidth - bulletWidth - 6;
-  doc.font(FONT_REGULAR).fontSize(10.5).fillColor(COLORS.text);
-  const height = doc.heightOfString(sanitize(item), { width });
-  ensureSpace(height + 3);
+  const markerW = ordered ? 18 : 14;
+  const xMarker = MARGIN.left + 6;
+  const xText = xMarker + markerW;
+  const wText = CONTENT_W - markerW - 6;
+  doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
+  const txt = sanitize(item);
+  const h = doc.heightOfString(txt, { width: wText });
+  ensureSpace(h + 2);
   const startY = doc.y;
-  doc.font(FONT_BOLD).text(marker, x, startY, { width: bulletWidth });
-  doc.font(FONT_REGULAR).text(sanitize(item), textX, startY, { width });
-  doc.moveDown(0.1);
+  doc.text(marker, xMarker, startY, { width: markerW, lineBreak: false });
+  doc.text(txt, xText, startY, { width: wText });
+  doc.y = Math.max(doc.y, startY + h);
+  doc.y += 2;
 };
 
 const writeSubheading = (text: string) => {
+  resetStyle();
   ensureSpace(28);
-  doc.moveDown(0.4);
+  doc.y += 6;
   doc
     .font(FONT_BOLD)
     .fontSize(12)
     .fillColor(COLORS.text)
-    .text(sanitize(text), doc.page.margins.left, doc.y, { width: contentWidth });
-  doc.moveDown(0.2);
+    .text(sanitize(text), MARGIN.left, doc.y, { width: CONTENT_W });
+  doc.y += 4;
 };
 
 const writeCallout = (
@@ -182,123 +148,113 @@ const writeCallout = (
   lines: string[],
   title?: string,
 ) => {
+  resetStyle();
   const isWarning = variant === "warning";
   const bg = isWarning ? COLORS.warningBg : COLORS.calloutBg;
   const accent = isWarning ? COLORS.warning : COLORS.primary;
 
   const padding = 10;
-  const innerWidth = contentWidth - padding * 2 - 6;
-  doc.font(FONT_REGULAR).fontSize(10.5);
-  let textHeight = 0;
+  const accentW = 4;
+  const innerX = MARGIN.left + accentW + padding;
+  const innerW = CONTENT_W - accentW - padding * 2;
+
+  // Pre-measure total height
+  doc.font(FONT_REGULAR).fontSize(BODY_SIZE);
+  let totalTextH = 0;
   if (title) {
     doc.font(FONT_BOLD);
-    textHeight += doc.heightOfString(sanitize(title), { width: innerWidth }) + 4;
+    totalTextH += doc.heightOfString(sanitize(title), { width: innerW }) + 4;
     doc.font(FONT_REGULAR);
   }
   for (const line of lines) {
-    textHeight +=
-      doc.heightOfString(sanitize(`• ${line}`), { width: innerWidth }) + 2;
+    const txt = lines.length === 1 && !title ? sanitize(line) : `• ${sanitize(line)}`;
+    totalTextH += doc.heightOfString(txt, { width: innerW }) + 2;
   }
-  const boxHeight = textHeight + padding * 2;
-  ensureSpace(boxHeight + 8);
+  const boxH = totalTextH + padding * 2;
+  ensureSpace(boxH + 8);
 
-  const x = doc.page.margins.left;
+  const x = MARGIN.left;
   const y = doc.y;
-  doc
-    .save()
-    .rect(x, y, contentWidth, boxHeight)
-    .fill(bg)
-    .restore();
-  doc
-    .save()
-    .rect(x, y, 4, boxHeight)
-    .fill(accent)
-    .restore();
+  // Background + accent bar
+  doc.save().rect(x, y, CONTENT_W, boxH).fill(bg).restore();
+  doc.save().rect(x, y, accentW, boxH).fill(accent).restore();
 
-  let cursorY = y + padding;
+  let cy = y + padding;
   if (title) {
     doc
       .font(FONT_BOLD)
-      .fontSize(10.5)
+      .fontSize(BODY_SIZE)
       .fillColor(COLORS.text)
-      .text(sanitize(title), x + padding + 6, cursorY, { width: innerWidth });
-    cursorY = doc.y + 2;
+      .text(sanitize(title), innerX, cy, { width: innerW });
+    cy = doc.y + 2;
   }
-  doc.font(FONT_REGULAR).fontSize(10.5).fillColor(COLORS.text);
+  doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
   for (const line of lines) {
-    const text = lines.length === 1 && !title ? sanitize(line) : `• ${sanitize(line)}`;
-    doc.text(text, x + padding + 6, cursorY, { width: innerWidth });
-    cursorY = doc.y + 2;
+    const txt = lines.length === 1 && !title ? sanitize(line) : `• ${sanitize(line)}`;
+    doc.text(txt, innerX, cy, { width: innerW });
+    cy = doc.y + 2;
   }
-  doc.y = y + boxHeight + 6;
+  doc.y = y + boxH + 8;
 };
 
 const writeTable = (rows: { label: string; value: string }[]) => {
-  const labelWidth = contentWidth * 0.4;
-  const valueWidth = contentWidth - labelWidth;
-  const rowPadding = 8;
+  resetStyle();
+  const labelW = CONTENT_W * 0.4;
+  const valueW = CONTENT_W - labelW;
+  const padding = 8;
 
   for (const row of rows) {
-    doc.font(FONT_BOLD).fontSize(10.5);
-    const labelHeight = doc.heightOfString(sanitize(row.label), {
-      width: labelWidth - rowPadding * 2,
-    });
+    doc.font(FONT_BOLD).fontSize(BODY_SIZE);
+    const lh = doc.heightOfString(sanitize(row.label), { width: labelW - padding * 2 });
     doc.font(FONT_REGULAR);
-    const valueHeight = doc.heightOfString(sanitize(row.value), {
-      width: valueWidth - rowPadding * 2,
-    });
-    const rowHeight = Math.max(labelHeight, valueHeight) + rowPadding * 2;
-    ensureSpace(rowHeight);
+    const vh = doc.heightOfString(sanitize(row.value), { width: valueW - padding * 2 });
+    const rowH = Math.max(lh, vh) + padding * 2;
+    ensureSpace(rowH);
 
-    const x = doc.page.margins.left;
+    const x = MARGIN.left;
     const y = doc.y;
-
-    // Borders
+    // Borders + header background
+    doc.save().rect(x, y, labelW, rowH).fill(COLORS.tableHeader).restore();
     doc
       .save()
       .lineWidth(0.5)
       .strokeColor(COLORS.rule)
-      .rect(x, y, contentWidth, rowHeight)
+      .rect(x, y, CONTENT_W, rowH)
       .stroke()
-      .moveTo(x + labelWidth, y)
-      .lineTo(x + labelWidth, y + rowHeight)
+      .moveTo(x + labelW, y)
+      .lineTo(x + labelW, y + rowH)
       .stroke()
       .restore();
 
-    // Label background
-    doc.save().rect(x, y, labelWidth, rowHeight).fill(COLORS.tableHeader).restore();
-
     doc
       .font(FONT_BOLD)
-      .fontSize(10.5)
+      .fontSize(BODY_SIZE)
       .fillColor(COLORS.text)
-      .text(sanitize(row.label), x + rowPadding, y + rowPadding, {
-        width: labelWidth - rowPadding * 2,
+      .text(sanitize(row.label), x + padding, y + padding, {
+        width: labelW - padding * 2,
       });
     doc
       .font(FONT_REGULAR)
-      .text(sanitize(row.value), x + labelWidth + rowPadding, y + rowPadding, {
-        width: valueWidth - rowPadding * 2,
+      .text(sanitize(row.value), x + labelW + padding, y + padding, {
+        width: valueW - padding * 2,
       });
 
-    doc.y = y + rowHeight;
+    doc.y = y + rowH;
   }
-  doc.moveDown(0.4);
+  doc.y += 6;
 };
 
 const writeBlock = (block: HandbuchBlock) => {
   switch (block.type) {
     case "paragraph":
-      writeParagraph(block.text, {
-        font: block.emphasis ? FONT_BOLD : FONT_REGULAR,
-      });
+      writeParagraph(block.text, { font: block.emphasis ? FONT_BOLD : FONT_REGULAR });
       return;
     case "subheading":
       writeSubheading(block.text);
       return;
     case "list":
       block.items.forEach((item, idx) => writeBullet(item, !!block.ordered, idx));
-      doc.moveDown(0.3);
+      doc.y += 4;
       return;
     case "callout":
       writeCallout(block.variant, block.lines, block.title);
@@ -309,177 +265,206 @@ const writeBlock = (block: HandbuchBlock) => {
   }
 };
 
-const writeSection = (section: HandbuchSection, index: number) => {
-  // Each top-level section starts on its own page after the first to keep
-  // the layout predictable and easy to navigate.
-  if (index > 0) doc.addPage();
-  ensureSpace(40);
+const writeSectionHeading = (number: string, title: string) => {
+  resetStyle();
+  ensureSpace(48);
   doc
     .font(FONT_BOLD)
     .fontSize(18)
     .fillColor(COLORS.primary)
-    .text(`${section.number}. ${section.title}`, doc.page.margins.left, doc.y, {
-      width: contentWidth,
-    });
+    .text(`${number}. ${sanitize(title)}`, MARGIN.left, doc.y, { width: CONTENT_W });
+  const lineY = doc.y + 2;
   doc
     .save()
-    .lineWidth(1)
+    .lineWidth(1.5)
     .strokeColor(COLORS.primary)
-    .moveTo(doc.page.margins.left, doc.y + 4)
-    .lineTo(doc.page.margins.left + 50, doc.y + 4)
+    .moveTo(MARGIN.left, lineY)
+    .lineTo(MARGIN.left + 50, lineY)
     .stroke()
     .restore();
-  doc.moveDown(0.8);
+  doc.y = lineY + 14;
+};
 
+const writeSection = (section: HandbuchSection) => {
+  writeSectionHeading(section.number, section.title);
   for (const block of section.blocks) writeBlock(block);
 };
 
-// ---- Cover ------------------------------------------------------------------
+// ---- Cover page -------------------------------------------------------------
+resetStyle();
 doc
   .font(FONT_BOLD)
   .fontSize(11)
   .fillColor(COLORS.primary)
-  .text(HANDBUCH_BOXAUTOMAT_META.subtitle.toUpperCase(), {
-    width: contentWidth,
-    characterSpacing: 2,
+  .text(HANDBUCH_BOXAUTOMAT_META.subtitle.toUpperCase(), MARGIN.left, doc.y, {
+    width: CONTENT_W,
   });
+doc.y += 4;
 
-doc.moveDown(0.4);
 doc
   .font(FONT_BOLD)
-  .fontSize(28)
+  .fontSize(26)
   .fillColor(COLORS.text)
-  .text(HANDBUCH_BOXAUTOMAT_META.product, { width: contentWidth });
+  .text(sanitize(HANDBUCH_BOXAUTOMAT_META.product), MARGIN.left, doc.y, {
+    width: CONTENT_W,
+  });
+doc.y += 4;
 
-doc.moveDown(0.3);
 doc
   .font(FONT_ITALIC)
   .fontSize(11)
   .fillColor(COLORS.muted)
   .text(
-    `Artikelnummer ${HANDBUCH_BOXAUTOMAT_META.articleNumber} · Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated}`,
-    { width: contentWidth },
+    `Artikelnummer ${HANDBUCH_BOXAUTOMAT_META.articleNumber} - Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated}`,
+    MARGIN.left,
+    doc.y,
+    { width: CONTENT_W },
   );
+doc.y += 18;
 
-doc.moveDown(1.5);
+resetStyle();
 doc
-  .font(FONT_REGULAR)
-  .fontSize(10.5)
-  .fillColor(COLORS.text)
-  .text(HANDBUCH_BOXAUTOMAT_META.publisher.name, { width: contentWidth })
-  .text(HANDBUCH_BOXAUTOMAT_META.publisher.address, { width: contentWidth })
+  .text(HANDBUCH_BOXAUTOMAT_META.publisher.name, MARGIN.left, doc.y, { width: CONTENT_W })
+  .text(HANDBUCH_BOXAUTOMAT_META.publisher.address, { width: CONTENT_W })
   .text(
-    `${HANDBUCH_BOXAUTOMAT_META.publisher.email} · ${HANDBUCH_BOXAUTOMAT_META.publisher.website}`,
-    { width: contentWidth },
+    `${HANDBUCH_BOXAUTOMAT_META.publisher.email} - ${HANDBUCH_BOXAUTOMAT_META.publisher.website}`,
+    { width: CONTENT_W },
   );
+doc.y += 16;
 
-doc.moveDown(2);
 doc
   .save()
   .lineWidth(0.5)
   .strokeColor(COLORS.rule)
-  .moveTo(doc.page.margins.left, doc.y)
-  .lineTo(pageWidth - doc.page.margins.right, doc.y)
+  .moveTo(MARGIN.left, doc.y)
+  .lineTo(PAGE_W - MARGIN.right, doc.y)
   .stroke()
   .restore();
-doc.moveDown(1);
+doc.y += 12;
 
-// ---- Table of contents ------------------------------------------------------
+// Table of contents (still on the cover page)
 doc
   .font(FONT_BOLD)
   .fontSize(14)
   .fillColor(COLORS.text)
-  .text("Inhaltsverzeichnis", { width: contentWidth });
-doc.moveDown(0.6);
-doc.font(FONT_REGULAR).fontSize(10.5).fillColor(COLORS.text);
+  .text("Inhaltsverzeichnis", MARGIN.left, doc.y, { width: CONTENT_W });
+doc.y += 8;
+doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
 HANDBUCH_BOXAUTOMAT_SECTIONS.forEach((section) => {
-  doc.text(`${section.number}. ${sanitize(section.title)}`, {
-    width: contentWidth,
-    indent: 8,
+  doc.text(`${section.number}. ${sanitize(section.title)}`, MARGIN.left + 12, doc.y, {
+    width: CONTENT_W - 12,
   });
 });
-doc.text(`${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1}. Häufig gestellte Fragen`, {
-  width: contentWidth,
-  indent: 8,
-});
-doc.text(`${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2}. Support & Kontakt`, {
-  width: contentWidth,
-  indent: 8,
-});
+doc.text(
+  `${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1}. Häufig gestellte Fragen`,
+  MARGIN.left + 12,
+  doc.y,
+  { width: CONTENT_W - 12 },
+);
+doc.text(
+  `${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2}. Support & Kontakt`,
+  MARGIN.left + 12,
+  doc.y,
+  { width: CONTENT_W - 12 },
+);
 
 // ---- Sections ---------------------------------------------------------------
-HANDBUCH_BOXAUTOMAT_SECTIONS.forEach(writeSection);
+HANDBUCH_BOXAUTOMAT_SECTIONS.forEach((section, idx) => {
+  // Add a small visual separator between sections without forcing a new page.
+  if (idx > 0) {
+    ensureSpace(28);
+    doc.y += 12;
+  } else {
+    doc.y += 14;
+  }
+  writeSection(section);
+});
 
 // ---- FAQ --------------------------------------------------------------------
-doc.addPage();
-doc
-  .font(FONT_BOLD)
-  .fontSize(18)
-  .fillColor(COLORS.primary)
-  .text(`${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1}. Häufig gestellte Fragen`, {
-    width: contentWidth,
-  });
-doc
-  .save()
-  .lineWidth(1)
-  .strokeColor(COLORS.primary)
-  .moveTo(doc.page.margins.left, doc.y + 4)
-  .lineTo(doc.page.margins.left + 50, doc.y + 4)
-.stroke()
-.restore();
-doc.moveDown(0.8);
-
+ensureSpace(60);
+doc.y += 12;
+writeSectionHeading(
+  String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1),
+  "Häufig gestellte Fragen",
+);
 HANDBUCH_BOXAUTOMAT_FAQ.forEach((item) => {
+  resetStyle();
   ensureSpace(40);
   doc
     .font(FONT_BOLD)
     .fontSize(11.5)
     .fillColor(COLORS.text)
-    .text(sanitize(item.question), { width: contentWidth });
-  doc.moveDown(0.2);
+    .text(sanitize(item.question), MARGIN.left, doc.y, { width: CONTENT_W });
+  doc.y += 2;
   doc
     .font(FONT_REGULAR)
-    .fontSize(10.5)
+    .fontSize(BODY_SIZE)
     .fillColor(COLORS.text)
-    .text(sanitize(item.answer), { width: contentWidth });
-  doc.moveDown(0.6);
+    .text(sanitize(item.answer), MARGIN.left, doc.y, { width: CONTENT_W });
+  doc.y += 8;
 });
 
 // ---- Support ----------------------------------------------------------------
-doc.addPage();
-doc
-  .font(FONT_BOLD)
-  .fontSize(18)
-  .fillColor(COLORS.primary)
-  .text(`${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2}. Support & Kontakt`, {
-    width: contentWidth,
-  });
-doc.moveDown(0.8);
-doc
-  .font(FONT_REGULAR)
-  .fontSize(11)
-  .fillColor(COLORS.text)
-  .text("Bei Fragen oder Problemen wenden Sie sich bitte an:", {
-    width: contentWidth,
-  });
-doc.moveDown(0.6);
+ensureSpace(60);
+doc.y += 12;
+writeSectionHeading(
+  String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2),
+  "Support & Kontakt",
+);
+resetStyle();
+doc.text("Bei Fragen oder Problemen wenden Sie sich bitte an:", MARGIN.left, doc.y, {
+  width: CONTENT_W,
+});
+doc.y += 6;
 doc.font(FONT_BOLD).text(HANDBUCH_BOXAUTOMAT_META.publisher.name);
 doc.font(FONT_REGULAR).text(HANDBUCH_BOXAUTOMAT_META.publisher.address);
 doc.text(`E-Mail: ${HANDBUCH_BOXAUTOMAT_META.publisher.email}`);
 doc.text(`Web:    ${HANDBUCH_BOXAUTOMAT_META.publisher.website}`);
 
-// Footer on every page (including the first/cover). bufferPages: true lets us
-// switch back to each page after the content is written.
+// ---- Footer on every page ---------------------------------------------------
 const range = doc.bufferedPageRange();
 const totalPages = range.count;
 for (let i = range.start; i < range.start + range.count; i++) {
   doc.switchToPage(i);
-  drawFooter(i - range.start + 1, totalPages);
+  const pageNum = i - range.start + 1;
+  const footerY = PAGE_H - MARGIN.bottom + 25;
+
+  doc
+    .save()
+    .lineWidth(0.5)
+    .strokeColor(COLORS.rule)
+    .moveTo(MARGIN.left, footerY - 8)
+    .lineTo(PAGE_W - MARGIN.right, footerY - 8)
+    .stroke()
+    .restore();
+
+  doc.font(FONT_REGULAR).fontSize(8).fillColor(COLORS.muted);
+
+  // Left-aligned company line (single line).
+  doc.text(
+    `${HANDBUCH_BOXAUTOMAT_META.publisher.name} - ${HANDBUCH_BOXAUTOMAT_META.publisher.website}`,
+    MARGIN.left,
+    footerY,
+    { width: CONTENT_W / 2, align: "left", lineBreak: false },
+  );
+  // Center: version + date
+  doc.text(
+    `Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated} - v${HANDBUCH_BOXAUTOMAT_META.version}`,
+    MARGIN.left,
+    footerY,
+    { width: CONTENT_W, align: "center", lineBreak: false },
+  );
+  // Right: page number
+  doc.text(`Seite ${pageNum} / ${totalPages}`, MARGIN.left, footerY, {
+    width: CONTENT_W,
+    align: "right",
+    lineBreak: false,
+  });
 }
-// flushPages so switchToPage edits are committed before doc.end().
-doc.flushPages();
 
 doc.end();
 
-// eslint-disable-next-line no-console
-console.log(`✓ PDF generated: ${outFile}`);
+stream.on("finish", () => {
+  // eslint-disable-next-line no-console
+  console.log(`✓ PDF generated: ${outFile}`);
+});
