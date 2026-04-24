@@ -483,10 +483,13 @@ const Handbuch = () => {
               </figure>
 
               <Dialog open={zoomOpen} onOpenChange={handleOpenChange}>
-                <DialogContent className="max-w-[100vw] sm:max-w-[95vw] w-screen sm:w-[95vw] h-[100dvh] sm:h-[90vh] p-0 overflow-hidden bg-background rounded-none sm:rounded-lg">
+                <DialogContent
+                  className="max-w-[100vw] sm:max-w-[95vw] w-screen sm:w-[95vw] h-[100dvh] sm:h-[90vh] p-0 overflow-hidden bg-background rounded-none sm:rounded-lg focus:outline-none"
+                  onKeyDown={onDialogKeyDown}
+                >
                   <DialogTitle className="sr-only">Steuerplatine – Zoom-Ansicht</DialogTitle>
                   <DialogDescription className="sr-only">
-                    Detailansicht der Steuerplatine. Nutzen Sie die Buttons zum Vergrößern und Verkleinern, ziehen Sie das Bild zum Verschieben.
+                    Detailansicht der Steuerplatine. Tastatur: Plus und Minus zum Zoomen, Pfeiltasten zum Verschieben, 0 zum Zurücksetzen, Escape zum Schließen.
                   </DialogDescription>
                   <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 flex flex-wrap gap-1.5 sm:gap-2">
                     <Button size="icon" variant="secondary" onClick={zoomIn} aria-label="Vergrößern">
@@ -529,6 +532,20 @@ const Handbuch = () => {
                     />
                     <div className="md:hidden absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-black/70 text-white text-xs backdrop-blur-sm pointer-events-none">
                       Mit zwei Fingern zoomen · Doppeltippen für Schnellzoom
+                    </div>
+                    <div className="hidden md:flex absolute bottom-3 left-1/2 -translate-x-1/2 items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 text-white text-xs backdrop-blur-sm pointer-events-none">
+                      <kbd className="px-1.5 py-0.5 rounded bg-white/15 font-mono">+</kbd>
+                      <kbd className="px-1.5 py-0.5 rounded bg-white/15 font-mono">−</kbd>
+                      <span>Zoom</span>
+                      <span className="opacity-50">·</span>
+                      <kbd className="px-1.5 py-0.5 rounded bg-white/15 font-mono">↑↓←→</kbd>
+                      <span>Verschieben</span>
+                      <span className="opacity-50">·</span>
+                      <kbd className="px-1.5 py-0.5 rounded bg-white/15 font-mono">0</kbd>
+                      <span>Reset</span>
+                      <span className="opacity-50">·</span>
+                      <kbd className="px-1.5 py-0.5 rounded bg-white/15 font-mono">Esc</kbd>
+                      <span>Schließen</span>
                     </div>
                   </div>
                 </DialogContent>
