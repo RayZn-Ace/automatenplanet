@@ -135,7 +135,9 @@ const doc = new PDFDocument({
   },
 });
 
-const stream = createWriteStream(outFile);
+const stream = createWriteStream(tmpFile);
+stream.on("error", (err) => restoreFromLastGood(`write stream: ${err.message}`));
+doc.on("error", (err) => restoreFromLastGood(`pdfkit: ${err.message}`));
 doc.pipe(stream);
 
 const PAGE_W = doc.page.width;
