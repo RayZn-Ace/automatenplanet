@@ -88,6 +88,10 @@ const Handbuch = () => {
   const pendingRef = useRef<{ x: number; y: number; s: number } | null>(null);
   const lastTapRef = useRef<{ time: number; x: number; y: number }>({ time: 0, x: 0, y: 0 });
 
+  // Smooth keyboard panning: animate the offset toward a target position via rAF.
+  const panTargetRef = useRef<{ x: number; y: number } | null>(null);
+  const panRafRef = useRef<number | null>(null);
+
   useEffect(() => {
     scaleRef.current = scale;
   }, [scale]);
