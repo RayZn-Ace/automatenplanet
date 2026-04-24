@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
-import { Download, AlertTriangle } from "lucide-react";
+import { Download, AlertTriangle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+interface PdfManifest {
+  version: string;
+  contentHash: string;
+  generatedAt: string;
+  lastUpdated: string;
+  sizeBytes: number;
+  sourceSections?: number;
+  pdfPath: string;
+}
 
 interface HandbuchPdfDownloadProps {
   /** Primary PDF URL (e.g. /downloads/handbuch-boxautomat.pdf) */
