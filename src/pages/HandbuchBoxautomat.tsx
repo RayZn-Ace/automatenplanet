@@ -164,7 +164,18 @@ const HandbuchBoxautomat = () => {
             <div>
               <h2 className="text-2xl font-semibold text-foreground mb-3">1. Verwendungszweck</h2>
               <p>
-                Der Boxautomat ist ein Unterhaltungsgerät zur Messung der Schlag- und Trittkraft.
+                Der <strong className="text-foreground">Boxautomat</strong> – auch als{" "}
+                <strong className="text-foreground">Box &amp; Kick Maschine</strong> bekannt – ist
+                ein professionelles Unterhaltungsgerät zur präzisen Messung der Schlag- und
+                Trittkraft. Die robuste Box-Maschine wird in der Gastronomie, in Nachtclubs, in
+                Bars und in Fitnessstudios eingesetzt und verbindet sportliche Herausforderung mit
+                attraktivem Münzumsatz für den Betreiber.
+              </p>
+              <p className="mt-3">
+                Diese Bedienungsanleitung beschreibt alle wichtigen Themen rund um den
+                Boxautomaten: Aufbau und Inbetriebnahme, Wartung und Pflege, Reinigung des
+                Münzprüfers, Wechsel des Schlagballs sowie typische Fehlerbehebung. So bleibt Ihre
+                Box &amp; Kick Maschine dauerhaft betriebsbereit.
               </p>
               <p className="mt-3 font-semibold text-foreground">Das Gerät bietet zwei Spielmodi:</p>
               <ul className="list-disc pl-6 space-y-1">
