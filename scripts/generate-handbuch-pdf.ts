@@ -16,7 +16,9 @@ import {
   statSync,
   renameSync,
   unlinkSync,
+  writeFileSync,
 } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import PDFDocument from "pdfkit";
@@ -36,8 +38,23 @@ const outDir = resolve(projectRoot, "public/downloads");
 const outFile = resolve(outDir, "handbuch-boxautomat.pdf");
 const lastGoodFile = resolve(outDir, "handbuch-boxautomat.last-good.pdf");
 const tmpFile = resolve(outDir, "handbuch-boxautomat.pdf.tmp");
+const manifestFile = resolve(outDir, "handbuch-boxautomat.manifest.json");
 
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
+
+// ---- Versioning -------------------------------------------------------------
+// Compute a short hash over the source content so we can tell at a glance
+// whether the published PDF still matches the website's text.
+const contentPayload = JSON.stringify({
+  meta: HANDBUCH_BOXAUTOMAT_META,
+  sections: HANDBUCH_BOXAUTOMAT_SECTIONS,
+  faq: HANDBUCH_BOXAUTOMAT_FAQ,
+});
+const contentHash = createHash("sha256")
+  .update(contentPayload)
+  .digest("hex")
+  .slice(0, 10);
+const generatedAt = new Date().toISOString();
 
 // ---- Fallback handling ------------------------------------------------------
 // 1. Snapshot the current good PDF before regenerating, so we always keep the
@@ -508,7 +525,7 @@ for (let i = range.start; i < range.start + range.count; i++) {
   );
   // Center: version + date
   doc.text(
-    `Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated} - v${HANDBUCH_BOXAUTOMAT_META.version}`,
+    `Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated} - v${HANDBUCH_BOXAUTOMAT_META.version} - ${contentHash}`,
     MARGIN.left,
     footerY,
     { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W, align: "center", lineBreak: false },
@@ -524,13 +541,28 @@ doc.end();
 
 stream.on("finish", () => {
   try {
-    if (statSync(tmpFile).size === 0) {
+    const size = statSync(tmpFile).size;
+    if (size === 0) {
       restoreFromLastGood("generated PDF is empty (0 bytes)");
       return;
     }
     renameSync(tmpFile, outFile);
+
+    const manifest = {
+      version: HANDBUCH_BOXAUTOMAT_META.version,
+      contentHash,
+      generatedAt,
+      lastUpdated: HANDBUCH_BOXAUTOMAT_META.lastUpdated,
+      sizeBytes: size,
+      sourceSections: HANDBUCH_BOXAUTOMAT_SECTIONS.length,
+      pdfPath: HANDBUCH_BOXAUTOMAT_META.pdfPath,
+    };
+    writeFileSync(manifestFile, JSON.stringify(manifest, null, 2));
+
     // eslint-disable-next-line no-console
-    console.log(`✓ PDF generated: ${outFile}`);
+    console.log(
+      `✓ PDF generated: ${outFile} (v${manifest.version}, hash ${contentHash}, ${generatedAt})`,
+    );
   } catch (err) {
     restoreFromLastGood(`finalize: ${(err as Error).message}`);
   }
