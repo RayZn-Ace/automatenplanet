@@ -109,9 +109,9 @@ const writeParagraph = (
   resetStyle();
   doc.font(font).fontSize(size).fillColor(color);
   const txt = sanitize(text);
-  const h = doc.heightOfString(txt, { width: CONTENT_W });
+  const h = doc.heightOfString(txt, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W });
   ensureSpace(h);
-  doc.text(txt, MARGIN.left, doc.y, { width: CONTENT_W, align: "left" });
+  doc.text(txt, MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W, align: "left" });
   doc.y += gapAfter;
 };
 
@@ -124,11 +124,11 @@ const writeBullet = (item: string, ordered: boolean, index: number) => {
   const wText = CONTENT_W - markerW - 6;
   doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
   const txt = sanitize(item);
-  const h = doc.heightOfString(txt, { width: wText });
+  const h = doc.heightOfString(txt, { characterSpacing: 0, wordSpacing: 0, width: wText });
   ensureSpace(h + 2);
   const startY = doc.y;
-  doc.text(marker, xMarker, startY, { width: markerW, lineBreak: false });
-  doc.text(txt, xText, startY, { width: wText });
+  doc.text(marker, xMarker, startY, { characterSpacing: 0, wordSpacing: 0, width: markerW, lineBreak: false });
+  doc.text(txt, xText, startY, { characterSpacing: 0, wordSpacing: 0, width: wText });
   doc.y = Math.max(doc.y, startY + h);
   doc.y += 2;
 };
@@ -141,7 +141,7 @@ const writeSubheading = (text: string) => {
     .font(FONT_BOLD)
     .fontSize(12)
     .fillColor(COLORS.text)
-    .text(sanitize(text), MARGIN.left, doc.y, { width: CONTENT_W });
+    .text(sanitize(text), MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W });
   doc.y += 4;
 };
 
@@ -165,12 +165,12 @@ const writeCallout = (
   let totalTextH = 0;
   if (title) {
     doc.font(FONT_BOLD);
-    totalTextH += doc.heightOfString(sanitize(title), { width: innerW }) + 4;
+    totalTextH += doc.heightOfString(sanitize(title), { characterSpacing: 0, wordSpacing: 0, width: innerW }) + 4;
     doc.font(FONT_REGULAR);
   }
   for (const line of lines) {
     const txt = lines.length === 1 && !title ? sanitize(line) : `• ${sanitize(line)}`;
-    totalTextH += doc.heightOfString(txt, { width: innerW }) + 2;
+    totalTextH += doc.heightOfString(txt, { characterSpacing: 0, wordSpacing: 0, width: innerW }) + 2;
   }
   const boxH = totalTextH + padding * 2;
   ensureSpace(boxH + 8);
@@ -187,13 +187,13 @@ const writeCallout = (
       .font(FONT_BOLD)
       .fontSize(BODY_SIZE)
       .fillColor(COLORS.text)
-      .text(sanitize(title), innerX, cy, { width: innerW });
+      .text(sanitize(title), innerX, cy, { characterSpacing: 0, wordSpacing: 0, width: innerW });
     cy = doc.y + 2;
   }
   doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
   for (const line of lines) {
     const txt = lines.length === 1 && !title ? sanitize(line) : `• ${sanitize(line)}`;
-    doc.text(txt, innerX, cy, { width: innerW });
+    doc.text(txt, innerX, cy, { characterSpacing: 0, wordSpacing: 0, width: innerW });
     cy = doc.y + 2;
   }
   doc.y = y + boxH + 8;
@@ -207,9 +207,9 @@ const writeTable = (rows: { label: string; value: string }[]) => {
 
   for (const row of rows) {
     doc.font(FONT_BOLD).fontSize(BODY_SIZE);
-    const lh = doc.heightOfString(sanitize(row.label), { width: labelW - padding * 2 });
+    const lh = doc.heightOfString(sanitize(row.label), { characterSpacing: 0, wordSpacing: 0, width: labelW - padding * 2 });
     doc.font(FONT_REGULAR);
-    const vh = doc.heightOfString(sanitize(row.value), { width: valueW - padding * 2 });
+    const vh = doc.heightOfString(sanitize(row.value), { characterSpacing: 0, wordSpacing: 0, width: valueW - padding * 2 });
     const rowH = Math.max(lh, vh) + padding * 2;
     ensureSpace(rowH);
 
@@ -232,13 +232,11 @@ const writeTable = (rows: { label: string; value: string }[]) => {
       .font(FONT_BOLD)
       .fontSize(BODY_SIZE)
       .fillColor(COLORS.text)
-      .text(sanitize(row.label), x + padding, y + padding, {
-        width: labelW - padding * 2,
+      .text(sanitize(row.label), x + padding, y + padding, { characterSpacing: 0, wordSpacing: 0, width: labelW - padding * 2,
       });
     doc
       .font(FONT_REGULAR)
-      .text(sanitize(row.value), x + labelW + padding, y + padding, {
-        width: valueW - padding * 2,
+      .text(sanitize(row.value), x + labelW + padding, y + padding, { characterSpacing: 0, wordSpacing: 0, width: valueW - padding * 2,
       });
 
     doc.y = y + rowH;
@@ -274,7 +272,7 @@ const writeSectionHeading = (number: string, title: string) => {
     .font(FONT_BOLD)
     .fontSize(18)
     .fillColor(COLORS.primary)
-    .text(`${number}. ${sanitize(title)}`, MARGIN.left, doc.y, { width: CONTENT_W });
+    .text(`${number}. ${sanitize(title)}`, MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W });
   const lineY = doc.y + 2;
   doc
     .save()
@@ -298,8 +296,7 @@ doc
   .font(FONT_BOLD)
   .fontSize(11)
   .fillColor(COLORS.primary)
-  .text(HANDBUCH_BOXAUTOMAT_META.subtitle.toUpperCase(), MARGIN.left, doc.y, {
-    width: CONTENT_W,
+  .text(HANDBUCH_BOXAUTOMAT_META.subtitle.toUpperCase(), MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W,
   });
 doc.y += 4;
 
@@ -307,8 +304,7 @@ doc
   .font(FONT_BOLD)
   .fontSize(26)
   .fillColor(COLORS.text)
-  .text(sanitize(HANDBUCH_BOXAUTOMAT_META.product), MARGIN.left, doc.y, {
-    width: CONTENT_W,
+  .text(sanitize(HANDBUCH_BOXAUTOMAT_META.product), MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W,
   });
 doc.y += 4;
 
@@ -320,17 +316,17 @@ doc
     `Artikelnummer ${HANDBUCH_BOXAUTOMAT_META.articleNumber} - Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated}`,
     MARGIN.left,
     doc.y,
-    { width: CONTENT_W },
+    { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W },
   );
 doc.y += 18;
 
 resetStyle();
 doc
-  .text(HANDBUCH_BOXAUTOMAT_META.publisher.name, MARGIN.left, doc.y, { width: CONTENT_W })
-  .text(HANDBUCH_BOXAUTOMAT_META.publisher.address, { width: CONTENT_W })
+  .text(HANDBUCH_BOXAUTOMAT_META.publisher.name, MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W })
+  .text(HANDBUCH_BOXAUTOMAT_META.publisher.address, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W })
   .text(
     `${HANDBUCH_BOXAUTOMAT_META.publisher.email} - ${HANDBUCH_BOXAUTOMAT_META.publisher.website}`,
-    { width: CONTENT_W },
+    { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W },
   );
 doc.y += 16;
 
@@ -349,25 +345,24 @@ doc
   .font(FONT_BOLD)
   .fontSize(14)
   .fillColor(COLORS.text)
-  .text("Inhaltsverzeichnis", MARGIN.left, doc.y, { width: CONTENT_W });
+  .text("Inhaltsverzeichnis", MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W });
 doc.y += 8;
 doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
 HANDBUCH_BOXAUTOMAT_SECTIONS.forEach((section) => {
-  doc.text(`${section.number}. ${sanitize(section.title)}`, MARGIN.left + 12, doc.y, {
-    width: CONTENT_W - 12,
+  doc.text(`${section.number}. ${sanitize(section.title)}`, MARGIN.left + 12, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W - 12,
   });
 });
 doc.text(
   `${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1}. Häufig gestellte Fragen`,
   MARGIN.left + 12,
   doc.y,
-  { width: CONTENT_W - 12 },
+  { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W - 12 },
 );
 doc.text(
   `${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2}. Support & Kontakt`,
   MARGIN.left + 12,
   doc.y,
-  { width: CONTENT_W - 12 },
+  { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W - 12 },
 );
 
 // ---- Sections ---------------------------------------------------------------
@@ -396,13 +391,13 @@ HANDBUCH_BOXAUTOMAT_FAQ.forEach((item) => {
     .font(FONT_BOLD)
     .fontSize(11.5)
     .fillColor(COLORS.text)
-    .text(sanitize(item.question), MARGIN.left, doc.y, { width: CONTENT_W });
+    .text(sanitize(item.question), MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W });
   doc.y += 2;
   doc
     .font(FONT_REGULAR)
     .fontSize(BODY_SIZE)
     .fillColor(COLORS.text)
-    .text(sanitize(item.answer), MARGIN.left, doc.y, { width: CONTENT_W });
+    .text(sanitize(item.answer), MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W });
   doc.y += 8;
 });
 
@@ -414,8 +409,7 @@ writeSectionHeading(
   "Support & Kontakt",
 );
 resetStyle();
-doc.text("Bei Fragen oder Problemen wenden Sie sich bitte an:", MARGIN.left, doc.y, {
-  width: CONTENT_W,
+doc.text("Bei Fragen oder Problemen wenden Sie sich bitte an:", MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W,
 });
 doc.y += 6;
 doc.font(FONT_BOLD).text(HANDBUCH_BOXAUTOMAT_META.publisher.name);
@@ -447,18 +441,17 @@ for (let i = range.start; i < range.start + range.count; i++) {
     `${HANDBUCH_BOXAUTOMAT_META.publisher.name} - ${HANDBUCH_BOXAUTOMAT_META.publisher.website}`,
     MARGIN.left,
     footerY,
-    { width: CONTENT_W / 2, align: "left", lineBreak: false },
+    { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W / 2, align: "left", lineBreak: false },
   );
   // Center: version + date
   doc.text(
     `Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated} - v${HANDBUCH_BOXAUTOMAT_META.version}`,
     MARGIN.left,
     footerY,
-    { width: CONTENT_W, align: "center", lineBreak: false },
+    { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W, align: "center", lineBreak: false },
   );
   // Right: page number
-  doc.text(`Seite ${pageNum} / ${totalPages}`, MARGIN.left, footerY, {
-    width: CONTENT_W,
+  doc.text(`Seite ${pageNum} / ${totalPages}`, MARGIN.left, footerY, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W,
     align: "right",
     lineBreak: false,
   });
