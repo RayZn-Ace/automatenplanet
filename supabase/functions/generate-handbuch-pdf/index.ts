@@ -423,7 +423,7 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
   // ---- FAQ ----
   ensureSpace(60);
   doc.y += 12;
-  writeSectionHeading(String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1), "Häufig gestellte Fragen");
+  writeSectionHeading(String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1), "Häufig gestellte Fragen", "sec-faq");
   HANDBUCH_BOXAUTOMAT_FAQ.forEach((item) => {
     resetStyle();
     ensureSpace(40);
