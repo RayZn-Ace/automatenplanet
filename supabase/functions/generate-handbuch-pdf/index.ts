@@ -438,7 +438,7 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
   // ---- Support ----
   ensureSpace(60);
   doc.y += 12;
-  writeSectionHeading(String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2), "Support & Kontakt");
+  writeSectionHeading(String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2), "Support & Kontakt", "sec-support");
   resetStyle();
   doc.text("Bei Fragen oder Problemen wenden Sie sich bitte an:", MARGIN.left, doc.y, { ...TXT, width: CONTENT_W });
   doc.y += 6;
