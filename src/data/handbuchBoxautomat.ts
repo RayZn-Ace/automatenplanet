@@ -272,28 +272,120 @@ export const HANDBUCH_BOXAUTOMAT_SECTIONS: HandbuchSection[] = [
     title: "Menüführung",
     icon: "📋",
     blocks: [
-      { type: "paragraph", text: "Zugriff: 👉 OK-Taste drücken" },
-      { type: "subheading", text: "Einstellungen" },
+      {
+        type: "paragraph",
+        text:
+          "Das Menü dient zur Konfiguration aller Spiel-, Anzeige- und Hardware-Parameter des Boxautomaten. Im Folgenden findest du klare Schrittfolgen, wie du in jeden Bereich gelangst und welche Unterpunkte verfügbar sind.",
+      },
+
+      { type: "subheading", text: "9.1 Hauptmenü öffnen" },
+      {
+        type: "list",
+        ordered: true,
+        items: [
+          "Gerät einschalten und warten, bis der Demo-Bildschirm erscheint.",
+          "Die OK-Taste am Bedienfeld drücken, um das Hauptmenü zu öffnen.",
+          "Mit den Pfeiltasten ▲ / ▼ durch die Einträge navigieren.",
+          "Mit OK einen Eintrag bestätigen, mit ESC / ZURÜCK eine Ebene zurück.",
+        ],
+      },
+      {
+        type: "callout",
+        variant: "info",
+        title: "Tasten-Übersicht",
+        lines: [
+          "OK = Auswahl bestätigen / Untermenü öffnen",
+          "▲ / ▼ = Eintrag wählen bzw. Wert erhöhen / verringern",
+          "ESC / ZURÜCK = Eine Ebene zurück / Menü verlassen",
+        ],
+      },
+
+      { type: "subheading", text: "9.2 Einstellungen (Standardmenü)" },
+      {
+        type: "paragraph",
+        text:
+          "Schrittfolge: Hauptmenü → „Einstellungen" → mit ▲/▼ Eintrag wählen → OK zum Bearbeiten → Wert mit ▲/▼ ändern → OK speichern.",
+      },
+      {
+        type: "table",
+        rows: [
+          { label: "Sprache", value: "Menüsprache wählen (DE / EN / weitere)" },
+          { label: "Kredit 1", value: "Anzahl Credits pro Münzkanal 1" },
+          { label: "Kredit 2", value: "Anzahl Credits pro Münzkanal 2" },
+          { label: "Lautstärke", value: "Lautstärke der Sound-Effekte und Musik (0–100)" },
+          { label: "Schwierigkeitsgrad", value: "Empfindlichkeit / Punkteskalierung anpassen" },
+          { label: "Demo-Musik AN/AUS", value: "Hintergrundmusik im Demo-Modus aktivieren" },
+          { label: "Freispiele", value: "Freispiel-Schwelle ab einer bestimmten Punktzahl" },
+          { label: "Schnellstart", value: "Spiel ohne Countdown direkt starten" },
+          { label: "Anzeige (999 / 3000)", value: "Maximalwert der Punkteanzeige umschalten" },
+          { label: "Ballauswurf (Manuell / Auto)", value: "Schlagball nach Spielende automatisch ausgeben" },
+          { label: "Testmenü", value: "Zugang zum Hardware-Testmenü (siehe 9.3)" },
+        ],
+      },
+
+      { type: "subheading", text: "9.3 Testmenü öffnen" },
+      {
+        type: "paragraph",
+        text:
+          "Das Testmenü dient zur Prüfung aller Hardware-Komponenten – nutze es nach jeder Wartung oder bei Fehlerverdacht.",
+      },
+      {
+        type: "list",
+        ordered: true,
+        items: [
+          "Im Demo-Bildschirm OK drücken → Hauptmenü öffnet sich.",
+          "Mit ▲/▼ den Eintrag „Einstellungen" wählen und mit OK bestätigen.",
+          "In der Liste nach unten scrollen bis zum Eintrag „Testmenü".",
+          "OK drücken – das Testmenü öffnet sich.",
+          "Komponente mit ▲/▼ wählen und mit OK starten (z. B. Sensor, LED, Münzprüfer).",
+          "Mit ESC die Komponente verlassen, erneut ESC führt zurück ins Hauptmenü.",
+        ],
+      },
       {
         type: "list",
         items: [
-          "Sprache",
-          "Kredit 1",
-          "Kredit 2",
-          "Lautstärke",
-          "Schwierigkeitsgrad",
-          "Demo-Musik AN/AUS",
-          "Freispiele",
-          "Schnellstart",
-          "Anzeige (999 / 3000)",
-          "Ballauswurf (Manuell / Auto)",
-          "Testmenü",
+          "Sensor-Test: Schlagsensor auslösen → angezeigter Wert muss reagieren.",
+          "Münzprüfer-Test: Münze einwerfen → Kanal & Wert müssen erkannt werden.",
+          "LED-Test: Alle LED-Segmente und Beleuchtungsringe werden durchgeschaltet.",
+          "Sound-Test: Effekte und Musik werden nacheinander abgespielt.",
+          "Display-Test: Punkteanzeige zeigt Testmuster (alle Segmente).",
+          "Ballauswurf-Test: Mechanik gibt den Ball manuell aus.",
         ],
       },
-      { type: "subheading", text: "Erweiterte Einstellungen (Passwort: 1111)" },
+
+      { type: "subheading", text: "9.4 Erweiterte Einstellungen (Passwort: 1111)" },
+      {
+        type: "paragraph",
+        text:
+          "Schrittfolge: Hauptmenü → „Erweiterte Einstellungen" → Passwort 1111 mit ▲/▼ und OK eingeben → gewünschten Unterpunkt wählen.",
+      },
       {
         type: "list",
-        items: ["Werkseinstellungen", "LED Einstellungen", "Maschinentyp (BOX / COMBO)"],
+        items: [
+          "Werkseinstellungen: Setzt alle Parameter auf Auslieferungszustand zurück. Achtung: Eigene Einstellungen gehen verloren.",
+          "LED Einstellungen: Helligkeit, Farbprofile und Animationen der Beleuchtung anpassen.",
+          "Maschinentyp (BOX / COMBO): Konfiguration auf reine Box-Maschine oder Box & Kick Combo umstellen.",
+        ],
+      },
+      {
+        type: "callout",
+        variant: "warning",
+        title: "Hinweis zum Passwort",
+        lines: [
+          "Das Standard-Passwort lautet 1111.",
+          "Änderungen in den erweiterten Einstellungen sollten nur durch geschultes Personal erfolgen.",
+        ],
+      },
+
+      { type: "subheading", text: "9.5 Menü verlassen & Speichern" },
+      {
+        type: "list",
+        ordered: true,
+        items: [
+          "Geänderten Wert mit OK bestätigen – die Einstellung wird sofort gespeichert.",
+          "Mit ESC schrittweise bis zum Demo-Bildschirm zurückgehen.",
+          "Bei kritischen Änderungen (z. B. Maschinentyp) das Gerät kurz aus- und wieder einschalten.",
+        ],
       },
     ],
   },
