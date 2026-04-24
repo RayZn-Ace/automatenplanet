@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, X } from "lucide-react";
+import { ChevronDown, List, Search, X } from "lucide-react";
 import type { HandbuchBlock, HandbuchSection } from "@/data/handbuchBoxautomat";
 import { cn } from "@/lib/utils";
 
