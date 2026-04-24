@@ -495,9 +495,20 @@ const writeBlock = (block: HandbuchBlock) => {
   }
 };
 
-const writeSectionHeading = (number: string, title: string) => {
+// Records the page index (0-based) where each section heading lives so the
+// TOC entries can be patched with real page numbers in a second pass.
+const headingPageByAnchor: Record<string, number> = {};
+
+const writeSectionHeading = (number: string, title: string, anchor?: string) => {
   resetStyle();
   ensureSpace(48);
+  if (anchor) {
+    // Register a named destination at the current y on the current page so
+    // TOC links can jump here.
+    try { (doc as unknown as { addNamedDestination: (n: string) => void }).addNamedDestination(anchor); } catch { /* older pdfkit */ }
+    const range = doc.bufferedPageRange();
+    headingPageByAnchor[anchor] = range.start + range.count - 1;
+  }
   doc
     .font(FONT_BOLD)
     .fontSize(18)
@@ -516,7 +527,7 @@ const writeSectionHeading = (number: string, title: string) => {
 };
 
 const writeSection = (section: HandbuchSection) => {
-  writeSectionHeading(section.number, section.title);
+  writeSectionHeading(section.number, section.title, `sec-${section.id}`);
   for (const block of section.blocks) writeBlock(block);
 };
 
