@@ -100,6 +100,19 @@ const Handbuch = () => {
                 </a>
               </p>
             </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild size="lg" className="gap-2">
+                <a
+                  href="/downloads/handbuch-tischkicker-pro-cl.pdf"
+                  download
+                  aria-label="Handbuch Tischkicker Pro CL als PDF herunterladen"
+                >
+                  <Download className="h-5 w-5" />
+                  Handbuch als PDF herunterladen
+                </a>
+              </Button>
+            </div>
           </header>
 
           <section className="prose prose-invert max-w-none space-y-8 text-muted-foreground">
