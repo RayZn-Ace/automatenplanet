@@ -256,6 +256,12 @@ const Handbuch = () => {
     return () => window.clearTimeout(t);
   }, [zoomOpen, showHint]);
 
+  // Wird bei jeder echten Nutzer-Interaktion im Dialog aufgerufen,
+  // damit der Tastatur-/Touch-Hinweis nicht im Weg steht.
+  const dismissHint = useCallback(() => {
+    setShowHint((prev) => (prev ? false : prev));
+  }, []);
+
   const zoomIn = () => {
     const next = Math.min(scaleRef.current + 0.5, MAX_SCALE);
     setScale(next);
@@ -662,6 +668,9 @@ const Handbuch = () => {
                 <DialogContent
                   className="max-w-[100vw] sm:max-w-[95vw] w-screen sm:w-[95vw] h-[100dvh] sm:h-[90vh] p-0 overflow-hidden bg-background rounded-none sm:rounded-lg focus:outline-none"
                   onKeyDown={onDialogKeyDown}
+                  onKeyDownCapture={dismissHint}
+                  onPointerDownCapture={dismissHint}
+                  onWheelCapture={dismissHint}
                 >
                   <DialogTitle className="sr-only">Steuerplatine – Zoom-Ansicht</DialogTitle>
                   <DialogDescription className="sr-only">
