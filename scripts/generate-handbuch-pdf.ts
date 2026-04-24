@@ -468,13 +468,16 @@ doc.font(FONT_REGULAR).text(HANDBUCH_BOXAUTOMAT_META.publisher.address);
 doc.text(`E-Mail: ${HANDBUCH_BOXAUTOMAT_META.publisher.email}`);
 doc.text(`Web:    ${HANDBUCH_BOXAUTOMAT_META.publisher.website}`);
 
-// Footer on every page (including the first/cover).
-// We need to draw it after each page is fully written, so flush at the end:
-const range = doc.bufferedPageRange?.() ?? { start: 0, count: 1 };
+// Footer on every page (including the first/cover). bufferPages: true lets us
+// switch back to each page after the content is written.
+const range = doc.bufferedPageRange();
+const totalPages = range.count;
 for (let i = range.start; i < range.start + range.count; i++) {
   doc.switchToPage(i);
-  drawFooter();
+  drawFooter(i - range.start + 1, totalPages);
 }
+// flushPages so switchToPage edits are committed before doc.end().
+doc.flushPages();
 
 doc.end();
 
