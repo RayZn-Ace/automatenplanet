@@ -341,6 +341,8 @@ const HandbuchBoxautomat = () => {
               </p>
             </div>
           </section>
+
+          <HandbuchPdfPreview />
         </div>
       </main>
       <Footer />
