@@ -10,6 +10,7 @@ import {
   type HandbuchBlock,
   type HandbuchSection,
 } from "@/data/handbuchBoxautomat";
+import { HANDBUCH_IMAGE_ASSETS } from "@/data/handbuchAssets";
 
 const PAGE_URL = HANDBUCH_BOXAUTOMAT_META.url;
 const PAGE_TITLE =
