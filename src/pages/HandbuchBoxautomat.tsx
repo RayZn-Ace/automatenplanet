@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HandbuchPdfDownload from "@/components/handbuch/HandbuchPdfDownload";
+import HandbuchPdfPreview from "@/components/handbuch/HandbuchPdfPreview";
 import {
   HANDBUCH_BOXAUTOMAT_FAQ,
   HANDBUCH_BOXAUTOMAT_META,
@@ -266,6 +267,15 @@ const HandbuchBoxautomat = () => {
                 >
                   <span className="text-foreground/60 mr-1">📞</span>
                   Support
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#pdf-vorschau"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <span className="text-foreground/60 mr-1">👁️</span>
+                  PDF Vorschau
                 </a>
               </li>
             </ol>
