@@ -7,30 +7,64 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import handbuchElektronik from "@/assets/handbuch-elektronik.png";
 
+const MIN_SCALE = 1;
+const MAX_SCALE = 5;
+
+type Pointer = { id: number; x: number; y: number };
+
 const Handbuch = () => {
   const [zoomOpen, setZoomOpen] = useState(false);
+  // Committed view – kept in state so React renders reflect the latest zoom/pan
+  // when no gesture is active. During a gesture we mutate the DOM directly.
   const [scale, setScale] = useState(1);
-  // Committed offset – only updated on pointer up. During drag we mutate the
-  // DOM directly via rAF to avoid per-frame React re-renders.
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
 
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
+
+  // Live values used inside event handlers (avoids stale closures and React renders).
   const scaleRef = useRef(1);
   const offsetRef = useRef({ x: 0, y: 0 });
-  const pointerRef = useRef({
-    active: false,
-    pointerId: -1,
+
+  // Active pointers (mouse / touch / pen).
+  const pointersRef = useRef<Map<number, Pointer>>(new Map());
+
+  // Gesture state – snapshots taken when the gesture starts/changes mode.
+  const gestureRef = useRef<{
+    mode: "none" | "pan" | "pinch";
+    // pan
+    startX: number;
+    startY: number;
+    baseX: number;
+    baseY: number;
+    // pinch
+    startDist: number;
+    baseScale: number;
+    // pinch anchor in image-local coordinates (independent of scale/offset)
+    anchorImgX: number;
+    anchorImgY: number;
+    // pinch anchor in container coordinates (where the midpoint should stay)
+    anchorScreenX: number;
+    anchorScreenY: number;
+  }>({
+    mode: "none",
     startX: 0,
     startY: 0,
     baseX: 0,
     baseY: 0,
-    lastX: 0,
-    lastY: 0,
+    startDist: 0,
+    baseScale: 1,
+    anchorImgX: 0,
+    anchorImgY: 0,
+    anchorScreenX: 0,
+    anchorScreenY: 0,
   });
-  const rafRef = useRef<number | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
 
-  // Keep refs in sync with state for use inside event handlers.
+  const rafRef = useRef<number | null>(null);
+  const pendingRef = useRef<{ x: number; y: number; s: number } | null>(null);
+  const lastTapRef = useRef<{ time: number; x: number; y: number }>({ time: 0, x: 0, y: 0 });
+
   useEffect(() => {
     scaleRef.current = scale;
   }, [scale]);
@@ -48,14 +82,28 @@ const Handbuch = () => {
     if (rafRef.current !== null) return;
     rafRef.current = requestAnimationFrame(() => {
       rafRef.current = null;
-      const p = pointerRef.current;
-      const x = p.baseX + (p.lastX - p.startX);
-      const y = p.baseY + (p.lastY - p.startY);
-      applyTransform(x, y, scaleRef.current);
+      const p = pendingRef.current;
+      if (!p) return;
+      applyTransform(p.x, p.y, p.s);
     });
   }, [applyTransform]);
 
+  const commit = useCallback(
+    (x: number, y: number, s: number) => {
+      pendingRef.current = { x, y, s };
+      scaleRef.current = s;
+      offsetRef.current = { x, y };
+      scheduleFrame();
+    },
+    [scheduleFrame],
+  );
+
   const resetView = useCallback(() => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    pendingRef.current = null;
     setScale(1);
     setOffset({ x: 0, y: 0 });
     applyTransform(0, 0, 1);
@@ -66,63 +114,179 @@ const Handbuch = () => {
     if (!open) resetView();
   };
 
-  const zoomIn = () =>
-    setScale((s) => {
-      const next = Math.min(s + 0.5, 5);
-      applyTransform(offsetRef.current.x, offsetRef.current.y, next);
-      return next;
-    });
-  const zoomOut = () =>
-    setScale((s) => {
-      const next = Math.max(s - 0.5, 1);
-      const nextOffset = next === 1 ? { x: 0, y: 0 } : offsetRef.current;
-      if (next === 1) setOffset(nextOffset);
-      applyTransform(nextOffset.x, nextOffset.y, next);
-      return next;
-    });
+  const zoomIn = () => {
+    const next = Math.min(scaleRef.current + 0.5, MAX_SCALE);
+    setScale(next);
+    applyTransform(offsetRef.current.x, offsetRef.current.y, next);
+  };
+  const zoomOut = () => {
+    const next = Math.max(scaleRef.current - 0.5, MIN_SCALE);
+    const nextOffset = next === 1 ? { x: 0, y: 0 } : offsetRef.current;
+    setScale(next);
+    setOffset(nextOffset);
+    applyTransform(nextOffset.x, nextOffset.y, next);
+  };
 
-  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (scaleRef.current === 1) return;
-    // Capture so we keep receiving move events even if the pointer leaves the box.
-    e.currentTarget.setPointerCapture(e.pointerId);
-    pointerRef.current = {
-      active: true,
-      pointerId: e.pointerId,
-      startX: e.clientX,
-      startY: e.clientY,
-      baseX: offsetRef.current.x,
-      baseY: offsetRef.current.y,
-      lastX: e.clientX,
-      lastY: e.clientY,
+  const getContainerPoint = (clientX: number, clientY: number) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return { x: clientX, y: clientY };
+    return { x: clientX - rect.left - rect.width / 2, y: clientY - rect.top - rect.height / 2 };
+  };
+
+  const startPinch = () => {
+    const pts = Array.from(pointersRef.current.values());
+    if (pts.length < 2) return;
+    const [a, b] = pts;
+    const midClientX = (a.x + b.x) / 2;
+    const midClientY = (a.y + b.y) / 2;
+    const mid = getContainerPoint(midClientX, midClientY);
+    const dist = Math.hypot(a.x - b.x, a.y - b.y);
+    const s = scaleRef.current;
+    const o = offsetRef.current;
+    // Convert the container-space midpoint into "image-local" coordinates so we
+    // can keep that exact point fixed under the fingers as scale changes.
+    gestureRef.current = {
+      ...gestureRef.current,
+      mode: "pinch",
+      startDist: dist,
+      baseScale: s,
+      anchorImgX: (mid.x - o.x) / s,
+      anchorImgY: (mid.y - o.y) / s,
+      anchorScreenX: mid.x,
+      anchorScreenY: mid.y,
     };
     setIsDragging(true);
   };
 
-  const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
-    const p = pointerRef.current;
-    if (!p.active || e.pointerId !== p.pointerId) return;
-    p.lastX = e.clientX;
-    p.lastY = e.clientY;
-    scheduleFrame();
+  const startPan = (p: Pointer) => {
+    if (scaleRef.current === 1) {
+      gestureRef.current.mode = "none";
+      return;
+    }
+    gestureRef.current = {
+      ...gestureRef.current,
+      mode: "pan",
+      startX: p.x,
+      startY: p.y,
+      baseX: offsetRef.current.x,
+      baseY: offsetRef.current.y,
+    };
+    setIsDragging(true);
   };
 
-  const endDrag = (e: ReactPointerEvent<HTMLDivElement>) => {
-    const p = pointerRef.current;
-    if (!p.active || e.pointerId !== p.pointerId) return;
-    if (rafRef.current !== null) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
+  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    pointersRef.current.set(e.pointerId, { id: e.pointerId, x: e.clientX, y: e.clientY });
+
+    // Double-tap / double-click to toggle zoom around tap point.
+    if (pointersRef.current.size === 1) {
+      const now = performance.now();
+      const last = lastTapRef.current;
+      const dt = now - last.time;
+      const dx = e.clientX - last.x;
+      const dy = e.clientY - last.y;
+      if (dt < 300 && Math.hypot(dx, dy) < 30) {
+        // double tap
+        const target = scaleRef.current > 1 ? 1 : 2.5;
+        if (target === 1) {
+          setScale(1);
+          setOffset({ x: 0, y: 0 });
+          applyTransform(0, 0, 1);
+        } else {
+          // Zoom in around the tap point
+          const tap = getContainerPoint(e.clientX, e.clientY);
+          const s = scaleRef.current;
+          const o = offsetRef.current;
+          const imgX = (tap.x - o.x) / s;
+          const imgY = (tap.y - o.y) / s;
+          const newX = tap.x - imgX * target;
+          const newY = tap.y - imgY * target;
+          setScale(target);
+          setOffset({ x: newX, y: newY });
+          applyTransform(newX, newY, target);
+          scaleRef.current = target;
+          offsetRef.current = { x: newX, y: newY };
+        }
+        lastTapRef.current = { time: 0, x: 0, y: 0 };
+        return;
+      }
+      lastTapRef.current = { time: now, x: e.clientX, y: e.clientY };
     }
-    const finalX = p.baseX + (p.lastX - p.startX);
-    const finalY = p.baseY + (p.lastY - p.startY);
-    p.active = false;
-    setIsDragging(false);
-    setOffset({ x: finalX, y: finalY });
-    applyTransform(finalX, finalY, scaleRef.current);
+
+    if (pointersRef.current.size === 2) {
+      startPinch();
+    } else if (pointersRef.current.size === 1) {
+      const p = pointersRef.current.get(e.pointerId)!;
+      startPan(p);
+    }
+  };
+
+  const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const stored = pointersRef.current.get(e.pointerId);
+    if (!stored) return;
+    stored.x = e.clientX;
+    stored.y = e.clientY;
+
+    const g = gestureRef.current;
+
+    if (g.mode === "pinch" && pointersRef.current.size >= 2) {
+      const pts = Array.from(pointersRef.current.values()).slice(0, 2);
+      const [a, b] = pts;
+      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      if (g.startDist === 0) return;
+      const ratio = dist / g.startDist;
+      const nextScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, g.baseScale * ratio));
+      // Keep the original anchor point pinned under the fingers.
+      const newX = g.anchorScreenX - g.anchorImgX * nextScale;
+      const newY = g.anchorScreenY - g.anchorImgY * nextScale;
+      commit(newX, newY, nextScale);
+    } else if (g.mode === "pan") {
+      const x = g.baseX + (stored.x - g.startX);
+      const y = g.baseY + (stored.y - g.startY);
+      commit(x, y, scaleRef.current);
+    }
+  };
+
+  const endPointer = (e: ReactPointerEvent<HTMLDivElement>) => {
+    pointersRef.current.delete(e.pointerId);
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {
       /* ignore */
+    }
+
+    const g = gestureRef.current;
+    const remaining = pointersRef.current.size;
+
+    if (g.mode === "pinch" && remaining < 2) {
+      // Commit the pinch and either continue panning with the remaining finger
+      // or end the gesture.
+      const finalScale = scaleRef.current;
+      const finalOffset = offsetRef.current;
+      // If we zoomed back to 1, snap the offset to center.
+      if (finalScale <= MIN_SCALE) {
+        setScale(MIN_SCALE);
+        setOffset({ x: 0, y: 0 });
+        applyTransform(0, 0, MIN_SCALE);
+      } else {
+        setScale(finalScale);
+        setOffset(finalOffset);
+      }
+      if (remaining === 1) {
+        const p = Array.from(pointersRef.current.values())[0];
+        startPan(p);
+      } else {
+        gestureRef.current.mode = "none";
+        setIsDragging(false);
+      }
+      return;
+    }
+
+    if (g.mode === "pan" && remaining === 0) {
+      const finalOffset = offsetRef.current;
+      setOffset(finalOffset);
+      gestureRef.current.mode = "none";
+      setIsDragging(false);
     }
   };
 
@@ -132,6 +296,7 @@ const Handbuch = () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
   }, []);
+
 
   return (
     <>
@@ -296,12 +461,14 @@ const Handbuch = () => {
                     </span>
                   </div>
                   <div
-                    className="w-full h-full overflow-hidden flex items-center justify-center bg-black/40 select-none touch-none"
+                    ref={containerRef}
+                    className="relative w-full h-full overflow-hidden flex items-center justify-center bg-black/40 select-none touch-none"
                     style={{ cursor: scale > 1 ? (isDragging ? "grabbing" : "grab") : "default" }}
                     onPointerDown={onPointerDown}
                     onPointerMove={onPointerMove}
-                    onPointerUp={endDrag}
-                    onPointerCancel={endDrag}
+                    onPointerUp={endPointer}
+                    onPointerCancel={endPointer}
+                    onPointerLeave={endPointer}
                   >
                     <img
                       ref={imgRef}
@@ -313,10 +480,14 @@ const Handbuch = () => {
                       }`}
                       style={{
                         transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${scale})`,
+                        transformOrigin: "center center",
                         willChange: "transform",
                         backfaceVisibility: "hidden",
                       }}
                     />
+                    <div className="md:hidden absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-black/70 text-white text-xs backdrop-blur-sm pointer-events-none">
+                      Mit zwei Fingern zoomen · Doppeltippen für Schnellzoom
+                    </div>
                   </div>
                 </DialogContent>
               </Dialog>
