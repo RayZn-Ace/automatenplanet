@@ -256,11 +256,11 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
     }
     const availH = CONTENT_BOTTOM - doc.y - captionH - 8;
 
-    // Convert Uint8Array to Buffer-compatible input pdfkit accepts.
-    // pdfkit (npm) works with Buffer in Node and with Uint8Array via Buffer.from.
-    // Deno's Node compat ships Buffer.
-    // deno-lint-ignore no-explicit-any
-    const buf = (globalThis as any).Buffer ? (globalThis as any).Buffer.from(bytes) : bytes;
+    // Convert to Node Buffer; pdfkit branches on Buffer vs string and only
+    // tries to read from disk when given a non-Buffer. Without an explicit
+    // node:buffer import, Buffer is undefined and pdfkit treats the value as
+    // a file path → "path not found".
+    const buf = Buffer.from(bytes);
 
     doc.image(buf, MARGIN.left, doc.y, { fit: [targetW, availH], align: "left" });
     // deno-lint-ignore no-explicit-any
