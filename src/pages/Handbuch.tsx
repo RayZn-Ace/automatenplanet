@@ -297,6 +297,48 @@ const Handbuch = () => {
     };
   }, []);
 
+  // Keyboard controls inside the zoom dialog.
+  // Esc is handled natively by Radix Dialog – we add +/- for zoom and arrows for panning.
+  const onDialogKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const key = e.key;
+    if (key === "+" || key === "=") {
+      e.preventDefault();
+      zoomIn();
+      return;
+    }
+    if (key === "-" || key === "_") {
+      e.preventDefault();
+      zoomOut();
+      return;
+    }
+    if (key === "0") {
+      e.preventDefault();
+      resetView();
+      return;
+    }
+    if (
+      key === "ArrowUp" ||
+      key === "ArrowDown" ||
+      key === "ArrowLeft" ||
+      key === "ArrowRight"
+    ) {
+      if (scaleRef.current === 1) return;
+      e.preventDefault();
+      const step = e.shiftKey ? 120 : 40;
+      let dx = 0;
+      let dy = 0;
+      if (key === "ArrowUp") dy = step;
+      if (key === "ArrowDown") dy = -step;
+      if (key === "ArrowLeft") dx = step;
+      if (key === "ArrowRight") dx = -step;
+      const nextX = offsetRef.current.x + dx;
+      const nextY = offsetRef.current.y + dy;
+      setOffset({ x: nextX, y: nextY });
+      offsetRef.current = { x: nextX, y: nextY };
+      applyTransform(nextX, nextY, scaleRef.current);
+    }
+  };
+
 
   return (
     <>
