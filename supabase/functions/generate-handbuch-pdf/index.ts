@@ -12,9 +12,11 @@
 import PDFDocument from "npm:pdfkit@0.15.0";
 import { createHash } from "node:crypto";
 import {
+  EXPECTED_CONTENT_HASH,
   HANDBUCH_BOXAUTOMAT_FAQ,
   HANDBUCH_BOXAUTOMAT_META,
   HANDBUCH_BOXAUTOMAT_SECTIONS,
+  SYNCED_AT,
   type HandbuchBlock,
   type HandbuchSection,
 } from "./handbuch-data.ts";
