@@ -523,6 +523,15 @@ for (let i = range.start; i < range.start + range.count; i++) {
 doc.end();
 
 stream.on("finish", () => {
-  // eslint-disable-next-line no-console
-  console.log(`✓ PDF generated: ${outFile}`);
+  try {
+    if (statSync(tmpFile).size === 0) {
+      restoreFromLastGood("generated PDF is empty (0 bytes)");
+      return;
+    }
+    renameSync(tmpFile, outFile);
+    // eslint-disable-next-line no-console
+    console.log(`✓ PDF generated: ${outFile}`);
+  } catch (err) {
+    restoreFromLastGood(`finalize: ${(err as Error).message}`);
+  }
 });
