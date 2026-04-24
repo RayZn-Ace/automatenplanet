@@ -390,7 +390,11 @@ Deno.serve(async (req) => {
     if (req.method === "HEAD") {
       return new Response(null, { status: 200, headers });
     }
-    return new Response(bytes, { status: 200, headers });
+    // Wrap in Blob for cross-runtime BodyInit compatibility
+    return new Response(new Blob([bytes], { type: "application/pdf" }), {
+      status: 200,
+      headers,
+    });
   } catch (err) {
     console.error("PDF generation failed:", err);
     const message = err instanceof Error ? err.message : String(err);
