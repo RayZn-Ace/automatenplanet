@@ -1,8 +1,7 @@
 import { Helmet } from "react-helmet-async";
-import { Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import HandbuchPdfDownload from "@/components/handbuch/HandbuchPdfDownload";
 import {
   HANDBUCH_BOXAUTOMAT_FAQ,
   HANDBUCH_BOXAUTOMAT_META,
