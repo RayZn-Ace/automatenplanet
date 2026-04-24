@@ -7,8 +7,15 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import handbuchElektronik from "@/assets/handbuch-elektronik.png";
 
+// Zoom limits + step are kept as named constants so they're easy to tweak and
+// shared by every entry point (buttons, keyboard, pinch). Keep MAX_SCALE
+// reasonable to avoid pixelation and runaway transforms.
 const MIN_SCALE = 1;
 const MAX_SCALE = 5;
+const ZOOM_STEP = 0.5;
+// Tolerance for floating-point comparisons when deciding whether a limit was hit.
+const SCALE_EPSILON = 0.001;
+const clampScale = (s: number) => Math.min(MAX_SCALE, Math.max(MIN_SCALE, s));
 
 type Pointer = { id: number; x: number; y: number };
 
