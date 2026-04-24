@@ -309,7 +309,7 @@ const HandbuchBoxautomat = () => {
               </div>
             </div>
 
-            <div>
+            <div id="support" className="scroll-mt-28">
               <h2 className="text-2xl font-semibold text-foreground mb-3">📞 Support</h2>
               <p>Bei Fragen oder Problemen:</p>
               <p className="mt-2">
