@@ -644,7 +644,24 @@ const Handbuch = () => {
                     onPointerCancel={endPointer}
                     onPointerLeave={endPointer}
                   >
-                    <img
+                    {/* Kurzanleitung – wird beim Öffnen gezeigt und nach 3s automatisch ausgeblendet */}
+                    <div
+                      className={`pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-4 transition-opacity duration-500 ${
+                        showHint ? "opacity-100" : "opacity-0"
+                      }`}
+                      aria-hidden={!showHint}
+                    >
+                      <div className="max-w-sm rounded-xl bg-black/75 text-white backdrop-blur-md px-4 py-3 shadow-lg text-center text-sm leading-relaxed">
+                        <p className="font-medium mb-1">So nutzen Sie die Zoom-Ansicht</p>
+                        <p className="hidden md:block opacity-90">
+                          Mit <kbd className="px-1 py-0.5 rounded bg-white/15 font-mono text-xs">+</kbd>/<kbd className="px-1 py-0.5 rounded bg-white/15 font-mono text-xs">−</kbd> zoomen,
+                          mit den Pfeiltasten verschieben. Im vergrößerten Zustand können Sie das Bild mit der Maus ziehen.
+                        </p>
+                        <p className="md:hidden opacity-90">
+                          Mit zwei Fingern zoomen, doppeltippen für Schnellzoom. Vergrößertes Bild lässt sich mit dem Finger ziehen.
+                        </p>
+                      </div>
+                    </div>
                       ref={imgRef}
                       src={handbuchElektronik}
                       alt="Steuerplatine des Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V Strom, Lautsprecher, Lautstärkeregler, DIP-Schalter (System-Einstellung), Torschalter A & B, Münzeinwurf, Display A & B und Ballwurfpumpe – Detailansicht"
