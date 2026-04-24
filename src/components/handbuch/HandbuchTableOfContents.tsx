@@ -1,6 +1,95 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import type { HandbuchBlock, HandbuchSection } from "@/data/handbuchBoxautomat";
+import { cn } from "@/lib/utils";
+
+/**
+ * Scroll-spy: returns the id of the section heading currently closest to the
+ * top of the viewport (just below the sticky navbar). Uses IntersectionObserver
+ * with a top-biased rootMargin so a section becomes "active" as soon as its
+ * heading scrolls past the navbar — not only when it's centered.
+ */
+const useActiveSection = (ids: string[]): string | null => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || ids.length === 0) return;
+
+    // Track which observed elements are currently intersecting the
+    // top-of-viewport band defined by rootMargin.
+    const visible = new Map<string, IntersectionObserverEntry>();
+
+    const elements = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (elements.length === 0) return;
+
+    const recompute = () => {
+      if (visible.size === 0) {
+        // Nothing in the band → keep whatever is closest above the navbar.
+        // Find the last section whose top is above the trigger line.
+        const triggerY = 140; // ~ navbar height + small offset
+        let candidate: string | null = null;
+        for (const el of elements) {
+          const top = el.getBoundingClientRect().top;
+          if (top - triggerY <= 0) candidate = el.id;
+          else break;
+        }
+        setActiveId((prev) => (prev === candidate ? prev : candidate));
+        return;
+      }
+      // Pick the visible entry whose top is highest (closest to the trigger
+      // line). That's the section the reader is currently in.
+      let best: IntersectionObserverEntry | null = null;
+      for (const entry of visible.values()) {
+        if (!best || entry.boundingClientRect.top < best.boundingClientRect.top) {
+          best = entry;
+        }
+      }
+      const nextId = best?.target.id ?? null;
+      setActiveId((prev) => (prev === nextId ? prev : nextId));
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            visible.set(entry.target.id, entry);
+          } else {
+            visible.delete(entry.target.id);
+          }
+        }
+        recompute();
+      },
+      {
+        // Activate when the heading enters the band between ~120px from the
+        // top (just under the sticky navbar) and 60% from the top. This
+        // matches the user's reading focus area.
+        rootMargin: "-120px 0px -40% 0px",
+        threshold: [0, 1],
+      },
+    );
+
+    for (const el of elements) observer.observe(el);
+
+    // Run once on mount in case the page is loaded mid-scroll (e.g. via
+    // anchor link or browser back/forward).
+    recompute();
+    // Also recompute on scroll as a fallback for the "nothing visible" case.
+    const onScroll = () => {
+      if (visible.size === 0) recompute();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [ids]);
+
+  return activeId;
+};
 
 type ExtraEntry = {
   id: string;
@@ -81,6 +170,20 @@ const HandbuchTableOfContents = ({ sections, extraEntries }: Props) => {
 
   const totalVisible = visibleSections.length + visibleExtras.length;
 
+  // Scroll-spy across all anchors shown in the TOC (sections + extras).
+  const allIds = useMemo(
+    () => [...sections.map((s) => s.id), ...extraEntries.map((e) => e.id)],
+    [sections, extraEntries],
+  );
+  const activeId = useActiveSection(allIds);
+
+  const linkBase =
+    "block py-0.5 px-2 -mx-2 rounded transition-colors border-l-2";
+  const linkInactive =
+    "border-transparent text-muted-foreground hover:text-primary";
+  const linkActive =
+    "border-primary text-primary font-medium bg-primary/5";
+
   return (
     <nav
       aria-label="Inhaltsübersicht"
@@ -138,29 +241,41 @@ const HandbuchTableOfContents = ({ sections, extraEntries }: Props) => {
         </p>
       ) : (
         <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 list-none pl-0 text-sm">
-          {visibleSections.map(({ section }) => (
-            <li key={section.id}>
-              <a
-                href={`#${section.id}`}
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <span className="text-foreground/60 mr-1">{section.number}.</span>
-                {section.icon ? `${section.icon} ` : ""}
-                {section.title}
-              </a>
-            </li>
-          ))}
-          {visibleExtras.map(({ entry }) => (
-            <li key={entry.id}>
-              <a
-                href={`#${entry.id}`}
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <span className="text-foreground/60 mr-1">{entry.icon}</span>
-                {entry.label}
-              </a>
-            </li>
-          ))}
+          {visibleSections.map(({ section }) => {
+            const isActive = section.id === activeId;
+            return (
+              <li key={section.id}>
+                <a
+                  href={`#${section.id}`}
+                  aria-current={isActive ? "location" : undefined}
+                  className={cn(linkBase, isActive ? linkActive : linkInactive)}
+                >
+                  <span className={cn("mr-1", isActive ? "text-primary/80" : "text-foreground/60")}>
+                    {section.number}.
+                  </span>
+                  {section.icon ? `${section.icon} ` : ""}
+                  {section.title}
+                </a>
+              </li>
+            );
+          })}
+          {visibleExtras.map(({ entry }) => {
+            const isActive = entry.id === activeId;
+            return (
+              <li key={entry.id}>
+                <a
+                  href={`#${entry.id}`}
+                  aria-current={isActive ? "location" : undefined}
+                  className={cn(linkBase, isActive ? linkActive : linkInactive)}
+                >
+                  <span className={cn("mr-1", isActive ? "text-primary/80" : "text-foreground/60")}>
+                    {entry.icon}
+                  </span>
+                  {entry.label}
+                </a>
+              </li>
+            );
+          })}
         </ol>
       )}
     </nav>
