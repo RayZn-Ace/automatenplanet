@@ -461,12 +461,14 @@ const Handbuch = () => {
                     </span>
                   </div>
                   <div
-                    className="w-full h-full overflow-hidden flex items-center justify-center bg-black/40 select-none touch-none"
+                    ref={containerRef}
+                    className="relative w-full h-full overflow-hidden flex items-center justify-center bg-black/40 select-none touch-none"
                     style={{ cursor: scale > 1 ? (isDragging ? "grabbing" : "grab") : "default" }}
                     onPointerDown={onPointerDown}
                     onPointerMove={onPointerMove}
-                    onPointerUp={endDrag}
-                    onPointerCancel={endDrag}
+                    onPointerUp={endPointer}
+                    onPointerCancel={endPointer}
+                    onPointerLeave={endPointer}
                   >
                     <img
                       ref={imgRef}
@@ -478,10 +480,14 @@ const Handbuch = () => {
                       }`}
                       style={{
                         transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${scale})`,
+                        transformOrigin: "center center",
                         willChange: "transform",
                         backfaceVisibility: "hidden",
                       }}
                     />
+                    <div className="md:hidden absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-black/70 text-white text-xs backdrop-blur-sm pointer-events-none">
+                      Mit zwei Fingern zoomen · Doppeltippen für Schnellzoom
+                    </div>
                   </div>
                 </DialogContent>
               </Dialog>
