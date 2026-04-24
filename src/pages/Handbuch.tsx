@@ -725,23 +725,52 @@ const Handbuch = () => {
                     Detailansicht der Steuerplatine. Tastatur: Plus und Minus zum Zoomen, Pfeiltasten zum Verschieben, 0 zum Zurücksetzen, Escape zum Schließen.
                   </DialogDescription>
                   <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 flex flex-wrap gap-1.5 sm:gap-2">
-                    <Button size="icon" variant="secondary" onClick={zoomIn} aria-label="Vergrößern">
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      onClick={zoomIn}
+                      disabled={!canZoomIn}
+                      aria-label="Vergrößern"
+                      title={canZoomIn ? `Vergrößern (+${ZOOM_STEP * 100}%)` : "Maximaler Zoom erreicht"}
+                      className="disabled:cursor-not-allowed disabled:opacity-50"
+                    >
                       <ZoomIn className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" variant="secondary" onClick={zoomOut} aria-label="Verkleinern">
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      onClick={zoomOut}
+                      disabled={!canZoomOut}
+                      aria-label="Verkleinern"
+                      title={canZoomOut ? `Verkleinern (−${ZOOM_STEP * 100}%)` : "Minimaler Zoom erreicht"}
+                      className="disabled:cursor-not-allowed disabled:opacity-50"
+                    >
                       <ZoomOut className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" variant="secondary" onClick={resetView} aria-label="Ansicht zurücksetzen">
+                    <Button size="icon" variant="secondary" onClick={resetView} aria-label="Ansicht zurücksetzen" title="Ansicht zurücksetzen (0)">
                       <RotateCcw className="h-4 w-4" />
                     </Button>
-                    <span className="inline-flex items-center rounded-md bg-secondary px-2.5 sm:px-3 text-xs text-secondary-foreground">
+                    <span
+                      className="inline-flex items-center rounded-md bg-secondary px-2.5 sm:px-3 text-xs text-secondary-foreground tabular-nums"
+                      aria-live="polite"
+                      title={`Zoom ${Math.round(scale * 100)}% · Bereich ${MIN_SCALE * 100}–${MAX_SCALE * 100}%`}
+                    >
                       {Math.round(scale * 100)}%
                     </span>
                   </div>
                   <div
                     ref={containerRef}
                     className="relative w-full h-full overflow-hidden flex items-center justify-center bg-black/40 select-none touch-none"
-                    style={{ cursor: scale > 1 ? (isDragging ? "grabbing" : "grab") : "default" }}
+                    style={{
+                      cursor:
+                        scale >= MAX_SCALE - SCALE_EPSILON
+                          ? "zoom-out"
+                          : scale > MIN_SCALE
+                            ? isDragging
+                              ? "grabbing"
+                              : "grab"
+                            : "zoom-in",
+                    }}
                     onPointerDown={onPointerDown}
                     onPointerMove={onPointerMove}
                     onPointerUp={endPointer}
