@@ -297,22 +297,24 @@ const Handbuch = () => {
                   </div>
                   <div
                     className="w-full h-full overflow-hidden flex items-center justify-center bg-black/40 select-none touch-none"
-                    style={{ cursor: scale > 1 ? (dragState.current.dragging ? "grabbing" : "grab") : "default" }}
-                    onMouseDown={onMouseDown}
-                    onMouseMove={onMouseMove}
-                    onMouseUp={stopDrag}
-                    onMouseLeave={stopDrag}
-                    onTouchStart={onTouchStart}
-                    onTouchMove={onTouchMove}
-                    onTouchEnd={stopDrag}
+                    style={{ cursor: scale > 1 ? (isDragging ? "grabbing" : "grab") : "default" }}
+                    onPointerDown={onPointerDown}
+                    onPointerMove={onPointerMove}
+                    onPointerUp={endDrag}
+                    onPointerCancel={endDrag}
                   >
                     <img
+                      ref={imgRef}
                       src={handbuchElektronik}
                       alt="Steuerplatine des Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V Strom, Lautsprecher, Lautstärkeregler, DIP-Schalter (System-Einstellung), Torschalter A & B, Münzeinwurf, Display A & B und Ballwurfpumpe – Detailansicht"
                       draggable={false}
-                      className="max-w-[95vw] max-h-[80dvh] sm:max-h-[85vh] w-auto h-auto object-contain transition-transform duration-150 ease-out"
+                      className={`max-w-[95vw] max-h-[80dvh] sm:max-h-[85vh] w-auto h-auto object-contain ${
+                        isDragging ? "" : "transition-transform duration-150 ease-out"
+                      }`}
                       style={{
-                        transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
+                        transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${scale})`,
+                        willChange: "transform",
+                        backfaceVisibility: "hidden",
                       }}
                     />
                   </div>
