@@ -447,9 +447,53 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
   doc.text(`E-Mail: ${HANDBUCH_BOXAUTOMAT_META.publisher.email}`);
   doc.text(`Web:    ${HANDBUCH_BOXAUTOMAT_META.publisher.website}`);
 
-  // ---- Footer on every page ----
+  // ---- Patch TOC page numbers (second pass) --------------------------------
+  // Now that all sections are rendered, fill in the page number next to each
+  // TOC entry. We jump back to the cover page(s), draw dot leaders, and write
+  // the page number into the reserved right column.
   const range = doc.bufferedPageRange();
   const totalPages = range.count;
+  for (const entry of tocEntries) {
+    const targetPageIdx = headingPageByAnchor[entry.anchor];
+    if (targetPageIdx === undefined) continue;
+    // Display page number is 1-based and relative to range.start.
+    const displayPage = targetPageIdx - range.start + 1;
+    doc.switchToPage(entry.pageIdx);
+
+    // Re-measure where the entry's text ended so we know where to start dots.
+    doc.font(FONT_REGULAR).fontSize(BODY_SIZE);
+    const labelText = `${entry.number}. ${sanitize(entry.title)}`;
+    const textW = Math.min(
+      doc.widthOfString(labelText, TXT),
+      tocLabelW,
+    );
+    const dotsStartX = tocLabelX + textW + 4;
+    const dotsEndX = tocPageColX - 4;
+
+    // Dot leaders.
+    if (dotsEndX > dotsStartX + 6) {
+      doc.fillColor(COLORS.muted);
+      const dotChar = ".";
+      const dotW = doc.widthOfString(dotChar + " ", TXT) || 3;
+      let dx = dotsStartX;
+      let dots = "";
+      while (dx + dotW < dotsEndX) {
+        dots += ". ";
+        dx += dotW;
+      }
+      doc.text(dots, dotsStartX, entry.y, {
+        ...TXT, width: dotsEndX - dotsStartX, lineBreak: false,
+      });
+    }
+
+    // Page number, right-aligned.
+    doc.fillColor(COLORS.text)
+      .text(String(displayPage), tocPageColX, entry.y, {
+        ...TXT, width: tocPageColW, align: "right", lineBreak: false,
+      });
+  }
+
+  // ---- Footer on every page ----
   for (let i = range.start; i < range.start + range.count; i++) {
     doc.switchToPage(i);
     const pageNum = i - range.start + 1;
