@@ -165,11 +165,11 @@ const Handbuch = () => {
                   type="button"
                   onClick={() => setZoomOpen(true)}
                   className="group relative block w-full overflow-hidden rounded-lg border border-white/10 bg-black/20 focus:outline-none focus:ring-2 focus:ring-primary"
-                  aria-label="Foto der Steuerplatine vergrößern"
+                  aria-label="Steuerplatine des Tischkicker Pro CL vergrößern – Detailansicht öffnen"
                 >
                   <img
                     src={handbuchElektronik}
-                    alt="Steuerplatine Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V, Lautsprecher, Lautstärke, System-Einstellung (DIP-Schalter), Torswitch A & B, Münzwurf, Display A & B und Ballwurfpumpe"
+                    alt="Steuerplatine des Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V Strom, Lautsprecher, Lautstärkeregler, DIP-Schalter (System-Einstellung), Torschalter A & B, Münzeinwurf, Display A & B und Ballwurfpumpe"
                     loading="lazy"
                     className="w-full h-auto transition-transform duration-300 group-hover:scale-[1.02]"
                   />
@@ -179,7 +179,7 @@ const Handbuch = () => {
                   </span>
                 </button>
                 <figcaption className="text-xs text-muted-foreground mt-2 text-center">
-                  Übersicht der Anschlüsse auf der Steuerplatine – zum Vergrößern anklicken
+                  Steuerplatine des Tischkicker Pro CL – Übersicht aller Anschlüsse. Zum Vergrößern anklicken.
                 </figcaption>
               </figure>
 
@@ -213,7 +213,7 @@ const Handbuch = () => {
                   >
                     <img
                       src={handbuchElektronik}
-                      alt="Steuerplatine – Detailansicht"
+                      alt="Steuerplatine des Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V Strom, Lautsprecher, Lautstärkeregler, DIP-Schalter (System-Einstellung), Torschalter A & B, Münzeinwurf, Display A & B und Ballwurfpumpe – Detailansicht"
                       draggable={false}
                       className="max-w-none transition-transform duration-150 ease-out"
                       style={{
