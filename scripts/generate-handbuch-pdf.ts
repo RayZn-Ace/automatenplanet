@@ -76,6 +76,43 @@ const generatedAt = new Date().toISOString();
 try {
   const { readFileSync } = await import("node:fs");
   const sourceContent = readFileSync(sourceDataFile, "utf8");
+
+  // Inline image assets as base64 so the edge function — which has no access
+  // to the project's public/ folder at runtime — can still embed them.
+  const assetEntries = Object.entries(HANDBUCH_IMAGE_ASSETS).map(([key, asset]) => {
+    try {
+      const bytes = readFileSync(resolve(projectRoot, asset.filePath));
+      const ext = asset.filePath.split(".").pop()?.toLowerCase() ?? "bin";
+      const mime =
+        ext === "png" ? "image/png" :
+        ext === "jpg" || ext === "jpeg" ? "image/jpeg" :
+        ext === "webp" ? "image/webp" :
+        "application/octet-stream";
+      return {
+        key,
+        mime,
+        ext,
+        base64: bytes.toString("base64"),
+      };
+    } catch (err) {
+      console.warn(
+        `⚠ Could not inline image "${key}" (${asset.filePath}):`,
+        (err as Error).message,
+      );
+      return null;
+    }
+  }).filter((e): e is { key: string; mime: string; ext: string; base64: string } => e !== null);
+
+  const assetsLiteral =
+    `export const HANDBUCH_IMAGE_ASSETS_BASE64: Record<string, { mime: string; ext: string; base64: string }> = {\n` +
+    assetEntries
+      .map(
+        (e) =>
+          `  ${JSON.stringify(e.key)}: { mime: ${JSON.stringify(e.mime)}, ext: ${JSON.stringify(e.ext)}, base64: ${JSON.stringify(e.base64)} },\n`,
+      )
+      .join("") +
+    `};\n\n`;
+
   const banner =
     `// ---------------------------------------------------------------------------\n` +
     `// AUTO-GENERATED — DO NOT EDIT BY HAND.\n` +
@@ -84,12 +121,14 @@ try {
     `//\n` +
     `// Expected content hash: ${contentHash}\n` +
     `// Synced at:             ${generatedAt}\n` +
+    `// Inlined image assets:  ${assetEntries.length}\n` +
     `// ---------------------------------------------------------------------------\n\n` +
     `export const EXPECTED_CONTENT_HASH = ${JSON.stringify(contentHash)};\n` +
-    `export const SYNCED_AT = ${JSON.stringify(generatedAt)};\n\n`;
+    `export const SYNCED_AT = ${JSON.stringify(generatedAt)};\n\n` +
+    assetsLiteral;
   writeFileSync(functionDataFile, banner + sourceContent);
   console.log(
-    `✓ Synced handbook data → ${functionDataFile} (hash ${contentHash})`,
+    `✓ Synced handbook data → ${functionDataFile} (hash ${contentHash}, ${assetEntries.length} image assets)`,
   );
 } catch (err) {
   console.warn(
