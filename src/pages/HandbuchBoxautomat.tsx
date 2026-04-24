@@ -286,9 +286,9 @@ const HandbuchBoxautomat = () => {
             {HANDBUCH_BOXAUTOMAT_SECTIONS.map(renderSection)}
 
             <div id="faq" className="scroll-mt-28">
-              <h2 className="text-2xl font-semibold text-foreground mb-3">
+              <HandbuchAnchorHeading anchorId="faq">
                 ❓ Häufig gestellte Fragen zum Boxautomat
-              </h2>
+              </HandbuchAnchorHeading>
               <p>
                 Antworten auf die wichtigsten Fragen rund um die Box &amp; Kick Maschine – von der
                 Wartung über die Fehlerbehebung bis zur Menüführung.
