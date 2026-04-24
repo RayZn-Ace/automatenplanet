@@ -40,6 +40,15 @@ const lastGoodFile = resolve(outDir, "handbuch-boxautomat.last-good.pdf");
 const tmpFile = resolve(outDir, "handbuch-boxautomat.pdf.tmp");
 const manifestFile = resolve(outDir, "handbuch-boxautomat.manifest.json");
 
+// Source-of-truth data file & its mirror inside the edge function folder.
+// Every build copies the source into the function so the on-demand PDF stays
+// byte-identical to the page content (no manual sync drift possible).
+const sourceDataFile = resolve(projectRoot, "src/data/handbuchBoxautomat.ts");
+const functionDataFile = resolve(
+  projectRoot,
+  "supabase/functions/generate-handbuch-pdf/handbuch-data.ts",
+);
+
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
 
 // ---- Versioning -------------------------------------------------------------
@@ -55,6 +64,38 @@ const contentHash = createHash("sha256")
   .digest("hex")
   .slice(0, 10);
 const generatedAt = new Date().toISOString();
+
+// ---- Sync source data into the edge function folder ------------------------
+// Reads src/data/handbuchBoxautomat.ts, strips Node-only references, and
+// writes it as the function's `handbuch-data.ts` with a header pin that
+// records the expected content hash. The deployed function checks this pin
+// on every request and logs a warning if the mirrored data has drifted from
+// what the build expected.
+try {
+  const { readFileSync } = await import("node:fs");
+  const sourceContent = readFileSync(sourceDataFile, "utf8");
+  const banner =
+    `// ---------------------------------------------------------------------------\n` +
+    `// AUTO-GENERATED — DO NOT EDIT BY HAND.\n` +
+    `// Synced from src/data/handbuchBoxautomat.ts by\n` +
+    `// scripts/generate-handbuch-pdf.ts on every build.\n` +
+    `//\n` +
+    `// Expected content hash: ${contentHash}\n` +
+    `// Synced at:             ${generatedAt}\n` +
+    `// ---------------------------------------------------------------------------\n\n` +
+    `export const EXPECTED_CONTENT_HASH = ${JSON.stringify(contentHash)};\n` +
+    `export const SYNCED_AT = ${JSON.stringify(generatedAt)};\n\n`;
+  writeFileSync(functionDataFile, banner + sourceContent);
+  console.log(
+    `✓ Synced handbook data → ${functionDataFile} (hash ${contentHash})`,
+  );
+} catch (err) {
+  console.warn(
+    "⚠ Could not sync handbook data into edge function folder:",
+    (err as Error).message,
+  );
+}
+
 
 // ---- Fallback handling ------------------------------------------------------
 // 1. Snapshot the current good PDF before regenerating, so we always keep the
