@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "pdfkit": "npm:pdfkit@^0.15.0"
+  },
+  "nodeModulesDir": "auto"
+}
