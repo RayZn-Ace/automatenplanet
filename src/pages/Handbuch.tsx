@@ -36,6 +36,7 @@ const HOTSPOTS: Hotspot[] = [
 
 const Handbuch = () => {
   const [zoomOpen, setZoomOpen] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   // Committed view – kept in state so React renders reflect the latest zoom/pan
   // when no gesture is active. During a gesture we mutate the DOM directly.
   const [scale, setScale] = useState(1);
