@@ -170,6 +170,20 @@ const HandbuchTableOfContents = ({ sections, extraEntries }: Props) => {
 
   const totalVisible = visibleSections.length + visibleExtras.length;
 
+  // Scroll-spy across all anchors shown in the TOC (sections + extras).
+  const allIds = useMemo(
+    () => [...sections.map((s) => s.id), ...extraEntries.map((e) => e.id)],
+    [sections, extraEntries],
+  );
+  const activeId = useActiveSection(allIds);
+
+  const linkBase =
+    "block py-0.5 px-2 -mx-2 rounded transition-colors border-l-2";
+  const linkInactive =
+    "border-transparent text-muted-foreground hover:text-primary";
+  const linkActive =
+    "border-primary text-primary font-medium bg-primary/5";
+
   return (
     <nav
       aria-label="Inhaltsübersicht"
