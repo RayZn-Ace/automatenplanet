@@ -256,6 +256,12 @@ const Handbuch = () => {
     return () => window.clearTimeout(t);
   }, [zoomOpen, showHint]);
 
+  // Wird bei jeder echten Nutzer-Interaktion im Dialog aufgerufen,
+  // damit der Tastatur-/Touch-Hinweis nicht im Weg steht.
+  const dismissHint = useCallback(() => {
+    setShowHint((prev) => (prev ? false : prev));
+  }, []);
+
   const zoomIn = () => {
     const next = Math.min(scaleRef.current + 0.5, MAX_SCALE);
     setScale(next);
