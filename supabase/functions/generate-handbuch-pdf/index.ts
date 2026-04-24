@@ -8,7 +8,8 @@
 // The renderer mirrors scripts/generate-handbuch-pdf.ts so the on-demand PDF
 // is identical to the build-time one.
 
-import PDFDocument from "pdfkit";
+// @ts-ignore -- npm specifier resolved at runtime by Deno edge runtime
+import PDFDocument from "npm:pdfkit@0.15.0";
 import { createHash } from "node:crypto";
 import {
   HANDBUCH_BOXAUTOMAT_FAQ,
