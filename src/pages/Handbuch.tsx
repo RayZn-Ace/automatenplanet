@@ -195,11 +195,21 @@ const Handbuch = () => {
 
   const handleOpenChange = (open: boolean) => {
     setZoomOpen(open);
-    if (!open) {
+    if (open) {
+      setShowHint(true);
+    } else {
+      setShowHint(false);
       pendingFocusRef.current = null;
       resetView();
     }
   };
+
+  // Hint im Zoom-Dialog kurz einblenden und nach 3 Sekunden ausblenden
+  useEffect(() => {
+    if (!zoomOpen || !showHint) return;
+    const t = window.setTimeout(() => setShowHint(false), 3000);
+    return () => window.clearTimeout(t);
+  }, [zoomOpen, showHint]);
 
   const zoomIn = () => {
     const next = Math.min(scaleRef.current + 0.5, MAX_SCALE);
