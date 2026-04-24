@@ -30,6 +30,8 @@ import {
   type HandbuchBlock,
   type HandbuchSection,
 } from "../src/data/handbuchBoxautomat";
+import { HANDBUCH_IMAGE_ASSETS } from "../src/data/handbuchAssets";
+import { readFileSync as readFileSyncTop } from "node:fs";
 
 // ---- Paths ------------------------------------------------------------------
 const __dirname = dirname(fileURLToPath(import.meta.url));
