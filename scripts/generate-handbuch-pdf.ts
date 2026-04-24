@@ -541,13 +541,28 @@ doc.end();
 
 stream.on("finish", () => {
   try {
-    if (statSync(tmpFile).size === 0) {
+    const size = statSync(tmpFile).size;
+    if (size === 0) {
       restoreFromLastGood("generated PDF is empty (0 bytes)");
       return;
     }
     renameSync(tmpFile, outFile);
+
+    const manifest = {
+      version: HANDBUCH_BOXAUTOMAT_META.version,
+      contentHash,
+      generatedAt,
+      lastUpdated: HANDBUCH_BOXAUTOMAT_META.lastUpdated,
+      sizeBytes: size,
+      sourceSections: HANDBUCH_BOXAUTOMAT_SECTIONS.length,
+      pdfPath: HANDBUCH_BOXAUTOMAT_META.pdfPath,
+    };
+    writeFileSync(manifestFile, JSON.stringify(manifest, null, 2));
+
     // eslint-disable-next-line no-console
-    console.log(`✓ PDF generated: ${outFile}`);
+    console.log(
+      `✓ PDF generated: ${outFile} (v${manifest.version}, hash ${contentHash}, ${generatedAt})`,
+    );
   } catch (err) {
     restoreFromLastGood(`finalize: ${(err as Error).message}`);
   }
