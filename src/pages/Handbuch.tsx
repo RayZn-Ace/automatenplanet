@@ -246,13 +246,19 @@ const Handbuch = () => {
   }, [zoomOpen, focusOn]);
 
   const handleOpenChange = (open: boolean) => {
-    setZoomOpen(open);
     if (open) {
+      // Garantiert sauberer Startzustand: 1× und zentriert, egal welche
+      // Position oder welcher Zoom vor dem letzten Schließen aktiv war.
+      // Ein evtl. via openHotspot() gesetzter pendingFocusRef bleibt davon
+      // unberührt und wird anschließend durch den Mount-Effect angewandt.
+      resetView();
       setShowHint(true);
+      setZoomOpen(true);
     } else {
       setShowHint(false);
       pendingFocusRef.current = null;
       resetView();
+      setZoomOpen(false);
     }
   };
 
