@@ -1,7 +1,7 @@
 import { useState, useRef, MouseEvent } from "react";
 import { Helmet } from "react-helmet-async";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { ZoomIn, ZoomOut, RotateCcw, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -99,6 +99,19 @@ const Handbuch = () => {
                   automatplanet.de
                 </a>
               </p>
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild size="lg" className="gap-2">
+                <a
+                  href="/downloads/handbuch-tischkicker-pro-cl.pdf"
+                  download
+                  aria-label="Handbuch Tischkicker Pro CL als PDF herunterladen"
+                >
+                  <Download className="h-5 w-5" />
+                  Handbuch als PDF herunterladen
+                </a>
+              </Button>
             </div>
           </header>
 
