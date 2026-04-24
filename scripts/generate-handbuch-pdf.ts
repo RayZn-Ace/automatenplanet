@@ -64,6 +64,7 @@ const sanitize = (s: string): string =>
 const doc = new PDFDocument({
   size: "A4",
   margins: { top: 60, bottom: 70, left: 60, right: 60 },
+  bufferPages: true,
   info: {
     Title: HANDBUCH_BOXAUTOMAT_META.title,
     Author: HANDBUCH_BOXAUTOMAT_META.publisher.name,
