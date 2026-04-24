@@ -317,7 +317,7 @@ const HandbuchBoxautomat = () => {
             </div>
 
             <div id="support" className="scroll-mt-28">
-              <h2 className="text-2xl font-semibold text-foreground mb-3">📞 Support</h2>
+              <HandbuchAnchorHeading anchorId="support">📞 Support</HandbuchAnchorHeading>
               <p>Bei Fragen oder Problemen:</p>
               <p className="mt-2">
                 <span className="font-semibold text-foreground">
