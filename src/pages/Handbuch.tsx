@@ -1,4 +1,4 @@
-import { useState, useRef, MouseEvent, TouchEvent } from "react";
+import { useState, useRef, useEffect, useCallback, PointerEvent as ReactPointerEvent } from "react";
 import { Helmet } from "react-helmet-async";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ZoomIn, ZoomOut, RotateCcw, Download } from "lucide-react";
@@ -10,76 +10,128 @@ import handbuchElektronik from "@/assets/handbuch-elektronik.png";
 const Handbuch = () => {
   const [zoomOpen, setZoomOpen] = useState(false);
   const [scale, setScale] = useState(1);
+  // Committed offset – only updated on pointer up. During drag we mutate the
+  // DOM directly via rAF to avoid per-frame React re-renders.
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const dragState = useRef<{ dragging: boolean; startX: number; startY: number; baseX: number; baseY: number }>({
-    dragging: false,
+
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const scaleRef = useRef(1);
+  const offsetRef = useRef({ x: 0, y: 0 });
+  const pointerRef = useRef({
+    active: false,
+    pointerId: -1,
     startX: 0,
     startY: 0,
     baseX: 0,
     baseY: 0,
+    lastX: 0,
+    lastY: 0,
   });
+  const rafRef = useRef<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const resetView = () => {
+  // Keep refs in sync with state for use inside event handlers.
+  useEffect(() => {
+    scaleRef.current = scale;
+  }, [scale]);
+  useEffect(() => {
+    offsetRef.current = offset;
+  }, [offset]);
+
+  const applyTransform = useCallback((x: number, y: number, s: number) => {
+    if (imgRef.current) {
+      imgRef.current.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${s})`;
+    }
+  }, []);
+
+  const scheduleFrame = useCallback(() => {
+    if (rafRef.current !== null) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      const p = pointerRef.current;
+      const x = p.baseX + (p.lastX - p.startX);
+      const y = p.baseY + (p.lastY - p.startY);
+      applyTransform(x, y, scaleRef.current);
+    });
+  }, [applyTransform]);
+
+  const resetView = useCallback(() => {
     setScale(1);
     setOffset({ x: 0, y: 0 });
-  };
+    applyTransform(0, 0, 1);
+  }, [applyTransform]);
 
   const handleOpenChange = (open: boolean) => {
     setZoomOpen(open);
     if (!open) resetView();
   };
 
-  const zoomIn = () => setScale((s) => Math.min(s + 0.5, 5));
+  const zoomIn = () =>
+    setScale((s) => {
+      const next = Math.min(s + 0.5, 5);
+      applyTransform(offsetRef.current.x, offsetRef.current.y, next);
+      return next;
+    });
   const zoomOut = () =>
     setScale((s) => {
       const next = Math.max(s - 0.5, 1);
-      if (next === 1) setOffset({ x: 0, y: 0 });
+      const nextOffset = next === 1 ? { x: 0, y: 0 } : offsetRef.current;
+      if (next === 1) setOffset(nextOffset);
+      applyTransform(nextOffset.x, nextOffset.y, next);
       return next;
     });
 
-  const onMouseDown = (e: MouseEvent<HTMLDivElement>) => {
-    if (scale === 1) return;
-    dragState.current = {
-      dragging: true,
+  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (scaleRef.current === 1) return;
+    // Capture so we keep receiving move events even if the pointer leaves the box.
+    e.currentTarget.setPointerCapture(e.pointerId);
+    pointerRef.current = {
+      active: true,
+      pointerId: e.pointerId,
       startX: e.clientX,
       startY: e.clientY,
-      baseX: offset.x,
-      baseY: offset.y,
+      baseX: offsetRef.current.x,
+      baseY: offsetRef.current.y,
+      lastX: e.clientX,
+      lastY: e.clientY,
     };
+    setIsDragging(true);
   };
 
-  const onMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!dragState.current.dragging) return;
-    setOffset({
-      x: dragState.current.baseX + (e.clientX - dragState.current.startX),
-      y: dragState.current.baseY + (e.clientY - dragState.current.startY),
-    });
+  const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const p = pointerRef.current;
+    if (!p.active || e.pointerId !== p.pointerId) return;
+    p.lastX = e.clientX;
+    p.lastY = e.clientY;
+    scheduleFrame();
   };
 
-  const stopDrag = () => {
-    dragState.current.dragging = false;
+  const endDrag = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const p = pointerRef.current;
+    if (!p.active || e.pointerId !== p.pointerId) return;
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    const finalX = p.baseX + (p.lastX - p.startX);
+    const finalY = p.baseY + (p.lastY - p.startY);
+    p.active = false;
+    setIsDragging(false);
+    setOffset({ x: finalX, y: finalY });
+    applyTransform(finalX, finalY, scaleRef.current);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      /* ignore */
+    }
   };
 
-  const onTouchStart = (e: TouchEvent<HTMLDivElement>) => {
-    if (scale === 1 || e.touches.length !== 1) return;
-    const t = e.touches[0];
-    dragState.current = {
-      dragging: true,
-      startX: t.clientX,
-      startY: t.clientY,
-      baseX: offset.x,
-      baseY: offset.y,
+  // Cleanup any pending frame on unmount.
+  useEffect(() => {
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  };
-
-  const onTouchMove = (e: TouchEvent<HTMLDivElement>) => {
-    if (!dragState.current.dragging || e.touches.length !== 1) return;
-    const t = e.touches[0];
-    setOffset({
-      x: dragState.current.baseX + (t.clientX - dragState.current.startX),
-      y: dragState.current.baseY + (t.clientY - dragState.current.startY),
-    });
-  };
+  }, []);
 
   return (
     <>
@@ -245,22 +297,24 @@ const Handbuch = () => {
                   </div>
                   <div
                     className="w-full h-full overflow-hidden flex items-center justify-center bg-black/40 select-none touch-none"
-                    style={{ cursor: scale > 1 ? (dragState.current.dragging ? "grabbing" : "grab") : "default" }}
-                    onMouseDown={onMouseDown}
-                    onMouseMove={onMouseMove}
-                    onMouseUp={stopDrag}
-                    onMouseLeave={stopDrag}
-                    onTouchStart={onTouchStart}
-                    onTouchMove={onTouchMove}
-                    onTouchEnd={stopDrag}
+                    style={{ cursor: scale > 1 ? (isDragging ? "grabbing" : "grab") : "default" }}
+                    onPointerDown={onPointerDown}
+                    onPointerMove={onPointerMove}
+                    onPointerUp={endDrag}
+                    onPointerCancel={endDrag}
                   >
                     <img
+                      ref={imgRef}
                       src={handbuchElektronik}
                       alt="Steuerplatine des Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V Strom, Lautsprecher, Lautstärkeregler, DIP-Schalter (System-Einstellung), Torschalter A & B, Münzeinwurf, Display A & B und Ballwurfpumpe – Detailansicht"
                       draggable={false}
-                      className="max-w-[95vw] max-h-[80dvh] sm:max-h-[85vh] w-auto h-auto object-contain transition-transform duration-150 ease-out"
+                      className={`max-w-[95vw] max-h-[80dvh] sm:max-h-[85vh] w-auto h-auto object-contain ${
+                        isDragging ? "" : "transition-transform duration-150 ease-out"
+                      }`}
                       style={{
-                        transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
+                        transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${scale})`,
+                        willChange: "transform",
+                        backfaceVisibility: "hidden",
                       }}
                     />
                   </div>
