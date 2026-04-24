@@ -581,29 +581,77 @@ doc
   .restore();
 doc.y += 12;
 
-// Table of contents (still on the cover page)
+// Table of contents (still on the cover page) — clickable, with page numbers
+// patched in after section rendering completes.
 doc
   .font(FONT_BOLD)
   .fontSize(14)
   .fillColor(COLORS.text)
   .text("Inhaltsverzeichnis", MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W });
 doc.y += 8;
-doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
-HANDBUCH_BOXAUTOMAT_SECTIONS.forEach((section) => {
-  doc.text(`${section.number}. ${sanitize(section.title)}`, MARGIN.left + 12, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W - 12,
+
+type TocEntry = {
+  number: string;
+  title: string;
+  anchor: string;
+  y: number;
+  pageIdx: number;
+};
+const tocEntries: TocEntry[] = [];
+
+const tocLineHeight = 14;
+const tocLeftIndent = 12;
+const tocPageColW = 32;
+const tocLabelX = MARGIN.left + tocLeftIndent;
+const tocLabelW = CONTENT_W - tocLeftIndent - tocPageColW - 4;
+const tocPageColX = MARGIN.left + CONTENT_W - tocPageColW;
+
+const drawTocEntry = (number: string, title: string, anchor: string) => {
+  doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.primary);
+  const text = `${number}. ${sanitize(title)}`;
+  const yStart = doc.y;
+  doc.text(text, tocLabelX, yStart, {
+    characterSpacing: 0,
+    wordSpacing: 0,
+    width: tocLabelW,
+    lineBreak: false,
+    ellipsis: true,
   });
+  // Clickable link annotation covering the whole row.
+  try {
+    (doc as unknown as {
+      link: (
+        x: number, y: number, w: number, h: number,
+        opts: { goTo: string },
+      ) => void;
+    }).link(MARGIN.left, yStart - 2, CONTENT_W, tocLineHeight, { goTo: anchor });
+  } catch {
+    try {
+      // deno-lint-ignore no-explicit-any
+      (doc as any).link(MARGIN.left, yStart - 2, CONTENT_W, tocLineHeight, anchor);
+    } catch { /* ignore */ }
+  }
+  const pageRange = doc.bufferedPageRange();
+  tocEntries.push({
+    number, title, anchor, y: yStart,
+    pageIdx: pageRange.start + pageRange.count - 1,
+  });
+  doc.y = yStart + tocLineHeight;
+  resetStyle();
+};
+
+HANDBUCH_BOXAUTOMAT_SECTIONS.forEach((section) => {
+  drawTocEntry(section.number, section.title, `sec-${section.id}`);
 });
-doc.text(
-  `${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1}. Häufig gestellte Fragen`,
-  MARGIN.left + 12,
-  doc.y,
-  { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W - 12 },
+drawTocEntry(
+  String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1),
+  "Häufig gestellte Fragen",
+  "sec-faq",
 );
-doc.text(
-  `${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2}. Support & Kontakt`,
-  MARGIN.left + 12,
-  doc.y,
-  { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W - 12 },
+drawTocEntry(
+  String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2),
+  "Support & Kontakt",
+  "sec-support",
 );
 
 // ---- Sections ---------------------------------------------------------------
