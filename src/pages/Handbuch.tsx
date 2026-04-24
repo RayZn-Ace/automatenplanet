@@ -317,6 +317,8 @@ const Handbuch = () => {
   };
 
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    // Cancel any in-flight keyboard pan animation – the gesture takes over.
+    stopPanAnimation();
     e.currentTarget.setPointerCapture(e.pointerId);
     pointersRef.current.set(e.pointerId, { id: e.pointerId, x: e.clientX, y: e.clientY });
 
