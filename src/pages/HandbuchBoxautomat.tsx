@@ -220,16 +220,13 @@ const HandbuchBoxautomat = () => {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="gap-2">
-                <a
-                  href={HANDBUCH_BOXAUTOMAT_META.pdfPath}
-                  download
-                  aria-label="Handbuch Boxautomat als PDF herunterladen"
-                >
-                  <Download className="h-5 w-5" />
-                  Handbuch als PDF herunterladen
-                </a>
-              </Button>
+              <HandbuchPdfDownload
+                primaryUrl={HANDBUCH_BOXAUTOMAT_META.pdfPath}
+                fileName="handbuch-boxautomat.pdf"
+                ariaLabel="Handbuch Boxautomat als PDF herunterladen"
+              >
+                Handbuch als PDF herunterladen
+              </HandbuchPdfDownload>
             </div>
           </header>
 
