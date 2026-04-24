@@ -301,9 +301,21 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
     }
   };
 
-  const writeSectionHeading = (number: string, title: string) => {
+  // Records the page index (0-based) where each section heading lives so the
+  // TOC entries can be patched with real page numbers in a second pass.
+  const headingPageByAnchor: Record<string, number> = {};
+
+  const writeSectionHeading = (number: string, title: string, anchor?: string) => {
     resetStyle();
     ensureSpace(48);
+    if (anchor) {
+      // Register a named destination at the current y on the current page so
+      // TOC links can jump here. pdfkit anchors the destination to doc.y.
+      try { doc.addNamedDestination(anchor); } catch { /* older pdfkit */ }
+      const range = doc.bufferedPageRange();
+      // Current page index (0-based) within this document.
+      headingPageByAnchor[anchor] = range.start + range.count - 1;
+    }
     doc.font(FONT_BOLD).fontSize(18).fillColor(COLORS.primary)
       .text(`${number}. ${sanitize(title)}`, MARGIN.left, doc.y, { ...TXT, width: CONTENT_W });
     const lineY = doc.y + 2;
@@ -313,7 +325,7 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
   };
 
   const writeSection = (section: HandbuchSection) => {
-    writeSectionHeading(section.number, section.title);
+    writeSectionHeading(section.number, section.title, `sec-${section.id}`);
     for (const block of section.blocks) writeBlock(block);
   };
 
