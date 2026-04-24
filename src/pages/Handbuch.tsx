@@ -270,17 +270,23 @@ const Handbuch = () => {
   }, []);
 
   const zoomIn = () => {
-    const next = Math.min(scaleRef.current + 0.5, MAX_SCALE);
+    const next = clampScale(scaleRef.current + ZOOM_STEP);
+    if (next === scaleRef.current) return; // Already at the upper limit
     setScale(next);
     applyTransform(offsetRef.current.x, offsetRef.current.y, next);
   };
   const zoomOut = () => {
-    const next = Math.max(scaleRef.current - 0.5, MIN_SCALE);
-    const nextOffset = next === 1 ? { x: 0, y: 0 } : offsetRef.current;
+    const next = clampScale(scaleRef.current - ZOOM_STEP);
+    if (next === scaleRef.current) return; // Already at the lower limit
+    const nextOffset = next === MIN_SCALE ? { x: 0, y: 0 } : offsetRef.current;
     setScale(next);
     setOffset(nextOffset);
     applyTransform(nextOffset.x, nextOffset.y, next);
   };
+
+  // Reactive flags so buttons can render disabled state and the right cursor.
+  const canZoomIn = scale < MAX_SCALE - SCALE_EPSILON;
+  const canZoomOut = scale > MIN_SCALE + SCALE_EPSILON;
 
   const getContainerPoint = (clientX: number, clientY: number) => {
     const rect = containerRef.current?.getBoundingClientRect();
