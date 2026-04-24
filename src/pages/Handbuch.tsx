@@ -60,6 +60,27 @@ const Handbuch = () => {
     dragState.current.dragging = false;
   };
 
+  const onTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+    if (scale === 1 || e.touches.length !== 1) return;
+    const t = e.touches[0];
+    dragState.current = {
+      dragging: true,
+      startX: t.clientX,
+      startY: t.clientY,
+      baseX: offset.x,
+      baseY: offset.y,
+    };
+  };
+
+  const onTouchMove = (e: TouchEvent<HTMLDivElement>) => {
+    if (!dragState.current.dragging || e.touches.length !== 1) return;
+    const t = e.touches[0];
+    setOffset({
+      x: dragState.current.baseX + (t.clientX - dragState.current.startX),
+      y: dragState.current.baseY + (t.clientY - dragState.current.startY),
+    });
+  };
+
   return (
     <>
       <Helmet>
