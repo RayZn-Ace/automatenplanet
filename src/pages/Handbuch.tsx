@@ -12,6 +12,28 @@ const MAX_SCALE = 5;
 
 type Pointer = { id: number; x: number; y: number };
 
+type Hotspot = {
+  id: string;
+  label: string;
+  description: string;
+  // Position of the hotspot center as a fraction of the image (0..1).
+  x: number;
+  y: number;
+  // Target zoom scale when this hotspot is opened.
+  scale: number;
+};
+
+const HOTSPOTS: Hotspot[] = [
+  { id: "ballwurfpumpe", label: "Ballwurfpumpe", description: "Anschluss der Ballwurfpumpe (oben links auf der Platine)", x: 0.28, y: 0.17, scale: 3.2 },
+  { id: "display", label: "Display A & B", description: "Anschluss für die beiden Display-Module", x: 0.79, y: 0.17, scale: 3.2 },
+  { id: "stromversorgung", label: "220V Strom", description: "Stromanschluss 220V (links auf der Platine)", x: 0.275, y: 0.45, scale: 3 },
+  { id: "lautsprecher", label: "Lautsprecher", description: "Lautsprecher-Anschluss (links unter dem 220V-Anschluss)", x: 0.27, y: 0.535, scale: 3.2 },
+  { id: "lautstaerke", label: "Lautstärke", description: "Drehregler für die Lautstärke", x: 0.34, y: 0.52, scale: 3.5 },
+  { id: "dip", label: "DIP-Schalter", description: "System-Einstellungen – alle Schalter müssen auf OFF stehen", x: 0.435, y: 0.525, scale: 4 },
+  { id: "torswitch", label: "Torschalter A & B", description: "Anschlüsse der Torschalter A und B", x: 0.515, y: 0.65, scale: 3.2 },
+  { id: "muenz", label: "Münzeinwurf", description: "Anschluss für den Münzeinwurf", x: 0.62, y: 0.65, scale: 3.2 },
+];
+
 const Handbuch = () => {
   const [zoomOpen, setZoomOpen] = useState(false);
   // Committed view – kept in state so React renders reflect the latest zoom/pan
@@ -109,9 +131,73 @@ const Handbuch = () => {
     applyTransform(0, 0, 1);
   }, [applyTransform]);
 
+  // Pending focus to apply once the dialog has mounted and the image is laid out.
+  const pendingFocusRef = useRef<{ xPct: number; yPct: number; scale: number } | null>(null);
+
+  const focusOn = useCallback(
+    (xPct: number, yPct: number, targetScale: number) => {
+      const img = imgRef.current;
+      const container = containerRef.current;
+      if (!img || !container) return;
+      const cRect = container.getBoundingClientRect();
+      // The image is rendered at its natural CSS size (max-w/max-h apply).
+      // offsetWidth/Height give the laid-out (un-transformed) size.
+      const w = img.offsetWidth;
+      const h = img.offsetHeight;
+      // Container-space coordinate (origin = container center) of the target
+      // point on the un-transformed image.
+      const localX = (xPct - 0.5) * w;
+      const localY = (yPct - 0.5) * h;
+      // After applying scale around the image center, that point lives at
+      // (localX * s, localY * s). To bring it to the container center we need
+      // an offset of -localX * s, -localY * s.
+      const s = Math.min(MAX_SCALE, Math.max(MIN_SCALE, targetScale));
+      const nx = -localX * s;
+      const ny = -localY * s;
+      // Constrain so we never reveal empty space outside the image.
+      const maxX = ((w * s - cRect.width) / 2);
+      const maxY = ((h * s - cRect.height) / 2);
+      const clampedX = Math.max(-Math.max(maxX, 0), Math.min(Math.max(maxX, 0), nx));
+      const clampedY = Math.max(-Math.max(maxY, 0), Math.min(Math.max(maxY, 0), ny));
+      setScale(s);
+      setOffset({ x: clampedX, y: clampedY });
+      scaleRef.current = s;
+      offsetRef.current = { x: clampedX, y: clampedY };
+      applyTransform(clampedX, clampedY, s);
+    },
+    [applyTransform],
+  );
+
+  const openHotspot = (xPct: number, yPct: number, targetScale = 3) => {
+    pendingFocusRef.current = { xPct, yPct, scale: targetScale };
+    setZoomOpen(true);
+  };
+
+  // Apply pending focus once the dialog & image are in the DOM.
+  useEffect(() => {
+    if (!zoomOpen) return;
+    const pending = pendingFocusRef.current;
+    if (!pending) return;
+    const img = imgRef.current;
+    if (!img) return;
+    const run = () => {
+      focusOn(pending.xPct, pending.yPct, pending.scale);
+      pendingFocusRef.current = null;
+    };
+    if (img.complete && img.naturalWidth > 0) {
+      // Wait one frame so the dialog has finished its mount/layout animation.
+      requestAnimationFrame(run);
+    } else {
+      img.addEventListener("load", () => requestAnimationFrame(run), { once: true });
+    }
+  }, [zoomOpen, focusOn]);
+
   const handleOpenChange = (open: boolean) => {
     setZoomOpen(open);
-    if (!open) resetView();
+    if (!open) {
+      pendingFocusRef.current = null;
+      resetView();
+    }
   };
 
   const zoomIn = () => {
@@ -454,12 +540,7 @@ const Handbuch = () => {
                 <p>Alle DIP-Schalter müssen auf OFF stehen, sonst sperrt sich das System.</p>
               </div>
               <figure className="mt-6 -mx-4 sm:mx-0">
-                <button
-                  type="button"
-                  onClick={() => setZoomOpen(true)}
-                  className="group relative block w-full overflow-hidden sm:rounded-lg border-y sm:border border-white/10 bg-black/20 focus:outline-none focus:ring-2 focus:ring-primary"
-                  aria-label="Steuerplatine des Tischkicker Pro CL vergrößern – Detailansicht öffnen"
-                >
+                <div className="group relative block w-full overflow-hidden sm:rounded-lg border-y sm:border border-white/10 bg-black/20">
                   <img
                     src={handbuchElektronik}
                     alt="Steuerplatine des Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V Strom, Lautsprecher, Lautstärkeregler, DIP-Schalter (System-Einstellung), Torschalter A & B, Münzeinwurf, Display A & B und Ballwurfpumpe"
@@ -468,18 +549,55 @@ const Handbuch = () => {
                     width={1600}
                     height={1300}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 768px"
-                    className="block w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                    className="block w-full h-auto object-contain"
                   />
-                  <span className="absolute top-2 right-2 sm:top-3 sm:right-3 inline-flex items-center gap-1 rounded-md bg-black/70 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm shadow-lg">
+
+                  {/* Hotspots over the board image */}
+                  {HOTSPOTS.map((h) => (
+                    <button
+                      key={h.id}
+                      type="button"
+                      onClick={() => openHotspot(h.x, h.y, h.scale)}
+                      aria-label={`${h.label} – Detailansicht öffnen: ${h.description}`}
+                      title={h.label}
+                      className="absolute -translate-x-1/2 -translate-y-1/2 h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary/90 text-primary-foreground text-xs font-bold shadow-lg ring-2 ring-background/80 hover:scale-125 hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-transform animate-pulse hover:animate-none"
+                      style={{ left: `${h.x * 100}%`, top: `${h.y * 100}%` }}
+                    >
+                      <span className="sr-only">{h.label}</span>
+                      <ZoomIn className="h-3.5 w-3.5 sm:h-4 sm:w-4 mx-auto" aria-hidden="true" />
+                    </button>
+                  ))}
+
+                  {/* Open fullscreen (without hotspot focus) */}
+                  <button
+                    type="button"
+                    onClick={() => setZoomOpen(true)}
+                    aria-label="Steuerplatine des Tischkicker Pro CL vergrößern – Vollbild-Detailansicht öffnen"
+                    className="absolute top-2 right-2 sm:top-3 sm:right-3 inline-flex items-center gap-1 rounded-md bg-black/70 hover:bg-black/85 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
                     <ZoomIn className="h-3.5 w-3.5" />
-                    Zoom
-                  </span>
-                </button>
+                    Vollbild
+                  </button>
+                </div>
                 <figcaption className="text-xs text-muted-foreground mt-2 px-4 sm:px-0 text-center">
-                  Steuerplatine des Tischkicker Pro CL – Übersicht aller Anschlüsse.
-                  <span className="hidden sm:inline"> Zum Vergrößern anklicken.</span>
-                  <span className="sm:hidden"> Zum Vergrößern tippen.</span>
+                  Steuerplatine des Tischkicker Pro CL – tippen Sie auf einen Punkt, um direkt zum Bauteil zu zoomen.
                 </figcaption>
+
+                {/* Hotspot legend / quick links – also accessible without hovering tiny dots */}
+                <ul className="mt-3 px-4 sm:px-0 flex flex-wrap gap-2 justify-center">
+                  {HOTSPOTS.map((h) => (
+                    <li key={h.id}>
+                      <button
+                        type="button"
+                        onClick={() => openHotspot(h.x, h.y, h.scale)}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/5 hover:bg-primary/15 px-3 py-1 text-xs text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <ZoomIn className="h-3 w-3 text-primary" aria-hidden="true" />
+                        {h.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               </figure>
 
               <Dialog open={zoomOpen} onOpenChange={handleOpenChange}>
