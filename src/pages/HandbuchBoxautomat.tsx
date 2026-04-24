@@ -145,6 +145,28 @@ const renderBlock = (block: HandbuchBlock, key: string) => {
           </table>
         </div>
       );
+    case "image": {
+      const asset = HANDBUCH_IMAGE_ASSETS[block.assetKey];
+      if (!asset) return null;
+      const widthPct = block.maxWidthPct ?? 100;
+      return (
+        <figure key={key} className="mt-5">
+          <img
+            src={asset.publicUrl}
+            alt={block.alt}
+            loading="lazy"
+            decoding="async"
+            className="rounded-lg border border-white/10 shadow-md w-full h-auto bg-black/20"
+            style={{ maxWidth: `${widthPct}%` }}
+          />
+          {block.caption && (
+            <figcaption className="mt-2 text-sm text-muted-foreground italic">
+              {block.caption}
+            </figcaption>
+          )}
+        </figure>
+      );
+    }
     default:
       return null;
   }
