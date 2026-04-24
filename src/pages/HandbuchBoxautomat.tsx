@@ -3,6 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HandbuchPdfDownload from "@/components/handbuch/HandbuchPdfDownload";
 import HandbuchPdfPreview from "@/components/handbuch/HandbuchPdfPreview";
+import HandbuchTableOfContents from "@/components/handbuch/HandbuchTableOfContents";
 import {
   HANDBUCH_BOXAUTOMAT_FAQ,
   HANDBUCH_BOXAUTOMAT_META,
@@ -254,55 +255,31 @@ const HandbuchBoxautomat = () => {
             </div>
           </header>
 
-          <nav
-            aria-label="Inhaltsübersicht"
-            className="mb-10 rounded-lg border border-white/10 bg-white/5 p-5"
-          >
-            <h2 className="text-sm uppercase tracking-widest text-primary mb-3">
-              Inhaltsübersicht
-            </h2>
-            <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 list-none pl-0 text-sm">
-              {HANDBUCH_BOXAUTOMAT_SECTIONS.map((section) => (
-                <li key={section.id}>
-                  <a
-                    href={`#${section.id}`}
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <span className="text-foreground/60 mr-1">{section.number}.</span>
-                    {section.icon ? `${section.icon} ` : ""}
-                    {section.title}
-                  </a>
-                </li>
-              ))}
-              <li>
-                <a
-                  href="#faq"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <span className="text-foreground/60 mr-1">❓</span>
-                  Häufig gestellte Fragen
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#support"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <span className="text-foreground/60 mr-1">📞</span>
-                  Support
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#pdf-vorschau"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <span className="text-foreground/60 mr-1">👁️</span>
-                  PDF Vorschau
-                </a>
-              </li>
-            </ol>
-          </nav>
+          <HandbuchTableOfContents
+            sections={HANDBUCH_BOXAUTOMAT_SECTIONS}
+            extraEntries={[
+              {
+                id: "faq",
+                icon: "❓",
+                label: "Häufig gestellte Fragen",
+                keywords: HANDBUCH_BOXAUTOMAT_FAQ.map(
+                  (f) => `${f.question} ${f.answer}`,
+                ).join(" "),
+              },
+              {
+                id: "support",
+                icon: "📞",
+                label: "Support",
+                keywords: "Kontakt Hilfe E-Mail Telefon Service",
+              },
+              {
+                id: "pdf-vorschau",
+                icon: "👁️",
+                label: "PDF Vorschau",
+                keywords: "Vorschau Download PDF Dokument",
+              },
+            ]}
+          />
 
           <section className="prose prose-invert max-w-none space-y-8 text-muted-foreground">
             {HANDBUCH_BOXAUTOMAT_SECTIONS.map(renderSection)}
