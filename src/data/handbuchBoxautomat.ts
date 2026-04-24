@@ -329,7 +329,7 @@ export const HANDBUCH_BOXAUTOMAT_SECTIONS: HandbuchSection[] = [
       {
         type: "paragraph",
         text:
-          "Schrittfolge: Hauptmenü → "Einstellungen" → mit ▲/▼ Eintrag wählen → OK zum Bearbeiten → Wert mit ▲/▼ ändern → OK speichern.",
+          "Schrittfolge: Hauptmenü → \"Einstellungen\" → mit ▲/▼ Eintrag wählen → OK zum Bearbeiten → Wert mit ▲/▼ ändern → OK speichern.",
       },
       {
         type: "table",
@@ -359,8 +359,8 @@ export const HANDBUCH_BOXAUTOMAT_SECTIONS: HandbuchSection[] = [
         ordered: true,
         items: [
           "Im Demo-Bildschirm OK drücken → Hauptmenü öffnet sich.",
-          "Mit ▲/▼ den Eintrag "Einstellungen" wählen und mit OK bestätigen.",
-          "In der Liste nach unten scrollen bis zum Eintrag "Testmenü".",
+          "Mit ▲/▼ den Eintrag \"Einstellungen\" wählen und mit OK bestätigen.",
+          "In der Liste nach unten scrollen bis zum Eintrag \"Testmenü\".",
           "OK drücken – das Testmenü öffnet sich.",
           "Komponente mit ▲/▼ wählen und mit OK starten (z. B. Sensor, LED, Münzprüfer).",
           "Mit ESC die Komponente verlassen, erneut ESC führt zurück ins Hauptmenü.",
@@ -382,7 +382,7 @@ export const HANDBUCH_BOXAUTOMAT_SECTIONS: HandbuchSection[] = [
       {
         type: "paragraph",
         text:
-          "Schrittfolge: Hauptmenü → "Erweiterte Einstellungen" → Passwort 1111 mit ▲/▼ und OK eingeben → gewünschten Unterpunkt wählen.",
+          "Schrittfolge: Hauptmenü → \"Erweiterte Einstellungen\" → Passwort 1111 mit ▲/▼ und OK eingeben → gewünschten Unterpunkt wählen.",
       },
       {
         type: "list",
