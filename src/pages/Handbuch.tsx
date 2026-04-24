@@ -36,6 +36,7 @@ const HOTSPOTS: Hotspot[] = [
 
 const Handbuch = () => {
   const [zoomOpen, setZoomOpen] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   // Committed view – kept in state so React renders reflect the latest zoom/pan
   // when no gesture is active. During a gesture we mutate the DOM directly.
   const [scale, setScale] = useState(1);
@@ -194,11 +195,21 @@ const Handbuch = () => {
 
   const handleOpenChange = (open: boolean) => {
     setZoomOpen(open);
-    if (!open) {
+    if (open) {
+      setShowHint(true);
+    } else {
+      setShowHint(false);
       pendingFocusRef.current = null;
       resetView();
     }
   };
+
+  // Hint im Zoom-Dialog kurz einblenden und nach 3 Sekunden ausblenden
+  useEffect(() => {
+    if (!zoomOpen || !showHint) return;
+    const t = window.setTimeout(() => setShowHint(false), 3000);
+    return () => window.clearTimeout(t);
+  }, [zoomOpen, showHint]);
 
   const zoomIn = () => {
     const next = Math.min(scaleRef.current + 0.5, MAX_SCALE);
@@ -633,6 +644,24 @@ const Handbuch = () => {
                     onPointerCancel={endPointer}
                     onPointerLeave={endPointer}
                   >
+                    {/* Kurzanleitung – wird beim Öffnen gezeigt und nach 3s automatisch ausgeblendet */}
+                    <div
+                      className={`pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-4 transition-opacity duration-500 ${
+                        showHint ? "opacity-100" : "opacity-0"
+                      }`}
+                      aria-hidden={!showHint}
+                    >
+                      <div className="max-w-sm rounded-xl bg-black/75 text-white backdrop-blur-md px-4 py-3 shadow-lg text-center text-sm leading-relaxed">
+                        <p className="font-medium mb-1">So nutzen Sie die Zoom-Ansicht</p>
+                        <p className="hidden md:block opacity-90">
+                          Mit <kbd className="px-1 py-0.5 rounded bg-white/15 font-mono text-xs">+</kbd>/<kbd className="px-1 py-0.5 rounded bg-white/15 font-mono text-xs">−</kbd> zoomen,
+                          mit den Pfeiltasten verschieben. Im vergrößerten Zustand können Sie das Bild mit der Maus ziehen.
+                        </p>
+                        <p className="md:hidden opacity-90">
+                          Mit zwei Fingern zoomen, doppeltippen für Schnellzoom. Vergrößertes Bild lässt sich mit dem Finger ziehen.
+                        </p>
+                      </div>
+                    </div>
                     <img
                       ref={imgRef}
                       src={handbuchElektronik}
