@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, PointerEvent as ReactPointerEvent } from "react";
+import React, { useState, useRef, useEffect, useCallback, PointerEvent as ReactPointerEvent } from "react";
 import { Helmet } from "react-helmet-async";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ZoomIn, ZoomOut, RotateCcw, Download } from "lucide-react";
