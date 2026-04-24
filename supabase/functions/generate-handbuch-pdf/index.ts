@@ -12,9 +12,11 @@
 import PDFDocument from "npm:pdfkit@0.15.0";
 import { createHash } from "node:crypto";
 import {
+  EXPECTED_CONTENT_HASH,
   HANDBUCH_BOXAUTOMAT_FAQ,
   HANDBUCH_BOXAUTOMAT_META,
   HANDBUCH_BOXAUTOMAT_SECTIONS,
+  SYNCED_AT,
   type HandbuchBlock,
   type HandbuchSection,
 } from "./handbuch-data.ts";
@@ -376,6 +378,22 @@ Deno.serve(async (req) => {
   try {
     const { bytes, contentHash, generatedAt } = await renderPdf();
 
+    // Drift detection: compare the hash recomputed at request time against
+    // the EXPECTED_CONTENT_HASH that the build script pinned when it last
+    // synced the data file. If they differ, the function is serving newer
+    // content than the build expected — surface that in headers + logs so
+    // it's obvious during debugging.
+    const inSync = contentHash === EXPECTED_CONTENT_HASH;
+    if (!inSync) {
+      console.warn(
+        `⚠ Content drift: runtime hash ${contentHash} ≠ expected ${EXPECTED_CONTENT_HASH} (synced ${SYNCED_AT}). PDF still served.`,
+      );
+    } else {
+      console.log(
+        `✓ PDF rendered (${bytes.byteLength} bytes, hash ${contentHash}, in sync with build ${SYNCED_AT}).`,
+      );
+    }
+
     const headers = {
       ...corsHeaders,
       "Content-Type": "application/pdf",
@@ -384,6 +402,9 @@ Deno.serve(async (req) => {
       "Cache-Control": "public, max-age=300",
       "X-Pdf-Version": HANDBUCH_BOXAUTOMAT_META.version,
       "X-Pdf-Content-Hash": contentHash,
+      "X-Pdf-Expected-Hash": EXPECTED_CONTENT_HASH,
+      "X-Pdf-In-Sync": String(inSync),
+      "X-Pdf-Synced-At": SYNCED_AT,
       "X-Pdf-Generated-At": generatedAt,
     };
 
