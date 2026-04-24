@@ -395,6 +395,38 @@ const HandbuchBoxautomat = () => {
             </div>
 
             <div>
+              <h2 className="text-2xl font-semibold text-foreground mb-3">❓ Häufig gestellte Fragen zum Boxautomat</h2>
+              <p>
+                Antworten auf die wichtigsten Fragen rund um die Box &amp; Kick Maschine – von der
+                Wartung über die Fehlerbehebung bis zur Menüführung.
+              </p>
+              <div className="mt-4 space-y-4">
+                {FAQ_ITEMS.map((item) => (
+                  <article
+                    key={item.question}
+                    className="rounded-lg border border-white/10 bg-white/5 p-4"
+                    itemScope
+                    itemType="https://schema.org/Question"
+                  >
+                    <h3
+                      className="text-lg font-semibold text-foreground mb-2"
+                      itemProp="name"
+                    >
+                      {item.question}
+                    </h3>
+                    <div
+                      itemScope
+                      itemProp="acceptedAnswer"
+                      itemType="https://schema.org/Answer"
+                    >
+                      <p itemProp="text">{item.answer}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div>
               <h2 className="text-2xl font-semibold text-foreground mb-3">📞 Support</h2>
               <p>Bei Fragen oder Problemen:</p>
               <p className="mt-2">
