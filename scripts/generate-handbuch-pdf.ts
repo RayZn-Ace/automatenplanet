@@ -38,8 +38,23 @@ const outDir = resolve(projectRoot, "public/downloads");
 const outFile = resolve(outDir, "handbuch-boxautomat.pdf");
 const lastGoodFile = resolve(outDir, "handbuch-boxautomat.last-good.pdf");
 const tmpFile = resolve(outDir, "handbuch-boxautomat.pdf.tmp");
+const manifestFile = resolve(outDir, "handbuch-boxautomat.manifest.json");
 
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
+
+// ---- Versioning -------------------------------------------------------------
+// Compute a short hash over the source content so we can tell at a glance
+// whether the published PDF still matches the website's text.
+const contentPayload = JSON.stringify({
+  meta: HANDBUCH_BOXAUTOMAT_META,
+  sections: HANDBUCH_BOXAUTOMAT_SECTIONS,
+  faq: HANDBUCH_BOXAUTOMAT_FAQ,
+});
+const contentHash = createHash("sha256")
+  .update(contentPayload)
+  .digest("hex")
+  .slice(0, 10);
+const generatedAt = new Date().toISOString();
 
 // ---- Fallback handling ------------------------------------------------------
 // 1. Snapshot the current good PDF before regenerating, so we always keep the
