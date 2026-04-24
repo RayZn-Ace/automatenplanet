@@ -672,6 +672,7 @@ doc.y += 12;
 writeSectionHeading(
   String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1),
   "Häufig gestellte Fragen",
+  "sec-faq",
 );
 HANDBUCH_BOXAUTOMAT_FAQ.forEach((item) => {
   resetStyle();
