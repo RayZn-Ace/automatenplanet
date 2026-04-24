@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+# Husky-compatible pre-commit hook.
+#
+# Activate locally with:
+#   npx husky install
+# (or copy this file to .git/hooks/pre-commit and `chmod +x` it)
+#
+# It normalizes typographic ("smart") quotes inside src/data/*.ts
+# BEFORE formatting/build runs, then re-stages the touched files
+# so the cleaned-up content is what actually gets committed.
+
+. "$(dirname -- "$0")/_/husky.sh" 2>/dev/null || true
+
+# Only act when src/data files are part of this commit.
+STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^src/data/.*\.tsx?$' || true)
+
+if [ -z "$STAGED" ]; then
+  exit 0
+fi
+
+echo "[pre-commit] Normalizing smart quotes in src/data/…"
+node scripts/normalize-smart-quotes.mjs || exit 1
+
+# Re-stage anything the normalizer touched so the commit is clean.
+echo "$STAGED" | while IFS= read -r file; do
+  if [ -f "$file" ]; then
+    git add "$file"
+  fi
+done
+
+exit 0
