@@ -176,10 +176,10 @@ const renderBlock = (block: HandbuchBlock, key: string) => {
 
 const renderSection = (section: HandbuchSection) => (
   <div key={section.id} id={section.id} className="scroll-mt-28">
-    <h2 className="text-2xl font-semibold text-foreground mb-3">
+    <HandbuchAnchorHeading anchorId={section.id}>
       {section.icon ? `${section.icon} ` : ""}
       {section.number}. {section.title}
-    </h2>
+    </HandbuchAnchorHeading>
     {section.blocks.map((block, i) => renderBlock(block, `${section.id}-${i}`))}
   </div>
 );
