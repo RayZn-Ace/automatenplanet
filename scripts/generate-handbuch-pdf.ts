@@ -30,6 +30,8 @@ import {
   type HandbuchBlock,
   type HandbuchSection,
 } from "../src/data/handbuchBoxautomat";
+import { HANDBUCH_IMAGE_ASSETS } from "../src/data/handbuchAssets";
+import { readFileSync as readFileSyncTop } from "node:fs";
 
 // ---- Paths ------------------------------------------------------------------
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -74,6 +76,43 @@ const generatedAt = new Date().toISOString();
 try {
   const { readFileSync } = await import("node:fs");
   const sourceContent = readFileSync(sourceDataFile, "utf8");
+
+  // Inline image assets as base64 so the edge function — which has no access
+  // to the project's public/ folder at runtime — can still embed them.
+  const assetEntries = Object.entries(HANDBUCH_IMAGE_ASSETS).map(([key, asset]) => {
+    try {
+      const bytes = readFileSync(resolve(projectRoot, asset.filePath));
+      const ext = asset.filePath.split(".").pop()?.toLowerCase() ?? "bin";
+      const mime =
+        ext === "png" ? "image/png" :
+        ext === "jpg" || ext === "jpeg" ? "image/jpeg" :
+        ext === "webp" ? "image/webp" :
+        "application/octet-stream";
+      return {
+        key,
+        mime,
+        ext,
+        base64: bytes.toString("base64"),
+      };
+    } catch (err) {
+      console.warn(
+        `⚠ Could not inline image "${key}" (${asset.filePath}):`,
+        (err as Error).message,
+      );
+      return null;
+    }
+  }).filter((e): e is { key: string; mime: string; ext: string; base64: string } => e !== null);
+
+  const assetsLiteral =
+    `export const HANDBUCH_IMAGE_ASSETS_BASE64: Record<string, { mime: string; ext: string; base64: string }> = {\n` +
+    assetEntries
+      .map(
+        (e) =>
+          `  ${JSON.stringify(e.key)}: { mime: ${JSON.stringify(e.mime)}, ext: ${JSON.stringify(e.ext)}, base64: ${JSON.stringify(e.base64)} },\n`,
+      )
+      .join("") +
+    `};\n\n`;
+
   const banner =
     `// ---------------------------------------------------------------------------\n` +
     `// AUTO-GENERATED — DO NOT EDIT BY HAND.\n` +
@@ -82,12 +121,14 @@ try {
     `//\n` +
     `// Expected content hash: ${contentHash}\n` +
     `// Synced at:             ${generatedAt}\n` +
+    `// Inlined image assets:  ${assetEntries.length}\n` +
     `// ---------------------------------------------------------------------------\n\n` +
     `export const EXPECTED_CONTENT_HASH = ${JSON.stringify(contentHash)};\n` +
-    `export const SYNCED_AT = ${JSON.stringify(generatedAt)};\n\n`;
+    `export const SYNCED_AT = ${JSON.stringify(generatedAt)};\n\n` +
+    assetsLiteral;
   writeFileSync(functionDataFile, banner + sourceContent);
   console.log(
-    `✓ Synced handbook data → ${functionDataFile} (hash ${contentHash})`,
+    `✓ Synced handbook data → ${functionDataFile} (hash ${contentHash}, ${assetEntries.length} image assets)`,
   );
 } catch (err) {
   console.warn(
@@ -365,6 +406,71 @@ const writeTable = (rows: { label: string; value: string }[]) => {
   doc.y += 6;
 };
 
+const writeImage = (
+  assetKey: string,
+  alt: string,
+  caption: string | undefined,
+  maxWidthPct: number,
+) => {
+  const asset = HANDBUCH_IMAGE_ASSETS[assetKey];
+  if (!asset) {
+    console.warn(`⚠ Unknown image assetKey "${assetKey}" – skipping in PDF.`);
+    return;
+  }
+  let bytes: Buffer;
+  try {
+    bytes = readFileSyncTop(resolve(projectRoot, asset.filePath));
+  } catch (err) {
+    console.warn(
+      `⚠ Could not read image asset "${assetKey}" at ${asset.filePath}:`,
+      (err as Error).message,
+    );
+    return;
+  }
+
+  const pct = Math.min(100, Math.max(10, maxWidthPct || 100));
+  const targetW = (CONTENT_W * pct) / 100;
+  // Reserve room for caption (≈ 14pt) + spacing.
+  const captionH = caption ? 16 : 0;
+  // Estimate height upfront isn't trivial without decoding; pdfkit will scale
+  // by width and we ensure space for at least the width + caption padding.
+  // Use a reasonable max so we don't push past page bottom.
+  const remaining = CONTENT_BOTTOM - doc.y;
+  if (remaining < 120) {
+    doc.addPage();
+    doc.x = MARGIN.left;
+    doc.y = MARGIN.top;
+  }
+  const availH = CONTENT_BOTTOM - doc.y - captionH - 8;
+  doc.image(bytes, MARGIN.left, doc.y, {
+    fit: [targetW, availH],
+    align: "left",
+  });
+  // Move y past the rendered image. pdfkit doesn't update doc.y after image(),
+  // so we advance using the actual fitted box height.
+  // To keep it simple and safe, reserve the full availH the image was allowed
+  // to occupy when it's tall, otherwise compute via image dimensions.
+  // pdfkit exposes openImage to query natural size:
+  // deno-lint-ignore no-explicit-any
+  const img: any = (doc as unknown as { openImage: (b: Buffer) => { width: number; height: number } }).openImage(bytes);
+  const scale = Math.min(targetW / img.width, availH / img.height);
+  const renderedH = img.height * scale;
+  doc.y += renderedH + 6;
+
+  if (caption) {
+    doc
+      .font(FONT_ITALIC)
+      .fontSize(BODY_SIZE - 1)
+      .fillColor(COLORS.muted)
+      .text(sanitize(caption), MARGIN.left, doc.y, { ...TXT, width: CONTENT_W });
+    resetStyle();
+    doc.y += 6;
+  }
+  // Alt text isn't rendered visually but kept here as documentation; future
+  // enhancement could embed it as PDF accessibility metadata.
+  void alt;
+};
+
 const writeBlock = (block: HandbuchBlock) => {
   switch (block.type) {
     case "paragraph":
@@ -382,6 +488,9 @@ const writeBlock = (block: HandbuchBlock) => {
       return;
     case "table":
       writeTable(block.rows);
+      return;
+    case "image":
+      writeImage(block.assetKey, block.alt, block.caption, block.maxWidthPct ?? 100);
       return;
   }
 };

@@ -11,7 +11,20 @@ export type HandbuchBlock =
   | { type: "list"; ordered?: boolean; items: string[] }
   | { type: "subheading"; text: string }
   | { type: "callout"; variant: "info" | "warning"; title?: string; lines: string[] }
-  | { type: "table"; rows: { label: string; value: string }[] };
+  | { type: "table"; rows: { label: string; value: string }[] }
+  | {
+      type: "image";
+      /**
+       * Asset key looked up by both the React page (via /images/handbuch/...)
+       * and the PDF generators (via the assets manifest in
+       * src/data/handbuchAssets.ts).
+       */
+      assetKey: string;
+      alt: string;
+      caption?: string;
+      /** Optional max width in % of the content area (default 100). */
+      maxWidthPct?: number;
+    };
 
 export type HandbuchSection = {
   id: string;
@@ -244,6 +257,18 @@ export const HANDBUCH_BOXAUTOMAT_SECTIONS: HandbuchSection[] = [
       { type: "list", items: ["Reinigen", "Kabel prüfen"] },
       { type: "subheading", text: "Buttons funktionieren nicht" },
       { type: "list", items: ["Kabelverbindung prüfen", "Schalter prüfen"] },
+      { type: "subheading", text: "Übersicht der Premium Platine" },
+      {
+        type: "paragraph",
+        text:
+          "Das folgende Foto zeigt die Anschlüsse der Premium Boxer Platine. Nutze diese Übersicht, um bei Fehlern den richtigen Anschluss (Sensor, Münzwurf, Display, RGB/Pixel-LED, Lautsprecher etc.) schnell zu lokalisieren.",
+      },
+      {
+        type: "image",
+        assetKey: "premium-platine",
+        alt: "Premium Boxer Circuit Board mit beschrifteten Anschlüssen: Sensor, Lautsprecher, Stromversorgung, RGB- und Pixel-LED, Combo Motor, Musik-SD-Karte, Highscore Reset, Münzwurf, Menüführung und großes Display.",
+        caption: "Premium Platine – Beschriftung aller Anschlüsse",
+      },
     ],
   },
   {
