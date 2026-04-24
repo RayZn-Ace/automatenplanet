@@ -194,36 +194,42 @@ const Handbuch = () => {
                 <p className="font-semibold text-foreground">⚠️ Wichtig:</p>
                 <p>Alle DIP-Schalter müssen auf OFF stehen, sonst sperrt sich das System.</p>
               </div>
-              <figure className="mt-6">
+              <figure className="mt-6 -mx-4 sm:mx-0">
                 <button
                   type="button"
                   onClick={() => setZoomOpen(true)}
-                  className="group relative block w-full overflow-hidden rounded-lg border border-white/10 bg-black/20 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="group relative block w-full overflow-hidden sm:rounded-lg border-y sm:border border-white/10 bg-black/20 focus:outline-none focus:ring-2 focus:ring-primary"
                   aria-label="Steuerplatine des Tischkicker Pro CL vergrößern – Detailansicht öffnen"
                 >
                   <img
                     src={handbuchElektronik}
                     alt="Steuerplatine des Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V Strom, Lautsprecher, Lautstärkeregler, DIP-Schalter (System-Einstellung), Torschalter A & B, Münzeinwurf, Display A & B und Ballwurfpumpe"
                     loading="lazy"
-                    className="w-full h-auto transition-transform duration-300 group-hover:scale-[1.02]"
+                    decoding="async"
+                    width={1600}
+                    height={1300}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 768px"
+                    className="block w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
                   />
-                  <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs text-white backdrop-blur-sm">
+                  <span className="absolute top-2 right-2 sm:top-3 sm:right-3 inline-flex items-center gap-1 rounded-md bg-black/70 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm shadow-lg">
                     <ZoomIn className="h-3.5 w-3.5" />
                     Zoom
                   </span>
                 </button>
-                <figcaption className="text-xs text-muted-foreground mt-2 text-center">
-                  Steuerplatine des Tischkicker Pro CL – Übersicht aller Anschlüsse. Zum Vergrößern anklicken.
+                <figcaption className="text-xs text-muted-foreground mt-2 px-4 sm:px-0 text-center">
+                  Steuerplatine des Tischkicker Pro CL – Übersicht aller Anschlüsse.
+                  <span className="hidden sm:inline"> Zum Vergrößern anklicken.</span>
+                  <span className="sm:hidden"> Zum Vergrößern tippen.</span>
                 </figcaption>
               </figure>
 
               <Dialog open={zoomOpen} onOpenChange={handleOpenChange}>
-                <DialogContent className="max-w-[95vw] w-[95vw] h-[90vh] p-0 overflow-hidden bg-background">
+                <DialogContent className="max-w-[100vw] sm:max-w-[95vw] w-screen sm:w-[95vw] h-[100dvh] sm:h-[90vh] p-0 overflow-hidden bg-background rounded-none sm:rounded-lg">
                   <DialogTitle className="sr-only">Steuerplatine – Zoom-Ansicht</DialogTitle>
                   <DialogDescription className="sr-only">
                     Detailansicht der Steuerplatine. Nutzen Sie die Buttons zum Vergrößern und Verkleinern, ziehen Sie das Bild zum Verschieben.
                   </DialogDescription>
-                  <div className="absolute top-3 left-3 z-10 flex gap-2">
+                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 flex flex-wrap gap-1.5 sm:gap-2">
                     <Button size="icon" variant="secondary" onClick={zoomIn} aria-label="Vergrößern">
                       <ZoomIn className="h-4 w-4" />
                     </Button>
@@ -233,26 +239,28 @@ const Handbuch = () => {
                     <Button size="icon" variant="secondary" onClick={resetView} aria-label="Ansicht zurücksetzen">
                       <RotateCcw className="h-4 w-4" />
                     </Button>
-                    <span className="inline-flex items-center rounded-md bg-secondary px-3 text-xs text-secondary-foreground">
+                    <span className="inline-flex items-center rounded-md bg-secondary px-2.5 sm:px-3 text-xs text-secondary-foreground">
                       {Math.round(scale * 100)}%
                     </span>
                   </div>
                   <div
-                    className="w-full h-full overflow-hidden flex items-center justify-center bg-black/40 select-none"
+                    className="w-full h-full overflow-hidden flex items-center justify-center bg-black/40 select-none touch-none"
                     style={{ cursor: scale > 1 ? (dragState.current.dragging ? "grabbing" : "grab") : "default" }}
                     onMouseDown={onMouseDown}
                     onMouseMove={onMouseMove}
                     onMouseUp={stopDrag}
                     onMouseLeave={stopDrag}
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={stopDrag}
                   >
                     <img
                       src={handbuchElektronik}
                       alt="Steuerplatine des Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V Strom, Lautsprecher, Lautstärkeregler, DIP-Schalter (System-Einstellung), Torschalter A & B, Münzeinwurf, Display A & B und Ballwurfpumpe – Detailansicht"
                       draggable={false}
-                      className="max-w-none transition-transform duration-150 ease-out"
+                      className="max-w-[95vw] max-h-[80dvh] sm:max-h-[85vh] w-auto h-auto object-contain transition-transform duration-150 ease-out"
                       style={{
                         transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
-                        maxHeight: "90vh",
                       }}
                     />
                   </div>
