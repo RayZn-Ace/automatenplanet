@@ -16,7 +16,9 @@ import {
   statSync,
   renameSync,
   unlinkSync,
+  writeFileSync,
 } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import PDFDocument from "pdfkit";
