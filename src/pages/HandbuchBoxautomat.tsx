@@ -4,6 +4,7 @@ import Footer from "@/components/layout/Footer";
 import HandbuchPdfDownload from "@/components/handbuch/HandbuchPdfDownload";
 import HandbuchPdfPreview from "@/components/handbuch/HandbuchPdfPreview";
 import HandbuchTableOfContents from "@/components/handbuch/HandbuchTableOfContents";
+import HandbuchAnchorHeading from "@/components/handbuch/HandbuchAnchorHeading";
 import {
   HANDBUCH_BOXAUTOMAT_FAQ,
   HANDBUCH_BOXAUTOMAT_META,
@@ -175,10 +176,10 @@ const renderBlock = (block: HandbuchBlock, key: string) => {
 
 const renderSection = (section: HandbuchSection) => (
   <div key={section.id} id={section.id} className="scroll-mt-28">
-    <h2 className="text-2xl font-semibold text-foreground mb-3">
+    <HandbuchAnchorHeading anchorId={section.id}>
       {section.icon ? `${section.icon} ` : ""}
       {section.number}. {section.title}
-    </h2>
+    </HandbuchAnchorHeading>
     {section.blocks.map((block, i) => renderBlock(block, `${section.id}-${i}`))}
   </div>
 );
@@ -285,9 +286,9 @@ const HandbuchBoxautomat = () => {
             {HANDBUCH_BOXAUTOMAT_SECTIONS.map(renderSection)}
 
             <div id="faq" className="scroll-mt-28">
-              <h2 className="text-2xl font-semibold text-foreground mb-3">
+              <HandbuchAnchorHeading anchorId="faq">
                 ❓ Häufig gestellte Fragen zum Boxautomat
-              </h2>
+              </HandbuchAnchorHeading>
               <p>
                 Antworten auf die wichtigsten Fragen rund um die Box &amp; Kick Maschine – von der
                 Wartung über die Fehlerbehebung bis zur Menüführung.
@@ -316,7 +317,7 @@ const HandbuchBoxautomat = () => {
             </div>
 
             <div id="support" className="scroll-mt-28">
-              <h2 className="text-2xl font-semibold text-foreground mb-3">📞 Support</h2>
+              <HandbuchAnchorHeading anchorId="support">📞 Support</HandbuchAnchorHeading>
               <p>Bei Fragen oder Problemen:</p>
               <p className="mt-2">
                 <span className="font-semibold text-foreground">
