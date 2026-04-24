@@ -1,9 +1,65 @@
+import { useState, useRef, MouseEvent } from "react";
 import { Helmet } from "react-helmet-async";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import handbuchElektronik from "@/assets/handbuch-elektronik.png";
 
 const Handbuch = () => {
+  const [zoomOpen, setZoomOpen] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const dragState = useRef<{ dragging: boolean; startX: number; startY: number; baseX: number; baseY: number }>({
+    dragging: false,
+    startX: 0,
+    startY: 0,
+    baseX: 0,
+    baseY: 0,
+  });
+
+  const resetView = () => {
+    setScale(1);
+    setOffset({ x: 0, y: 0 });
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setZoomOpen(open);
+    if (!open) resetView();
+  };
+
+  const zoomIn = () => setScale((s) => Math.min(s + 0.5, 5));
+  const zoomOut = () =>
+    setScale((s) => {
+      const next = Math.max(s - 0.5, 1);
+      if (next === 1) setOffset({ x: 0, y: 0 });
+      return next;
+    });
+
+  const onMouseDown = (e: MouseEvent<HTMLDivElement>) => {
+    if (scale === 1) return;
+    dragState.current = {
+      dragging: true,
+      startX: e.clientX,
+      startY: e.clientY,
+      baseX: offset.x,
+      baseY: offset.y,
+    };
+  };
+
+  const onMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (!dragState.current.dragging) return;
+    setOffset({
+      x: dragState.current.baseX + (e.clientX - dragState.current.startX),
+      y: dragState.current.baseY + (e.clientY - dragState.current.startY),
+    });
+  };
+
+  const stopDrag = () => {
+    dragState.current.dragging = false;
+  };
+
   return (
     <>
       <Helmet>
@@ -105,16 +161,69 @@ const Handbuch = () => {
                 <p>Alle DIP-Schalter müssen auf OFF stehen, sonst sperrt sich das System.</p>
               </div>
               <figure className="mt-6">
-                <img
-                  src={handbuchElektronik}
-                  alt="Steuerplatine Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V, Lautsprecher, Lautstärke, System-Einstellung (DIP-Schalter), Torswitch A & B, Münzwurf, Display A & B und Ballwurfpumpe"
-                  loading="lazy"
-                  className="w-full h-auto rounded-lg border border-white/10 bg-black/20"
-                />
+                <button
+                  type="button"
+                  onClick={() => setZoomOpen(true)}
+                  className="group relative block w-full overflow-hidden rounded-lg border border-white/10 bg-black/20 focus:outline-none focus:ring-2 focus:ring-primary"
+                  aria-label="Foto der Steuerplatine vergrößern"
+                >
+                  <img
+                    src={handbuchElektronik}
+                    alt="Steuerplatine Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V, Lautsprecher, Lautstärke, System-Einstellung (DIP-Schalter), Torswitch A & B, Münzwurf, Display A & B und Ballwurfpumpe"
+                    loading="lazy"
+                    className="w-full h-auto transition-transform duration-300 group-hover:scale-[1.02]"
+                  />
+                  <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs text-white backdrop-blur-sm">
+                    <ZoomIn className="h-3.5 w-3.5" />
+                    Zoom
+                  </span>
+                </button>
                 <figcaption className="text-xs text-muted-foreground mt-2 text-center">
-                  Übersicht der Anschlüsse auf der Steuerplatine
+                  Übersicht der Anschlüsse auf der Steuerplatine – zum Vergrößern anklicken
                 </figcaption>
               </figure>
+
+              <Dialog open={zoomOpen} onOpenChange={handleOpenChange}>
+                <DialogContent className="max-w-[95vw] w-[95vw] h-[90vh] p-0 overflow-hidden bg-background">
+                  <DialogTitle className="sr-only">Steuerplatine – Zoom-Ansicht</DialogTitle>
+                  <DialogDescription className="sr-only">
+                    Detailansicht der Steuerplatine. Nutzen Sie die Buttons zum Vergrößern und Verkleinern, ziehen Sie das Bild zum Verschieben.
+                  </DialogDescription>
+                  <div className="absolute top-3 left-3 z-10 flex gap-2">
+                    <Button size="icon" variant="secondary" onClick={zoomIn} aria-label="Vergrößern">
+                      <ZoomIn className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="secondary" onClick={zoomOut} aria-label="Verkleinern">
+                      <ZoomOut className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="secondary" onClick={resetView} aria-label="Ansicht zurücksetzen">
+                      <RotateCcw className="h-4 w-4" />
+                    </Button>
+                    <span className="inline-flex items-center rounded-md bg-secondary px-3 text-xs text-secondary-foreground">
+                      {Math.round(scale * 100)}%
+                    </span>
+                  </div>
+                  <div
+                    className="w-full h-full overflow-hidden flex items-center justify-center bg-black/40 select-none"
+                    style={{ cursor: scale > 1 ? (dragState.current.dragging ? "grabbing" : "grab") : "default" }}
+                    onMouseDown={onMouseDown}
+                    onMouseMove={onMouseMove}
+                    onMouseUp={stopDrag}
+                    onMouseLeave={stopDrag}
+                  >
+                    <img
+                      src={handbuchElektronik}
+                      alt="Steuerplatine – Detailansicht"
+                      draggable={false}
+                      className="max-w-none transition-transform duration-150 ease-out"
+                      style={{
+                        transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
+                        maxHeight: "90vh",
+                      }}
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
 
             <div>
