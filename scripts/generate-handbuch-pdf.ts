@@ -495,9 +495,20 @@ const writeBlock = (block: HandbuchBlock) => {
   }
 };
 
-const writeSectionHeading = (number: string, title: string) => {
+// Records the page index (0-based) where each section heading lives so the
+// TOC entries can be patched with real page numbers in a second pass.
+const headingPageByAnchor: Record<string, number> = {};
+
+const writeSectionHeading = (number: string, title: string, anchor?: string) => {
   resetStyle();
   ensureSpace(48);
+  if (anchor) {
+    // Register a named destination at the current y on the current page so
+    // TOC links can jump here.
+    try { (doc as unknown as { addNamedDestination: (n: string) => void }).addNamedDestination(anchor); } catch { /* older pdfkit */ }
+    const range = doc.bufferedPageRange();
+    headingPageByAnchor[anchor] = range.start + range.count - 1;
+  }
   doc
     .font(FONT_BOLD)
     .fontSize(18)
@@ -516,7 +527,7 @@ const writeSectionHeading = (number: string, title: string) => {
 };
 
 const writeSection = (section: HandbuchSection) => {
-  writeSectionHeading(section.number, section.title);
+  writeSectionHeading(section.number, section.title, `sec-${section.id}`);
   for (const block of section.blocks) writeBlock(block);
 };
 
@@ -570,29 +581,77 @@ doc
   .restore();
 doc.y += 12;
 
-// Table of contents (still on the cover page)
+// Table of contents (still on the cover page) — clickable, with page numbers
+// patched in after section rendering completes.
 doc
   .font(FONT_BOLD)
   .fontSize(14)
   .fillColor(COLORS.text)
   .text("Inhaltsverzeichnis", MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W });
 doc.y += 8;
-doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
-HANDBUCH_BOXAUTOMAT_SECTIONS.forEach((section) => {
-  doc.text(`${section.number}. ${sanitize(section.title)}`, MARGIN.left + 12, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W - 12,
+
+type TocEntry = {
+  number: string;
+  title: string;
+  anchor: string;
+  y: number;
+  pageIdx: number;
+};
+const tocEntries: TocEntry[] = [];
+
+const tocLineHeight = 14;
+const tocLeftIndent = 12;
+const tocPageColW = 32;
+const tocLabelX = MARGIN.left + tocLeftIndent;
+const tocLabelW = CONTENT_W - tocLeftIndent - tocPageColW - 4;
+const tocPageColX = MARGIN.left + CONTENT_W - tocPageColW;
+
+const drawTocEntry = (number: string, title: string, anchor: string) => {
+  doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.primary);
+  const text = `${number}. ${sanitize(title)}`;
+  const yStart = doc.y;
+  doc.text(text, tocLabelX, yStart, {
+    characterSpacing: 0,
+    wordSpacing: 0,
+    width: tocLabelW,
+    lineBreak: false,
+    ellipsis: true,
   });
+  // Clickable link annotation covering the whole row.
+  try {
+    (doc as unknown as {
+      link: (
+        x: number, y: number, w: number, h: number,
+        opts: { goTo: string },
+      ) => void;
+    }).link(MARGIN.left, yStart - 2, CONTENT_W, tocLineHeight, { goTo: anchor });
+  } catch {
+    try {
+      // deno-lint-ignore no-explicit-any
+      (doc as any).link(MARGIN.left, yStart - 2, CONTENT_W, tocLineHeight, anchor);
+    } catch { /* ignore */ }
+  }
+  const pageRange = doc.bufferedPageRange();
+  tocEntries.push({
+    number, title, anchor, y: yStart,
+    pageIdx: pageRange.start + pageRange.count - 1,
+  });
+  doc.y = yStart + tocLineHeight;
+  resetStyle();
+};
+
+HANDBUCH_BOXAUTOMAT_SECTIONS.forEach((section) => {
+  drawTocEntry(section.number, section.title, `sec-${section.id}`);
 });
-doc.text(
-  `${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1}. Häufig gestellte Fragen`,
-  MARGIN.left + 12,
-  doc.y,
-  { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W - 12 },
+drawTocEntry(
+  String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1),
+  "Häufig gestellte Fragen",
+  "sec-faq",
 );
-doc.text(
-  `${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2}. Support & Kontakt`,
-  MARGIN.left + 12,
-  doc.y,
-  { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W - 12 },
+drawTocEntry(
+  String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2),
+  "Support & Kontakt",
+  "sec-support",
 );
 
 // ---- Sections ---------------------------------------------------------------
@@ -613,6 +672,7 @@ doc.y += 12;
 writeSectionHeading(
   String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1),
   "Häufig gestellte Fragen",
+  "sec-faq",
 );
 HANDBUCH_BOXAUTOMAT_FAQ.forEach((item) => {
   resetStyle();
@@ -637,6 +697,7 @@ doc.y += 12;
 writeSectionHeading(
   String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2),
   "Support & Kontakt",
+  "sec-support",
 );
 resetStyle();
 doc.text("Bei Fragen oder Problemen wenden Sie sich bitte an:", MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W,
@@ -647,9 +708,53 @@ doc.font(FONT_REGULAR).text(HANDBUCH_BOXAUTOMAT_META.publisher.address);
 doc.text(`E-Mail: ${HANDBUCH_BOXAUTOMAT_META.publisher.email}`);
 doc.text(`Web:    ${HANDBUCH_BOXAUTOMAT_META.publisher.website}`);
 
-// ---- Footer on every page ---------------------------------------------------
+// ---- Patch TOC page numbers (second pass) -----------------------------------
+// Now that all sections are rendered, fill in the page number next to each
+// TOC entry. We jump back to the cover page, draw dot leaders, and write
+// the page number into the reserved right column.
 const range = doc.bufferedPageRange();
 const totalPages = range.count;
+
+for (const entry of tocEntries) {
+  const targetPageIdx = headingPageByAnchor[entry.anchor];
+  if (targetPageIdx === undefined) continue;
+  const displayPage = targetPageIdx - range.start + 1;
+  doc.switchToPage(entry.pageIdx);
+
+  doc.font(FONT_REGULAR).fontSize(BODY_SIZE);
+  const labelText = `${entry.number}. ${sanitize(entry.title)}`;
+  const textW = Math.min(
+    doc.widthOfString(labelText, { characterSpacing: 0, wordSpacing: 0 }),
+    tocLabelW,
+  );
+  const dotsStartX = tocLabelX + textW + 4;
+  const dotsEndX = tocPageColX - 4;
+
+  if (dotsEndX > dotsStartX + 6) {
+    doc.fillColor(COLORS.muted);
+    const dotW = doc.widthOfString(". ", { characterSpacing: 0, wordSpacing: 0 }) || 3;
+    let dx = dotsStartX;
+    let dots = "";
+    while (dx + dotW < dotsEndX) {
+      dots += ". ";
+      dx += dotW;
+    }
+    doc.text(dots, dotsStartX, entry.y, {
+      characterSpacing: 0, wordSpacing: 0,
+      width: dotsEndX - dotsStartX,
+      lineBreak: false,
+    });
+  }
+
+  doc.fillColor(COLORS.text)
+    .text(String(displayPage), tocPageColX, entry.y, {
+      characterSpacing: 0, wordSpacing: 0,
+      width: tocPageColW,
+      align: "right",
+      lineBreak: false,
+    });
+}
+
 for (let i = range.start; i < range.start + range.count; i++) {
   doc.switchToPage(i);
   const pageNum = i - range.start + 1;

@@ -301,9 +301,21 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
     }
   };
 
-  const writeSectionHeading = (number: string, title: string) => {
+  // Records the page index (0-based) where each section heading lives so the
+  // TOC entries can be patched with real page numbers in a second pass.
+  const headingPageByAnchor: Record<string, number> = {};
+
+  const writeSectionHeading = (number: string, title: string, anchor?: string) => {
     resetStyle();
     ensureSpace(48);
+    if (anchor) {
+      // Register a named destination at the current y on the current page so
+      // TOC links can jump here. pdfkit anchors the destination to doc.y.
+      try { doc.addNamedDestination(anchor); } catch { /* older pdfkit */ }
+      const range = doc.bufferedPageRange();
+      // Current page index (0-based) within this document.
+      headingPageByAnchor[anchor] = range.start + range.count - 1;
+    }
     doc.font(FONT_BOLD).fontSize(18).fillColor(COLORS.primary)
       .text(`${number}. ${sanitize(title)}`, MARGIN.left, doc.y, { ...TXT, width: CONTENT_W });
     const lineY = doc.y + 2;
@@ -313,7 +325,7 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
   };
 
   const writeSection = (section: HandbuchSection) => {
-    writeSectionHeading(section.number, section.title);
+    writeSectionHeading(section.number, section.title, `sec-${section.id}`);
     for (const block of section.blocks) writeBlock(block);
   };
 
@@ -343,12 +355,64 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
   doc.font(FONT_BOLD).fontSize(14).fillColor(COLORS.text)
     .text("Inhaltsverzeichnis", MARGIN.left, doc.y, { ...TXT, width: CONTENT_W });
   doc.y += 8;
-  doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
+
+  // ---- TOC entries with clickable links + page-number placeholders ---------
+  // Build a list of all TOC entries (sections + FAQ + Support). Each entry
+  // gets a clickable link annotation that jumps to its named destination.
+  // The page numbers are filled in during a second pass after every section
+  // has been rendered (so we know which physical page each heading lives on).
+  type TocEntry = {
+    number: string;
+    title: string;
+    anchor: string;
+    y: number;       // baseline y of the entry on the cover page
+    pageIdx: number; // page index (0-based) where this TOC line was drawn
+  };
+  const tocEntries: TocEntry[] = [];
+
+  const tocLineHeight = 14;
+  const tocLeftIndent = 12;
+  const tocPageColW = 32; // reserved width on the right for "123"
+  const tocLabelX = MARGIN.left + tocLeftIndent;
+  const tocLabelW = CONTENT_W - tocLeftIndent - tocPageColW - 4;
+  const tocPageColX = MARGIN.left + CONTENT_W - tocPageColW;
+
+  const drawTocEntry = (number: string, title: string, anchor: string) => {
+    doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.primary);
+    const text = `${number}. ${sanitize(title)}`;
+    const yStart = doc.y;
+    doc.text(text, tocLabelX, yStart, {
+      ...TXT, width: tocLabelW, lineBreak: false, ellipsis: true,
+    });
+    // Register clickable link covering the full row width (label + dots + page).
+    try {
+      doc.link(MARGIN.left, yStart - 2, CONTENT_W, tocLineHeight, { goTo: anchor });
+    } catch {
+      // Older pdfkit signatures: (x, y, w, h, urlOrOptions)
+      try { (doc as any).link(MARGIN.left, yStart - 2, CONTENT_W, tocLineHeight, anchor); } catch { /* ignore */ }
+    }
+    const pageRange = doc.bufferedPageRange();
+    tocEntries.push({
+      number, title, anchor, y: yStart,
+      pageIdx: pageRange.start + pageRange.count - 1,
+    });
+    doc.y = yStart + tocLineHeight;
+    resetStyle();
+  };
+
   HANDBUCH_BOXAUTOMAT_SECTIONS.forEach((section) => {
-    doc.text(`${section.number}. ${sanitize(section.title)}`, MARGIN.left + 12, doc.y, { ...TXT, width: CONTENT_W - 12 });
+    drawTocEntry(section.number, section.title, `sec-${section.id}`);
   });
-  doc.text(`${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1}. Häufig gestellte Fragen`, MARGIN.left + 12, doc.y, { ...TXT, width: CONTENT_W - 12 });
-  doc.text(`${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2}. Support & Kontakt`, MARGIN.left + 12, doc.y, { ...TXT, width: CONTENT_W - 12 });
+  drawTocEntry(
+    String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1),
+    "Häufig gestellte Fragen",
+    "sec-faq",
+  );
+  drawTocEntry(
+    String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2),
+    "Support & Kontakt",
+    "sec-support",
+  );
 
   // ---- Sections ----
   HANDBUCH_BOXAUTOMAT_SECTIONS.forEach((section, idx) => {
@@ -359,7 +423,7 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
   // ---- FAQ ----
   ensureSpace(60);
   doc.y += 12;
-  writeSectionHeading(String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1), "Häufig gestellte Fragen");
+  writeSectionHeading(String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1), "Häufig gestellte Fragen", "sec-faq");
   HANDBUCH_BOXAUTOMAT_FAQ.forEach((item) => {
     resetStyle();
     ensureSpace(40);
@@ -374,7 +438,7 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
   // ---- Support ----
   ensureSpace(60);
   doc.y += 12;
-  writeSectionHeading(String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2), "Support & Kontakt");
+  writeSectionHeading(String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2), "Support & Kontakt", "sec-support");
   resetStyle();
   doc.text("Bei Fragen oder Problemen wenden Sie sich bitte an:", MARGIN.left, doc.y, { ...TXT, width: CONTENT_W });
   doc.y += 6;
@@ -383,9 +447,53 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
   doc.text(`E-Mail: ${HANDBUCH_BOXAUTOMAT_META.publisher.email}`);
   doc.text(`Web:    ${HANDBUCH_BOXAUTOMAT_META.publisher.website}`);
 
-  // ---- Footer on every page ----
+  // ---- Patch TOC page numbers (second pass) --------------------------------
+  // Now that all sections are rendered, fill in the page number next to each
+  // TOC entry. We jump back to the cover page(s), draw dot leaders, and write
+  // the page number into the reserved right column.
   const range = doc.bufferedPageRange();
   const totalPages = range.count;
+  for (const entry of tocEntries) {
+    const targetPageIdx = headingPageByAnchor[entry.anchor];
+    if (targetPageIdx === undefined) continue;
+    // Display page number is 1-based and relative to range.start.
+    const displayPage = targetPageIdx - range.start + 1;
+    doc.switchToPage(entry.pageIdx);
+
+    // Re-measure where the entry's text ended so we know where to start dots.
+    doc.font(FONT_REGULAR).fontSize(BODY_SIZE);
+    const labelText = `${entry.number}. ${sanitize(entry.title)}`;
+    const textW = Math.min(
+      doc.widthOfString(labelText, TXT),
+      tocLabelW,
+    );
+    const dotsStartX = tocLabelX + textW + 4;
+    const dotsEndX = tocPageColX - 4;
+
+    // Dot leaders.
+    if (dotsEndX > dotsStartX + 6) {
+      doc.fillColor(COLORS.muted);
+      const dotChar = ".";
+      const dotW = doc.widthOfString(dotChar + " ", TXT) || 3;
+      let dx = dotsStartX;
+      let dots = "";
+      while (dx + dotW < dotsEndX) {
+        dots += ". ";
+        dx += dotW;
+      }
+      doc.text(dots, dotsStartX, entry.y, {
+        ...TXT, width: dotsEndX - dotsStartX, lineBreak: false,
+      });
+    }
+
+    // Page number, right-aligned.
+    doc.fillColor(COLORS.text)
+      .text(String(displayPage), tocPageColX, entry.y, {
+        ...TXT, width: tocPageColW, align: "right", lineBreak: false,
+      });
+  }
+
+  // ---- Footer on every page ----
   for (let i = range.start; i < range.start + range.count; i++) {
     doc.switchToPage(i);
     const pageNum = i - range.start + 1;
