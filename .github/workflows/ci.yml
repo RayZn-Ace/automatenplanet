@@ -37,3 +37,6 @@ jobs:
 
       - name: Type-check
         run: npm run typecheck
+
+      - name: Lint — no smart quotes
+        run: npm run lint:smart-quotes
