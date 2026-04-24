@@ -541,6 +541,58 @@ async function renderPdf(
   return { bytes, contentHash, generatedAt };
 }
 
+// ---- In-memory cache ------------------------------------------------------
+// Edge workers stay warm between requests, so caching the rendered PDF in
+// module scope means a hot worker serves repeat requests in single-digit ms
+// instead of re-running PDFKit. The cache is keyed by contentHash, so any
+// change to the manual data invalidates it automatically.
+type CachedPdf = {
+  bytes: Uint8Array;
+  contentHash: string;
+  generatedAt: string;
+  etag: string;
+  cachedAt: number; // epoch ms
+};
+
+let pdfCache: CachedPdf | null = null;
+let inFlight: Promise<CachedPdf> | null = null;
+
+async function getOrRenderPdf(contentHash: string): Promise<CachedPdf & { cacheStatus: "HIT" | "MISS" }> {
+  // Fast path: identical hash already in memory.
+  if (pdfCache && pdfCache.contentHash === contentHash) {
+    return { ...pdfCache, cacheStatus: "HIT" };
+  }
+
+  // De-duplicate concurrent renders: if a render is already running for
+  // this hash, await it instead of kicking off a parallel one.
+  if (inFlight) {
+    const result = await inFlight;
+    if (result.contentHash === contentHash) {
+      return { ...result, cacheStatus: "HIT" };
+    }
+  }
+
+  inFlight = (async () => {
+    const { bytes, generatedAt } = await renderPdf(contentHash);
+    const entry: CachedPdf = {
+      bytes,
+      contentHash,
+      generatedAt,
+      etag: `"${contentHash}"`,
+      cachedAt: Date.now(),
+    };
+    pdfCache = entry;
+    return entry;
+  })();
+
+  try {
+    const entry = await inFlight;
+    return { ...entry, cacheStatus: "MISS" };
+  } finally {
+    inFlight = null;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -553,13 +605,33 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { bytes, contentHash, generatedAt } = await renderPdf();
+    // 1) Compute the content hash WITHOUT building the PDF. This is a cheap
+    //    JSON.stringify + SHA-256, so it's safe to do on every request.
+    const contentHash = computeContentHash();
+    const etag = `"${contentHash}"`;
 
-    // Drift detection: compare the hash recomputed at request time against
-    // the EXPECTED_CONTENT_HASH that the build script pinned when it last
-    // synced the data file. If they differ, the function is serving newer
-    // content than the build expected — surface that in headers + logs so
-    // it's obvious during debugging.
+    // 2) HTTP-level conditional GET: if the client already has the same
+    //    hash, return 304 Not Modified and skip rendering entirely.
+    const ifNoneMatch = req.headers.get("if-none-match");
+    if (ifNoneMatch && ifNoneMatch === etag) {
+      return new Response(null, {
+        status: 304,
+        headers: {
+          ...corsHeaders,
+          ETag: etag,
+          "Cache-Control": "public, max-age=300, must-revalidate",
+          "X-Pdf-Content-Hash": contentHash,
+          "X-Pdf-Cache": "REVALIDATED",
+        },
+      });
+    }
+
+    // 3) In-memory cache: if a previous request in this worker already
+    //    rendered the same hash, reuse those bytes verbatim.
+    const { bytes, generatedAt, cacheStatus } = await getOrRenderPdf(contentHash);
+
+    // Drift detection: compare against the EXPECTED_CONTENT_HASH that the
+    // build script pinned when it last synced the data file.
     const inSync = contentHash === EXPECTED_CONTENT_HASH;
     if (!inSync) {
       console.warn(
@@ -567,7 +639,7 @@ Deno.serve(async (req) => {
       );
     } else {
       console.log(
-        `✓ PDF rendered (${bytes.byteLength} bytes, hash ${contentHash}, in sync with build ${SYNCED_AT}).`,
+        `✓ PDF served (${bytes.byteLength} bytes, hash ${contentHash}, cache ${cacheStatus}, in sync with build ${SYNCED_AT}).`,
       );
     }
 
@@ -576,13 +648,17 @@ Deno.serve(async (req) => {
       "Content-Type": "application/pdf",
       "Content-Disposition": 'inline; filename="handbuch-boxautomat.pdf"',
       "Content-Length": String(bytes.byteLength),
-      "Cache-Control": "public, max-age=300",
+      // `must-revalidate` lets the browser send If-None-Match after max-age
+      // expires, which then cheaply hits our 304 branch above.
+      "Cache-Control": "public, max-age=300, must-revalidate",
+      ETag: etag,
       "X-Pdf-Version": HANDBUCH_BOXAUTOMAT_META.version,
       "X-Pdf-Content-Hash": contentHash,
       "X-Pdf-Expected-Hash": EXPECTED_CONTENT_HASH,
       "X-Pdf-In-Sync": String(inSync),
       "X-Pdf-Synced-At": SYNCED_AT,
       "X-Pdf-Generated-At": generatedAt,
+      "X-Pdf-Cache": cacheStatus,
     };
 
     if (req.method === "HEAD") {
