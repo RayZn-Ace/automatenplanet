@@ -85,9 +85,11 @@ const CONTENT_BOTTOM = PAGE_H - MARGIN.bottom;
 // Reset text style helper – call before every block to neutralise leftover state.
 const resetStyle = () => {
   doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
-  // characterSpacing leaks across calls – always reset.
-  (doc as unknown as { _textOptions?: Record<string, unknown> })._textOptions = {};
 };
+
+// Default text options injected into every text() call to neutralise sticky
+// state (characterSpacing/wordSpacing leak across calls in pdfkit).
+const TXT = { characterSpacing: 0, wordSpacing: 0 } as const;
 
 // Add a manual page when remaining vertical space is too small.
 const ensureSpace = (needed: number) => {
