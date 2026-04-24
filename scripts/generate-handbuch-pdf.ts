@@ -697,6 +697,7 @@ doc.y += 12;
 writeSectionHeading(
   String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2),
   "Support & Kontakt",
+  "sec-support",
 );
 resetStyle();
 doc.text("Bei Fragen oder Problemen wenden Sie sich bitte an:", MARGIN.left, doc.y, { characterSpacing: 0, wordSpacing: 0, width: CONTENT_W,
