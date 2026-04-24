@@ -150,7 +150,7 @@ const renderBlock = (block: HandbuchBlock, key: string) => {
 };
 
 const renderSection = (section: HandbuchSection) => (
-  <div key={section.id}>
+  <div key={section.id} id={section.id} className="scroll-mt-28">
     <h2 className="text-2xl font-semibold text-foreground mb-3">
       {section.icon ? `${section.icon} ` : ""}
       {section.number}. {section.title}
