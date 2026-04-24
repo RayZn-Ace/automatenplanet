@@ -88,6 +88,10 @@ const Handbuch = () => {
   const pendingRef = useRef<{ x: number; y: number; s: number } | null>(null);
   const lastTapRef = useRef<{ time: number; x: number; y: number }>({ time: 0, x: 0, y: 0 });
 
+  // Smooth keyboard panning: animate the offset toward a target position via rAF.
+  const panTargetRef = useRef<{ x: number; y: number } | null>(null);
+  const panRafRef = useRef<number | null>(null);
+
   useEffect(() => {
     scaleRef.current = scale;
   }, [scale]);
@@ -121,16 +125,57 @@ const Handbuch = () => {
     [scheduleFrame],
   );
 
+  const stopPanAnimation = useCallback(() => {
+    if (panRafRef.current !== null) {
+      cancelAnimationFrame(panRafRef.current);
+      panRafRef.current = null;
+    }
+    panTargetRef.current = null;
+  }, []);
+
+  // Animate the image offset toward panTargetRef using a frame-rate independent
+  // exponential ease-out. Each rAF tick pulls the current offset closer to the
+  // target; new keypresses simply update the target while the loop is running.
+  const runPanAnimation = useCallback(() => {
+    if (panRafRef.current !== null) return;
+    let lastTs: number | null = null;
+    const tick = (ts: number) => {
+      panRafRef.current = null;
+      const target = panTargetRef.current;
+      if (!target) return;
+      const dt = lastTs === null ? 16 : Math.min(64, ts - lastTs);
+      lastTs = ts;
+      // Time constant ~80ms → snappy but visibly smooth.
+      const alpha = 1 - Math.exp(-dt / 80);
+      const cur = offsetRef.current;
+      const dx = target.x - cur.x;
+      const dy = target.y - cur.y;
+      const nextX = Math.abs(dx) < 0.5 ? target.x : cur.x + dx * alpha;
+      const nextY = Math.abs(dy) < 0.5 ? target.y : cur.y + dy * alpha;
+      offsetRef.current = { x: nextX, y: nextY };
+      applyTransform(nextX, nextY, scaleRef.current);
+      if (nextX === target.x && nextY === target.y) {
+        // Done – sync React state once so future renders match the DOM.
+        setOffset({ x: nextX, y: nextY });
+        panTargetRef.current = null;
+        return;
+      }
+      panRafRef.current = requestAnimationFrame(tick);
+    };
+    panRafRef.current = requestAnimationFrame(tick);
+  }, [applyTransform]);
+
   const resetView = useCallback(() => {
     if (rafRef.current !== null) {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     }
     pendingRef.current = null;
+    stopPanAnimation();
     setScale(1);
     setOffset({ x: 0, y: 0 });
     applyTransform(0, 0, 1);
-  }, [applyTransform]);
+  }, [applyTransform, stopPanAnimation]);
 
   // Pending focus to apply once the dialog has mounted and the image is laid out.
   const pendingFocusRef = useRef<{ xPct: number; yPct: number; scale: number } | null>(null);
@@ -272,6 +317,8 @@ const Handbuch = () => {
   };
 
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    // Cancel any in-flight keyboard pan animation – the gesture takes over.
+    stopPanAnimation();
     e.currentTarget.setPointerCapture(e.pointerId);
     pointersRef.current.set(e.pointerId, { id: e.pointerId, x: e.clientX, y: e.clientY });
 
@@ -428,11 +475,11 @@ const Handbuch = () => {
       if (key === "ArrowDown") dy = -step;
       if (key === "ArrowLeft") dx = step;
       if (key === "ArrowRight") dx = -step;
-      const nextX = offsetRef.current.x + dx;
-      const nextY = offsetRef.current.y + dy;
-      setOffset({ x: nextX, y: nextY });
-      offsetRef.current = { x: nextX, y: nextY };
-      applyTransform(nextX, nextY, scaleRef.current);
+      // Accumulate into the existing target so repeated key presses (or auto-repeat)
+      // build up momentum smoothly instead of snapping per keydown.
+      const base = panTargetRef.current ?? offsetRef.current;
+      panTargetRef.current = { x: base.x + dx, y: base.y + dy };
+      runPanAnimation();
     }
   };
 
