@@ -220,6 +220,62 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
     doc.y += 6;
   };
 
+  const decodeBase64 = (b64: string): Uint8Array => {
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  };
+
+  const writeImage = (
+    assetKey: string,
+    caption: string | undefined,
+    maxWidthPct: number,
+  ) => {
+    const asset = HANDBUCH_IMAGE_ASSETS_BASE64?.[assetKey];
+    if (!asset) {
+      console.warn(`Unknown image asset "${assetKey}" – skipping in edge PDF.`);
+      return;
+    }
+    let bytes: Uint8Array;
+    try {
+      bytes = decodeBase64(asset.base64);
+    } catch (err) {
+      console.warn(`Failed to decode image "${assetKey}":`, (err as Error).message);
+      return;
+    }
+
+    const pct = Math.min(100, Math.max(10, maxWidthPct || 100));
+    const targetW = (CONTENT_W * pct) / 100;
+    const captionH = caption ? 16 : 0;
+    if (CONTENT_BOTTOM - doc.y < 120) {
+      doc.addPage();
+      doc.x = MARGIN.left;
+      doc.y = MARGIN.top;
+    }
+    const availH = CONTENT_BOTTOM - doc.y - captionH - 8;
+
+    // Convert Uint8Array to Buffer-compatible input pdfkit accepts.
+    // pdfkit (npm) works with Buffer in Node and with Uint8Array via Buffer.from.
+    // Deno's Node compat ships Buffer.
+    // deno-lint-ignore no-explicit-any
+    const buf = (globalThis as any).Buffer ? (globalThis as any).Buffer.from(bytes) : bytes;
+
+    doc.image(buf, MARGIN.left, doc.y, { fit: [targetW, availH], align: "left" });
+    // deno-lint-ignore no-explicit-any
+    const img: any = (doc as any).openImage(buf);
+    const scale = Math.min(targetW / img.width, availH / img.height);
+    const renderedH = img.height * scale;
+    doc.y += renderedH + 6;
+
+    if (caption) {
+      doc.font(FONT_ITALIC).fontSize(BODY_SIZE - 1).fillColor(COLORS.muted)
+        .text(sanitize(caption), MARGIN.left, doc.y, { ...TXT, width: CONTENT_W });
+      resetStyle();
+      doc.y += 6;
+    }
+  };
+
   const writeBlock = (block: HandbuchBlock) => {
     switch (block.type) {
       case "paragraph":
@@ -237,6 +293,9 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
         return;
       case "table":
         writeTable(block.rows);
+        return;
+      case "image":
+        writeImage(block.assetKey, block.caption, block.maxWidthPct ?? 100);
         return;
     }
   };
