@@ -7,8 +7,15 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import handbuchElektronik from "@/assets/handbuch-elektronik.png";
 
+// Zoom limits + step are kept as named constants so they're easy to tweak and
+// shared by every entry point (buttons, keyboard, pinch). Keep MAX_SCALE
+// reasonable to avoid pixelation and runaway transforms.
 const MIN_SCALE = 1;
 const MAX_SCALE = 5;
+const ZOOM_STEP = 0.5;
+// Tolerance for floating-point comparisons when deciding whether a limit was hit.
+const SCALE_EPSILON = 0.001;
+const clampScale = (s: number) => Math.min(MAX_SCALE, Math.max(MIN_SCALE, s));
 
 type Pointer = { id: number; x: number; y: number };
 
@@ -263,17 +270,23 @@ const Handbuch = () => {
   }, []);
 
   const zoomIn = () => {
-    const next = Math.min(scaleRef.current + 0.5, MAX_SCALE);
+    const next = clampScale(scaleRef.current + ZOOM_STEP);
+    if (next === scaleRef.current) return; // Already at the upper limit
     setScale(next);
     applyTransform(offsetRef.current.x, offsetRef.current.y, next);
   };
   const zoomOut = () => {
-    const next = Math.max(scaleRef.current - 0.5, MIN_SCALE);
-    const nextOffset = next === 1 ? { x: 0, y: 0 } : offsetRef.current;
+    const next = clampScale(scaleRef.current - ZOOM_STEP);
+    if (next === scaleRef.current) return; // Already at the lower limit
+    const nextOffset = next === MIN_SCALE ? { x: 0, y: 0 } : offsetRef.current;
     setScale(next);
     setOffset(nextOffset);
     applyTransform(nextOffset.x, nextOffset.y, next);
   };
+
+  // Reactive flags so buttons can render disabled state and the right cursor.
+  const canZoomIn = scale < MAX_SCALE - SCALE_EPSILON;
+  const canZoomOut = scale > MIN_SCALE + SCALE_EPSILON;
 
   const getContainerPoint = (clientX: number, clientY: number) => {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -712,23 +725,52 @@ const Handbuch = () => {
                     Detailansicht der Steuerplatine. Tastatur: Plus und Minus zum Zoomen, Pfeiltasten zum Verschieben, 0 zum Zurücksetzen, Escape zum Schließen.
                   </DialogDescription>
                   <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 flex flex-wrap gap-1.5 sm:gap-2">
-                    <Button size="icon" variant="secondary" onClick={zoomIn} aria-label="Vergrößern">
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      onClick={zoomIn}
+                      disabled={!canZoomIn}
+                      aria-label="Vergrößern"
+                      title={canZoomIn ? `Vergrößern (+${ZOOM_STEP * 100}%)` : "Maximaler Zoom erreicht"}
+                      className="disabled:cursor-not-allowed disabled:opacity-50"
+                    >
                       <ZoomIn className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" variant="secondary" onClick={zoomOut} aria-label="Verkleinern">
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      onClick={zoomOut}
+                      disabled={!canZoomOut}
+                      aria-label="Verkleinern"
+                      title={canZoomOut ? `Verkleinern (−${ZOOM_STEP * 100}%)` : "Minimaler Zoom erreicht"}
+                      className="disabled:cursor-not-allowed disabled:opacity-50"
+                    >
                       <ZoomOut className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" variant="secondary" onClick={resetView} aria-label="Ansicht zurücksetzen">
+                    <Button size="icon" variant="secondary" onClick={resetView} aria-label="Ansicht zurücksetzen" title="Ansicht zurücksetzen (0)">
                       <RotateCcw className="h-4 w-4" />
                     </Button>
-                    <span className="inline-flex items-center rounded-md bg-secondary px-2.5 sm:px-3 text-xs text-secondary-foreground">
+                    <span
+                      className="inline-flex items-center rounded-md bg-secondary px-2.5 sm:px-3 text-xs text-secondary-foreground tabular-nums"
+                      aria-live="polite"
+                      title={`Zoom ${Math.round(scale * 100)}% · Bereich ${MIN_SCALE * 100}–${MAX_SCALE * 100}%`}
+                    >
                       {Math.round(scale * 100)}%
                     </span>
                   </div>
                   <div
                     ref={containerRef}
                     className="relative w-full h-full overflow-hidden flex items-center justify-center bg-black/40 select-none touch-none"
-                    style={{ cursor: scale > 1 ? (isDragging ? "grabbing" : "grab") : "default" }}
+                    style={{
+                      cursor:
+                        scale >= MAX_SCALE - SCALE_EPSILON
+                          ? "zoom-out"
+                          : scale > MIN_SCALE
+                            ? isDragging
+                              ? "grabbing"
+                              : "grab"
+                            : "zoom-in",
+                    }}
                     onPointerDown={onPointerDown}
                     onPointerMove={onPointerMove}
                     onPointerUp={endPointer}
