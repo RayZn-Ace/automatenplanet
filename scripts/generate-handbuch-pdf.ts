@@ -8,7 +8,15 @@
  * Manual run:  bun run scripts/generate-handbuch-pdf.ts
  */
 
-import { mkdirSync, createWriteStream, existsSync } from "node:fs";
+import {
+  mkdirSync,
+  createWriteStream,
+  existsSync,
+  copyFileSync,
+  statSync,
+  renameSync,
+  unlinkSync,
+} from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import PDFDocument from "pdfkit";
@@ -26,8 +34,61 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
 const outDir = resolve(projectRoot, "public/downloads");
 const outFile = resolve(outDir, "handbuch-boxautomat.pdf");
+const lastGoodFile = resolve(outDir, "handbuch-boxautomat.last-good.pdf");
+const tmpFile = resolve(outDir, "handbuch-boxautomat.pdf.tmp");
 
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
+
+// ---- Fallback handling ------------------------------------------------------
+// 1. Snapshot the current good PDF before regenerating, so we always keep the
+//    last successful version available for download.
+// 2. Render into a temporary file. On success, atomically rename it to the
+//    real output path. On any error, leave the previous PDF untouched and
+//    report the failure (the website's download button will fall back to
+//    the .last-good.pdf copy automatically).
+
+const snapshotLastGood = () => {
+  try {
+    if (existsSync(outFile) && statSync(outFile).size > 0) {
+      copyFileSync(outFile, lastGoodFile);
+    }
+  } catch (err) {
+    console.warn("⚠ Could not snapshot last-good PDF:", (err as Error).message);
+  }
+};
+
+const restoreFromLastGood = (reason: string) => {
+  console.error(`✗ PDF generation failed: ${reason}`);
+  try {
+    if (existsSync(tmpFile)) unlinkSync(tmpFile);
+  } catch {
+    /* ignore */
+  }
+  if (existsSync(lastGoodFile)) {
+    try {
+      copyFileSync(lastGoodFile, outFile);
+      console.warn(
+        `↩ Restored last-good PDF (${lastGoodFile}) to ${outFile}. ` +
+          "Website will continue serving the previous version.",
+      );
+    } catch (err) {
+      console.error("✗ Failed to restore last-good PDF:", (err as Error).message);
+    }
+  } else {
+    console.error(
+      "✗ No last-good PDF available to fall back to. The download will 404 until the next successful build.",
+    );
+  }
+  process.exit(1);
+};
+
+snapshotLastGood();
+
+process.on("uncaughtException", (err) => restoreFromLastGood(err.message));
+process.on("unhandledRejection", (reason) =>
+  restoreFromLastGood(reason instanceof Error ? reason.message : String(reason)),
+);
+
 
 // ---- Theme ------------------------------------------------------------------
 const COLORS = {
