@@ -58,14 +58,22 @@ const sanitize = (s: string): string =>
     .replace(/\s+/g, " ")
     .trim();
 
-// Build the PDF and return it as a single Uint8Array.
-async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; generatedAt: string }> {
+// ---- Content hash ---------------------------------------------------------
+// Cheap, deterministic fingerprint of the input data. Computing this *without*
+// running the full PDFKit pipeline lets us short-circuit cache hits.
+function computeContentHash(): string {
   const contentPayload = JSON.stringify({
     meta: HANDBUCH_BOXAUTOMAT_META,
     sections: HANDBUCH_BOXAUTOMAT_SECTIONS,
     faq: HANDBUCH_BOXAUTOMAT_FAQ,
   });
-  const contentHash = createHash("sha256").update(contentPayload).digest("hex").slice(0, 10);
+  return createHash("sha256").update(contentPayload).digest("hex").slice(0, 10);
+}
+
+// Build the PDF and return it as a single Uint8Array.
+async function renderPdf(
+  contentHash: string,
+): Promise<{ bytes: Uint8Array; contentHash: string; generatedAt: string }> {
   const generatedAt = new Date().toISOString();
 
   // deno-lint-ignore no-explicit-any
