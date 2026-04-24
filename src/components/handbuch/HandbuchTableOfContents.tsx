@@ -248,39 +248,40 @@ const HandbuchTableOfContents = ({ sections, extraEntries }: Props) => {
           mobileOpen ? "block mt-4" : "hidden",
         )}
       >
-        <div className="hidden sm:flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
-          <h2 className="text-sm uppercase tracking-widest text-primary">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+          {/* Desktop title (hidden on mobile — the trigger above already
+              shows the heading there). */}
+          <h2 className="hidden sm:block text-sm uppercase tracking-widest text-primary">
             Inhaltsübersicht
           </h2>
-        </div>
-
-        <div className="relative w-full sm:max-w-xs sm:mb-0 mb-3 sm:absolute sm:right-5 sm:top-5">
-          <Search
-            className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-            aria-hidden="true"
-          />
-          <label htmlFor="handbuch-toc-search" className="sr-only">
-            Inhaltsverzeichnis durchsuchen
-          </label>
-          <input
-            id="handbuch-toc-search"
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Suche z. B. Sicherheit, Fehler …"
-            className="w-full h-9 rounded-md bg-background/60 border border-white/10 pl-8 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition"
-            aria-describedby="handbuch-toc-search-status"
-          />
-          {query && (
-            <button
-              type="button"
-              onClick={() => setQuery("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-white/10 flex items-center justify-center transition"
-              aria-label="Suche zurücksetzen"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
+          <div className="relative w-full sm:max-w-xs">
+            <Search
+              className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <label htmlFor="handbuch-toc-search" className="sr-only">
+              Inhaltsverzeichnis durchsuchen
+            </label>
+            <input
+              id="handbuch-toc-search"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Suche z. B. Sicherheit, Fehler …"
+              className="w-full h-9 rounded-md bg-background/60 border border-white/10 pl-8 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition"
+              aria-describedby="handbuch-toc-search-status"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-white/10 flex items-center justify-center transition"
+                aria-label="Suche zurücksetzen"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
         </div>
 
         <p
