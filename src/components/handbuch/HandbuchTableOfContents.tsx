@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, X } from "lucide-react";
+import { ChevronDown, List, Search, X } from "lucide-react";
 import type { HandbuchBlock, HandbuchSection } from "@/data/handbuchBoxautomat";
 import { cn } from "@/lib/utils";
 
@@ -184,100 +184,164 @@ const HandbuchTableOfContents = ({ sections, extraEntries }: Props) => {
   const linkActive =
     "border-primary text-primary font-medium bg-primary/5";
 
+  // Mobile collapsible state. The TOC starts collapsed on small screens to
+  // free up space; on >= sm it is always visible regardless of this flag.
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Build a short label for the mobile trigger that reflects the current
+  // reading position so the collapsed TOC still gives context.
+  const activeLabel = useMemo(() => {
+    if (!activeId) return "Inhaltsübersicht";
+    const sec = sections.find((s) => s.id === activeId);
+    if (sec) return `${sec.number}. ${sec.title}`;
+    const extra = extraEntries.find((e) => e.id === activeId);
+    return extra?.label ?? "Inhaltsübersicht";
+  }, [activeId, sections, extraEntries]);
+
+  // Close the mobile menu after the user picks a link so they immediately
+  // see the section content instead of having to scroll past the TOC.
+  const handleLinkClick = () => {
+    if (window.matchMedia("(max-width: 639px)").matches) {
+      setMobileOpen(false);
+    }
+  };
+
   return (
     <nav
       aria-label="Inhaltsübersicht"
-      className="mb-10 rounded-lg border border-white/10 bg-white/5 p-5"
+      className="mb-10 rounded-lg border border-white/10 bg-white/5 p-4 sm:p-5"
     >
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
-        <h2 className="text-sm uppercase tracking-widest text-primary">
-          Inhaltsübersicht
-        </h2>
-        <div className="relative w-full sm:max-w-xs">
-          <Search
-            className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-            aria-hidden="true"
-          />
-          <label htmlFor="handbuch-toc-search" className="sr-only">
-            Inhaltsverzeichnis durchsuchen
-          </label>
-          <input
-            id="handbuch-toc-search"
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Suche z. B. Sicherheit, Fehler …"
-            className="w-full h-9 rounded-md bg-background/60 border border-white/10 pl-8 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition"
-            aria-describedby="handbuch-toc-search-status"
-          />
-          {query && (
-            <button
-              type="button"
-              onClick={() => setQuery("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-white/10 flex items-center justify-center transition"
-              aria-label="Suche zurücksetzen"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      <p
-        id="handbuch-toc-search-status"
-        className="sr-only"
-        role="status"
-        aria-live="polite"
+      {/* ---- Mobile disclosure trigger (hidden on >= sm) ---------------- */}
+      <button
+        type="button"
+        onClick={() => setMobileOpen((v) => !v)}
+        aria-expanded={mobileOpen}
+        aria-controls="handbuch-toc-panel"
+        className="sm:hidden w-full flex items-center justify-between gap-3 text-left"
       >
-        {isSearching
-          ? `${totalVisible} Treffer für „${query}“.`
-          : `${totalVisible} Kapitel verfügbar.`}
-      </p>
+        <span className="flex items-center gap-2 min-w-0">
+          <List className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
+          <span className="flex flex-col min-w-0">
+            <span className="text-xs uppercase tracking-widest text-primary leading-tight">
+              Inhaltsübersicht
+            </span>
+            <span className="text-sm text-foreground/80 truncate">
+              {activeLabel}
+            </span>
+          </span>
+        </span>
+        <ChevronDown
+          className={cn(
+            "h-5 w-5 text-muted-foreground shrink-0 transition-transform",
+            mobileOpen && "rotate-180",
+          )}
+          aria-hidden="true"
+        />
+      </button>
 
-      {totalVisible === 0 ? (
-        <p className="text-sm text-muted-foreground italic">
-          Keine Treffer für „{query}“. Versuche einen anderen Begriff wie
-          „Wartung“, „Münzprüfer“ oder „Display“.
+      {/* ---- Collapsible panel: hidden on mobile until opened, always
+              visible on >= sm. ----------------------------------------- */}
+      <div
+        id="handbuch-toc-panel"
+        className={cn(
+          "sm:block",
+          mobileOpen ? "block mt-4" : "hidden",
+        )}
+      >
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+          {/* Desktop title (hidden on mobile — the trigger above already
+              shows the heading there). */}
+          <h2 className="hidden sm:block text-sm uppercase tracking-widest text-primary">
+            Inhaltsübersicht
+          </h2>
+          <div className="relative w-full sm:max-w-xs">
+            <Search
+              className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <label htmlFor="handbuch-toc-search" className="sr-only">
+              Inhaltsverzeichnis durchsuchen
+            </label>
+            <input
+              id="handbuch-toc-search"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Suche z. B. Sicherheit, Fehler …"
+              className="w-full h-9 rounded-md bg-background/60 border border-white/10 pl-8 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition"
+              aria-describedby="handbuch-toc-search-status"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-white/10 flex items-center justify-center transition"
+                aria-label="Suche zurücksetzen"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <p
+          id="handbuch-toc-search-status"
+          className="sr-only"
+          role="status"
+          aria-live="polite"
+        >
+          {isSearching
+            ? `${totalVisible} Treffer für „${query}“.`
+            : `${totalVisible} Kapitel verfügbar.`}
         </p>
-      ) : (
-        <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 list-none pl-0 text-sm">
-          {visibleSections.map(({ section }) => {
-            const isActive = section.id === activeId;
-            return (
-              <li key={section.id}>
-                <a
-                  href={`#${section.id}`}
-                  aria-current={isActive ? "location" : undefined}
-                  className={cn(linkBase, isActive ? linkActive : linkInactive)}
-                >
-                  <span className={cn("mr-1", isActive ? "text-primary/80" : "text-foreground/60")}>
-                    {section.number}.
-                  </span>
-                  {section.icon ? `${section.icon} ` : ""}
-                  {section.title}
-                </a>
-              </li>
-            );
-          })}
-          {visibleExtras.map(({ entry }) => {
-            const isActive = entry.id === activeId;
-            return (
-              <li key={entry.id}>
-                <a
-                  href={`#${entry.id}`}
-                  aria-current={isActive ? "location" : undefined}
-                  className={cn(linkBase, isActive ? linkActive : linkInactive)}
-                >
-                  <span className={cn("mr-1", isActive ? "text-primary/80" : "text-foreground/60")}>
-                    {entry.icon}
-                  </span>
-                  {entry.label}
-                </a>
-              </li>
-            );
-          })}
-        </ol>
-      )}
+
+        {totalVisible === 0 ? (
+          <p className="text-sm text-muted-foreground italic">
+            Keine Treffer für „{query}“. Versuche einen anderen Begriff wie
+            „Wartung“, „Münzprüfer“ oder „Display“.
+          </p>
+        ) : (
+          <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 sm:gap-y-2 list-none pl-0 text-sm">
+            {visibleSections.map(({ section }) => {
+              const isActive = section.id === activeId;
+              return (
+                <li key={section.id}>
+                  <a
+                    href={`#${section.id}`}
+                    onClick={handleLinkClick}
+                    aria-current={isActive ? "location" : undefined}
+                    className={cn(linkBase, isActive ? linkActive : linkInactive)}
+                  >
+                    <span className={cn("mr-1", isActive ? "text-primary/80" : "text-foreground/60")}>
+                      {section.number}.
+                    </span>
+                    {section.icon ? `${section.icon} ` : ""}
+                    {section.title}
+                  </a>
+                </li>
+              );
+            })}
+            {visibleExtras.map(({ entry }) => {
+              const isActive = entry.id === activeId;
+              return (
+                <li key={entry.id}>
+                  <a
+                    href={`#${entry.id}`}
+                    onClick={handleLinkClick}
+                    aria-current={isActive ? "location" : undefined}
+                    className={cn(linkBase, isActive ? linkActive : linkInactive)}
+                  >
+                    <span className={cn("mr-1", isActive ? "text-primary/80" : "text-foreground/60")}>
+                      {entry.icon}
+                    </span>
+                    {entry.label}
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        )}
+      </div>
     </nav>
   );
 };
