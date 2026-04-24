@@ -473,11 +473,11 @@ const Handbuch = () => {
       if (key === "ArrowDown") dy = -step;
       if (key === "ArrowLeft") dx = step;
       if (key === "ArrowRight") dx = -step;
-      const nextX = offsetRef.current.x + dx;
-      const nextY = offsetRef.current.y + dy;
-      setOffset({ x: nextX, y: nextY });
-      offsetRef.current = { x: nextX, y: nextY };
-      applyTransform(nextX, nextY, scaleRef.current);
+      // Accumulate into the existing target so repeated key presses (or auto-repeat)
+      // build up momentum smoothly instead of snapping per keydown.
+      const base = panTargetRef.current ?? offsetRef.current;
+      panTargetRef.current = { x: base.x + dx, y: base.y + dy };
+      runPanAnimation();
     }
   };
 
