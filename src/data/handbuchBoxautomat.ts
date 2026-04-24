@@ -11,7 +11,20 @@ export type HandbuchBlock =
   | { type: "list"; ordered?: boolean; items: string[] }
   | { type: "subheading"; text: string }
   | { type: "callout"; variant: "info" | "warning"; title?: string; lines: string[] }
-  | { type: "table"; rows: { label: string; value: string }[] };
+  | { type: "table"; rows: { label: string; value: string }[] }
+  | {
+      type: "image";
+      /**
+       * Asset key looked up by both the React page (via /images/handbuch/...)
+       * and the PDF generators (via the assets manifest in
+       * src/data/handbuchAssets.ts).
+       */
+      assetKey: string;
+      alt: string;
+      caption?: string;
+      /** Optional max width in % of the content area (default 100). */
+      maxWidthPct?: number;
+    };
 
 export type HandbuchSection = {
   id: string;
