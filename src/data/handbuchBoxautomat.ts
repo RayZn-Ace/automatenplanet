@@ -269,8 +269,8 @@ export const HANDBUCH_BOXAUTOMAT_SECTIONS: HandbuchSection[] = [
         alt: "Premium Boxer Circuit Board mit beschrifteten Anschlüssen: Sensor, Lautsprecher, Stromversorgung, RGB- und Pixel-LED, Combo Motor, Musik-SD-Karte, Highscore Reset, Münzwurf, Menüführung und großes Display.",
         caption: "Premium Platine – Beschriftung aller Anschlüsse",
       },
-      ],
-    },
+    ],
+  },
   {
     id: "montage",
     number: "8",
