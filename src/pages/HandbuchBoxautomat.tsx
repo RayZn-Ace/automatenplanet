@@ -4,6 +4,7 @@ import Footer from "@/components/layout/Footer";
 import HandbuchPdfDownload from "@/components/handbuch/HandbuchPdfDownload";
 import HandbuchPdfPreview from "@/components/handbuch/HandbuchPdfPreview";
 import HandbuchTableOfContents from "@/components/handbuch/HandbuchTableOfContents";
+import HandbuchAnchorHeading from "@/components/handbuch/HandbuchAnchorHeading";
 import {
   HANDBUCH_BOXAUTOMAT_FAQ,
   HANDBUCH_BOXAUTOMAT_META,
