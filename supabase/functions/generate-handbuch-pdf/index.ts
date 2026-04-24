@@ -8,7 +8,7 @@
 // The renderer mirrors scripts/generate-handbuch-pdf.ts so the on-demand PDF
 // is identical to the build-time one.
 
-import PDFDocument from "npm:pdfkit@0.15.0";
+import PDFDocument from "pdfkit";
 import { createHash } from "node:crypto";
 import {
   HANDBUCH_BOXAUTOMAT_FAQ,
