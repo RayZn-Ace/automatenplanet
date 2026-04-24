@@ -150,7 +150,7 @@ const renderBlock = (block: HandbuchBlock, key: string) => {
 };
 
 const renderSection = (section: HandbuchSection) => (
-  <div key={section.id}>
+  <div key={section.id} id={section.id} className="scroll-mt-28">
     <h2 className="text-2xl font-semibold text-foreground mb-3">
       {section.icon ? `${section.icon} ` : ""}
       {section.number}. {section.title}
@@ -234,10 +234,51 @@ const HandbuchBoxautomat = () => {
             </div>
           </header>
 
+          <nav
+            aria-label="Inhaltsübersicht"
+            className="mb-10 rounded-lg border border-white/10 bg-white/5 p-5"
+          >
+            <h2 className="text-sm uppercase tracking-widest text-primary mb-3">
+              Inhaltsübersicht
+            </h2>
+            <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 list-none pl-0 text-sm">
+              {HANDBUCH_BOXAUTOMAT_SECTIONS.map((section) => (
+                <li key={section.id}>
+                  <a
+                    href={`#${section.id}`}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <span className="text-foreground/60 mr-1">{section.number}.</span>
+                    {section.icon ? `${section.icon} ` : ""}
+                    {section.title}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a
+                  href="#faq"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <span className="text-foreground/60 mr-1">❓</span>
+                  Häufig gestellte Fragen
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#support"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <span className="text-foreground/60 mr-1">📞</span>
+                  Support
+                </a>
+              </li>
+            </ol>
+          </nav>
+
           <section className="prose prose-invert max-w-none space-y-8 text-muted-foreground">
             {HANDBUCH_BOXAUTOMAT_SECTIONS.map(renderSection)}
 
-            <div>
+            <div id="faq" className="scroll-mt-28">
               <h2 className="text-2xl font-semibold text-foreground mb-3">
                 ❓ Häufig gestellte Fragen zum Boxautomat
               </h2>
@@ -268,7 +309,7 @@ const HandbuchBoxautomat = () => {
               </div>
             </div>
 
-            <div>
+            <div id="support" className="scroll-mt-28">
               <h2 className="text-2xl font-semibold text-foreground mb-3">📞 Support</h2>
               <p>Bei Fragen oder Problemen:</p>
               <p className="mt-2">
