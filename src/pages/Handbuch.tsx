@@ -12,6 +12,28 @@ const MAX_SCALE = 5;
 
 type Pointer = { id: number; x: number; y: number };
 
+type Hotspot = {
+  id: string;
+  label: string;
+  description: string;
+  // Position of the hotspot center as a fraction of the image (0..1).
+  x: number;
+  y: number;
+  // Target zoom scale when this hotspot is opened.
+  scale: number;
+};
+
+const HOTSPOTS: Hotspot[] = [
+  { id: "ballwurfpumpe", label: "Ballwurfpumpe", description: "Anschluss der Ballwurfpumpe (oben links auf der Platine)", x: 0.28, y: 0.17, scale: 3.2 },
+  { id: "display", label: "Display A & B", description: "Anschluss für die beiden Display-Module", x: 0.79, y: 0.17, scale: 3.2 },
+  { id: "stromversorgung", label: "220V Strom", description: "Stromanschluss 220V (links auf der Platine)", x: 0.275, y: 0.45, scale: 3 },
+  { id: "lautsprecher", label: "Lautsprecher", description: "Lautsprecher-Anschluss (links unter dem 220V-Anschluss)", x: 0.27, y: 0.535, scale: 3.2 },
+  { id: "lautstaerke", label: "Lautstärke", description: "Drehregler für die Lautstärke", x: 0.34, y: 0.52, scale: 3.5 },
+  { id: "dip", label: "DIP-Schalter", description: "System-Einstellungen – alle Schalter müssen auf OFF stehen", x: 0.435, y: 0.525, scale: 4 },
+  { id: "torswitch", label: "Torschalter A & B", description: "Anschlüsse der Torschalter A und B", x: 0.515, y: 0.65, scale: 3.2 },
+  { id: "muenz", label: "Münzeinwurf", description: "Anschluss für den Münzeinwurf", x: 0.62, y: 0.65, scale: 3.2 },
+];
+
 const Handbuch = () => {
   const [zoomOpen, setZoomOpen] = useState(false);
   // Committed view – kept in state so React renders reflect the latest zoom/pan
