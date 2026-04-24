@@ -109,9 +109,73 @@ const Handbuch = () => {
     applyTransform(0, 0, 1);
   }, [applyTransform]);
 
+  // Pending focus to apply once the dialog has mounted and the image is laid out.
+  const pendingFocusRef = useRef<{ xPct: number; yPct: number; scale: number } | null>(null);
+
+  const focusOn = useCallback(
+    (xPct: number, yPct: number, targetScale: number) => {
+      const img = imgRef.current;
+      const container = containerRef.current;
+      if (!img || !container) return;
+      const cRect = container.getBoundingClientRect();
+      // The image is rendered at its natural CSS size (max-w/max-h apply).
+      // offsetWidth/Height give the laid-out (un-transformed) size.
+      const w = img.offsetWidth;
+      const h = img.offsetHeight;
+      // Container-space coordinate (origin = container center) of the target
+      // point on the un-transformed image.
+      const localX = (xPct - 0.5) * w;
+      const localY = (yPct - 0.5) * h;
+      // After applying scale around the image center, that point lives at
+      // (localX * s, localY * s). To bring it to the container center we need
+      // an offset of -localX * s, -localY * s.
+      const s = Math.min(MAX_SCALE, Math.max(MIN_SCALE, targetScale));
+      const nx = -localX * s;
+      const ny = -localY * s;
+      // Constrain so we never reveal empty space outside the image.
+      const maxX = ((w * s - cRect.width) / 2);
+      const maxY = ((h * s - cRect.height) / 2);
+      const clampedX = Math.max(-Math.max(maxX, 0), Math.min(Math.max(maxX, 0), nx));
+      const clampedY = Math.max(-Math.max(maxY, 0), Math.min(Math.max(maxY, 0), ny));
+      setScale(s);
+      setOffset({ x: clampedX, y: clampedY });
+      scaleRef.current = s;
+      offsetRef.current = { x: clampedX, y: clampedY };
+      applyTransform(clampedX, clampedY, s);
+    },
+    [applyTransform],
+  );
+
+  const openHotspot = (xPct: number, yPct: number, targetScale = 3) => {
+    pendingFocusRef.current = { xPct, yPct, scale: targetScale };
+    setZoomOpen(true);
+  };
+
+  // Apply pending focus once the dialog & image are in the DOM.
+  useEffect(() => {
+    if (!zoomOpen) return;
+    const pending = pendingFocusRef.current;
+    if (!pending) return;
+    const img = imgRef.current;
+    if (!img) return;
+    const run = () => {
+      focusOn(pending.xPct, pending.yPct, pending.scale);
+      pendingFocusRef.current = null;
+    };
+    if (img.complete && img.naturalWidth > 0) {
+      // Wait one frame so the dialog has finished its mount/layout animation.
+      requestAnimationFrame(run);
+    } else {
+      img.addEventListener("load", () => requestAnimationFrame(run), { once: true });
+    }
+  }, [zoomOpen, focusOn]);
+
   const handleOpenChange = (open: boolean) => {
     setZoomOpen(open);
-    if (!open) resetView();
+    if (!open) {
+      pendingFocusRef.current = null;
+      resetView();
+    }
   };
 
   const zoomIn = () => {
