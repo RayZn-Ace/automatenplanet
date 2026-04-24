@@ -449,20 +449,52 @@ const Handbuch = () => {
 
   // Keyboard controls inside the zoom dialog.
   // Esc is handled natively by Radix Dialog – we add +/- for zoom and arrows for panning.
+  // We bind this only on DialogContent, so it never fires globally. As an extra
+  // safeguard we ignore keystrokes that originate from editable controls
+  // (inputs, textareas, contenteditable, selects) so the shortcuts never
+  // hijack typing.
   const onDialogKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!zoomOpen) return;
+
+    // Only act on events whose target is inside the dialog content – guards
+    // against synthetic events bubbling from portaled siblings.
+    const dialogEl = e.currentTarget;
+    const targetNode = e.target as Node | null;
+    if (targetNode && !dialogEl.contains(targetNode)) return;
+
+    // Don't steal keys from form fields or contenteditable surfaces.
+    const targetEl = e.target as HTMLElement | null;
+    if (targetEl) {
+      const tag = targetEl.tagName;
+      const isEditable =
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        tag === "SELECT" ||
+        targetEl.isContentEditable;
+      if (isEditable) return;
+    }
+
+    // Ignore when modifier keys for OS/browser shortcuts are held
+    // (Ctrl/Cmd/Alt) so we don't conflict with browser zoom, tab switching,
+    // history navigation, etc. Shift is allowed because we use it for larger pan steps.
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
     const key = e.key;
     if (key === "+" || key === "=") {
       e.preventDefault();
+      e.stopPropagation();
       zoomIn();
       return;
     }
     if (key === "-" || key === "_") {
       e.preventDefault();
+      e.stopPropagation();
       zoomOut();
       return;
     }
     if (key === "0") {
       e.preventDefault();
+      e.stopPropagation();
       resetView();
       return;
     }
@@ -473,7 +505,10 @@ const Handbuch = () => {
       key === "ArrowRight"
     ) {
       if (scaleRef.current === 1) return;
+      // Prevent the page from scrolling and stop other listeners (e.g. Radix
+      // focus-trap roving) from also reacting to the same arrow press.
       e.preventDefault();
+      e.stopPropagation();
       const step = e.shiftKey ? 120 : 40;
       let dx = 0;
       let dy = 0;
