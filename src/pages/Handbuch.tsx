@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import handbuchElektronik from "@/assets/handbuch-elektronik.png";
 
 const Handbuch = () => {
   return (
@@ -103,6 +104,17 @@ const Handbuch = () => {
                 <p className="font-semibold text-foreground">⚠️ Wichtig:</p>
                 <p>Alle DIP-Schalter müssen auf OFF stehen, sonst sperrt sich das System.</p>
               </div>
+              <figure className="mt-6">
+                <img
+                  src={handbuchElektronik}
+                  alt="Steuerplatine Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V, Lautsprecher, Lautstärke, System-Einstellung (DIP-Schalter), Torswitch A & B, Münzwurf, Display A & B und Ballwurfpumpe"
+                  loading="lazy"
+                  className="w-full h-auto rounded-lg border border-white/10 bg-black/20"
+                />
+                <figcaption className="text-xs text-muted-foreground mt-2 text-center">
+                  Übersicht der Anschlüsse auf der Steuerplatine
+                </figcaption>
+              </figure>
             </div>
 
             <div>
