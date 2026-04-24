@@ -1,6 +1,95 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import type { HandbuchBlock, HandbuchSection } from "@/data/handbuchBoxautomat";
+import { cn } from "@/lib/utils";
+
+/**
+ * Scroll-spy: returns the id of the section heading currently closest to the
+ * top of the viewport (just below the sticky navbar). Uses IntersectionObserver
+ * with a top-biased rootMargin so a section becomes "active" as soon as its
+ * heading scrolls past the navbar — not only when it's centered.
+ */
+const useActiveSection = (ids: string[]): string | null => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || ids.length === 0) return;
+
+    // Track which observed elements are currently intersecting the
+    // top-of-viewport band defined by rootMargin.
+    const visible = new Map<string, IntersectionObserverEntry>();
+
+    const elements = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (elements.length === 0) return;
+
+    const recompute = () => {
+      if (visible.size === 0) {
+        // Nothing in the band → keep whatever is closest above the navbar.
+        // Find the last section whose top is above the trigger line.
+        const triggerY = 140; // ~ navbar height + small offset
+        let candidate: string | null = null;
+        for (const el of elements) {
+          const top = el.getBoundingClientRect().top;
+          if (top - triggerY <= 0) candidate = el.id;
+          else break;
+        }
+        setActiveId((prev) => (prev === candidate ? prev : candidate));
+        return;
+      }
+      // Pick the visible entry whose top is highest (closest to the trigger
+      // line). That's the section the reader is currently in.
+      let best: IntersectionObserverEntry | null = null;
+      for (const entry of visible.values()) {
+        if (!best || entry.boundingClientRect.top < best.boundingClientRect.top) {
+          best = entry;
+        }
+      }
+      const nextId = best?.target.id ?? null;
+      setActiveId((prev) => (prev === nextId ? prev : nextId));
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            visible.set(entry.target.id, entry);
+          } else {
+            visible.delete(entry.target.id);
+          }
+        }
+        recompute();
+      },
+      {
+        // Activate when the heading enters the band between ~120px from the
+        // top (just under the sticky navbar) and 60% from the top. This
+        // matches the user's reading focus area.
+        rootMargin: "-120px 0px -40% 0px",
+        threshold: [0, 1],
+      },
+    );
+
+    for (const el of elements) observer.observe(el);
+
+    // Run once on mount in case the page is loaded mid-scroll (e.g. via
+    // anchor link or browser back/forward).
+    recompute();
+    // Also recompute on scroll as a fallback for the "nothing visible" case.
+    const onScroll = () => {
+      if (visible.size === 0) recompute();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [ids]);
+
+  return activeId;
+};
 
 type ExtraEntry = {
   id: string;
