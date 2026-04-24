@@ -540,12 +540,7 @@ const Handbuch = () => {
                 <p>Alle DIP-Schalter müssen auf OFF stehen, sonst sperrt sich das System.</p>
               </div>
               <figure className="mt-6 -mx-4 sm:mx-0">
-                <button
-                  type="button"
-                  onClick={() => setZoomOpen(true)}
-                  className="group relative block w-full overflow-hidden sm:rounded-lg border-y sm:border border-white/10 bg-black/20 focus:outline-none focus:ring-2 focus:ring-primary"
-                  aria-label="Steuerplatine des Tischkicker Pro CL vergrößern – Detailansicht öffnen"
-                >
+                <div className="group relative block w-full overflow-hidden sm:rounded-lg border-y sm:border border-white/10 bg-black/20">
                   <img
                     src={handbuchElektronik}
                     alt="Steuerplatine des Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V Strom, Lautsprecher, Lautstärkeregler, DIP-Schalter (System-Einstellung), Torschalter A & B, Münzeinwurf, Display A & B und Ballwurfpumpe"
@@ -554,18 +549,55 @@ const Handbuch = () => {
                     width={1600}
                     height={1300}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 768px"
-                    className="block w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                    className="block w-full h-auto object-contain"
                   />
-                  <span className="absolute top-2 right-2 sm:top-3 sm:right-3 inline-flex items-center gap-1 rounded-md bg-black/70 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm shadow-lg">
+
+                  {/* Hotspots over the board image */}
+                  {HOTSPOTS.map((h) => (
+                    <button
+                      key={h.id}
+                      type="button"
+                      onClick={() => openHotspot(h.x, h.y, h.scale)}
+                      aria-label={`${h.label} – Detailansicht öffnen: ${h.description}`}
+                      title={h.label}
+                      className="absolute -translate-x-1/2 -translate-y-1/2 h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary/90 text-primary-foreground text-xs font-bold shadow-lg ring-2 ring-background/80 hover:scale-125 hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-transform animate-pulse hover:animate-none"
+                      style={{ left: `${h.x * 100}%`, top: `${h.y * 100}%` }}
+                    >
+                      <span className="sr-only">{h.label}</span>
+                      <ZoomIn className="h-3.5 w-3.5 sm:h-4 sm:w-4 mx-auto" aria-hidden="true" />
+                    </button>
+                  ))}
+
+                  {/* Open fullscreen (without hotspot focus) */}
+                  <button
+                    type="button"
+                    onClick={() => setZoomOpen(true)}
+                    aria-label="Steuerplatine des Tischkicker Pro CL vergrößern – Vollbild-Detailansicht öffnen"
+                    className="absolute top-2 right-2 sm:top-3 sm:right-3 inline-flex items-center gap-1 rounded-md bg-black/70 hover:bg-black/85 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
                     <ZoomIn className="h-3.5 w-3.5" />
-                    Zoom
-                  </span>
-                </button>
+                    Vollbild
+                  </button>
+                </div>
                 <figcaption className="text-xs text-muted-foreground mt-2 px-4 sm:px-0 text-center">
-                  Steuerplatine des Tischkicker Pro CL – Übersicht aller Anschlüsse.
-                  <span className="hidden sm:inline"> Zum Vergrößern anklicken.</span>
-                  <span className="sm:hidden"> Zum Vergrößern tippen.</span>
+                  Steuerplatine des Tischkicker Pro CL – tippen Sie auf einen Punkt, um direkt zum Bauteil zu zoomen.
                 </figcaption>
+
+                {/* Hotspot legend / quick links – also accessible without hovering tiny dots */}
+                <ul className="mt-3 px-4 sm:px-0 flex flex-wrap gap-2 justify-center">
+                  {HOTSPOTS.map((h) => (
+                    <li key={h.id}>
+                      <button
+                        type="button"
+                        onClick={() => openHotspot(h.x, h.y, h.scale)}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/5 hover:bg-primary/15 px-3 py-1 text-xs text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <ZoomIn className="h-3 w-3 text-primary" aria-hidden="true" />
+                        {h.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               </figure>
 
               <Dialog open={zoomOpen} onOpenChange={handleOpenChange}>
