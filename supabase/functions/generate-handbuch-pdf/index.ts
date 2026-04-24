@@ -11,6 +11,7 @@
 // @ts-ignore -- npm specifier resolved at runtime by Deno edge runtime
 import PDFDocument from "npm:pdfkit@0.15.0";
 import { createHash } from "node:crypto";
+import { Buffer } from "node:buffer";
 import {
   EXPECTED_CONTENT_HASH,
   HANDBUCH_BOXAUTOMAT_FAQ,
