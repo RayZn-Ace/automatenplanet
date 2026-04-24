@@ -82,8 +82,7 @@ const pageHeight = doc.page.height;
 const contentWidth = pageWidth - doc.page.margins.left - doc.page.margins.right;
 
 // ---- Footer hook ------------------------------------------------------------
-// Draw on every page (including subsequent ones) by listening to pageAdded.
-const drawFooter = () => {
+const drawFooter = (pageNumber: number, totalPages: number) => {
   const y = pageHeight - 45;
   doc
     .save()
@@ -94,30 +93,29 @@ const drawFooter = () => {
     .stroke()
     .restore();
 
+  const leftBlock = `${HANDBUCH_BOXAUTOMAT_META.publisher.name} · ${HANDBUCH_BOXAUTOMAT_META.publisher.website} · ${HANDBUCH_BOXAUTOMAT_META.publisher.email}`;
+  const dateBlock = `Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated} · Version ${HANDBUCH_BOXAUTOMAT_META.version}`;
+  const pageBlock = `Seite ${pageNumber} / ${totalPages}`;
+
   doc
     .font(FONT_REGULAR)
     .fontSize(8)
     .fillColor(COLORS.muted)
-    .text(
-      `${HANDBUCH_BOXAUTOMAT_META.publisher.name} · ${HANDBUCH_BOXAUTOMAT_META.publisher.website} · ${HANDBUCH_BOXAUTOMAT_META.publisher.email}`,
-      doc.page.margins.left,
-      y + 6,
-      { width: contentWidth, align: "left", lineBreak: false },
-    )
-    .text(
-      `Stand ${HANDBUCH_BOXAUTOMAT_META.lastUpdated} · Version ${HANDBUCH_BOXAUTOMAT_META.version}`,
-      doc.page.margins.left,
-      y + 18,
-      { width: contentWidth, align: "left", lineBreak: false },
-    );
-
-  // Page number on the right (kept on the same row).
-  const pageLabel = `Seite ${(doc as unknown as { _pageBuffer?: unknown[] })._pageBuffer?.length ?? ""}`;
-  doc.text(pageLabel, doc.page.margins.left, y + 6, {
-    width: contentWidth,
-    align: "right",
-    lineBreak: false,
-  });
+    .text(leftBlock, doc.page.margins.left, y + 6, {
+      width: contentWidth,
+      align: "left",
+      lineBreak: false,
+    })
+    .text(dateBlock, doc.page.margins.left, y + 18, {
+      width: contentWidth,
+      align: "left",
+      lineBreak: false,
+    })
+    .text(pageBlock, doc.page.margins.left, y + 6, {
+      width: contentWidth,
+      align: "right",
+      lineBreak: false,
+    });
 };
 
 doc.on("pageAdded", () => {
