@@ -4,26 +4,126 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
+const PAGE_URL = "https://automatplanet.de/handbuch/boxautomat";
+const PAGE_TITLE = "Boxautomat Handbuch – Box & Kick Maschine | Anleitung, Wartung & Fehlerbehebung";
+const PAGE_DESCRIPTION =
+  "Offizielles Boxautomat Handbuch: Anleitung zur Box & Kick Maschine inkl. Aufbau, Inbetriebnahme, Münzprüfer, Wartung, Schlagball-Wechsel, Menüführung und Fehlerbehebung.";
+
+const FAQ_ITEMS: { question: string; answer: string }[] = [
+  {
+    question: "Wofür wird der Boxautomat verwendet?",
+    answer:
+      "Der Boxautomat ist ein Unterhaltungsgerät zur Messung der Schlag- und Trittkraft. Er wird in Nachtclubs, Bars, Fitnessstudios und Freizeitbereichen eingesetzt und bietet einen Boxmodus (Schlagkraft) sowie einen Kickmodus (Trittkraft). Es handelt sich nicht um ein medizinisches Messgerät.",
+  },
+  {
+    question: "Welcher Luftdruck ist für den Schlagball des Boxautomaten optimal?",
+    answer:
+      "Der empfohlene Luftdruck für den Schlagball liegt zwischen 1,5 und 2,0 Bar. Beim Aufpumpen darf ein maximaler Druck von 2 Bar nicht überschritten werden. Eine Kontrolle des Luftdrucks sollte alle zwei Wochen erfolgen.",
+  },
+  {
+    question: "Was tun, wenn der Boxautomat nicht startet?",
+    answer:
+      "Wenn der Boxautomat nicht startet, sollten zuerst die 5A-Sicherungen sowie die Stromverbindung geprüft werden. Funktioniert das Gerät weiterhin nicht, ist die Hauptplatine zu kontrollieren. Reparaturen dürfen ausschließlich durch qualifiziertes Fachpersonal durchgeführt werden.",
+  },
+  {
+    question: "Wie wird der Schlagball der Box & Kick Maschine ausgetauscht?",
+    answer:
+      "Zum Wechseln des Schlagballs wird zunächst das Seil gelöst und der Ball geöffnet. Anschließend wird die alte Innenblase entnommen, eine neue Blase eingesetzt und das Ventil korrekt positioniert. Zum Schluss wird der Ball auf maximal 2 Bar aufgepumpt.",
+  },
+  {
+    question: "Wie öffne ich das erweiterte Menü des Boxautomaten?",
+    answer:
+      "Das Hauptmenü wird mit der OK-Taste aufgerufen. Die erweiterten Einstellungen (Werkseinstellungen, LED-Konfiguration, Maschinentyp BOX/COMBO) sind durch das Passwort 1111 geschützt.",
+  },
+  {
+    question: "Welche technischen Daten hat der Boxautomat?",
+    answer:
+      "Der Boxautomat (Artikelnummer 2025101) wiegt ca. 127–146 kg, hat die Maße ca. 112 × 76 × 210 cm und einen Stromverbrauch von ca. 40–60 Watt bei Anschluss an das normale 220V-Stromnetz.",
+  },
+];
+
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  headline: "Boxautomat Handbuch – Box & Kick Maschine",
+  description: PAGE_DESCRIPTION,
+  inLanguage: "de-DE",
+  url: PAGE_URL,
+  mainEntityOfPage: PAGE_URL,
+  image: "https://automatplanet.de/images/og/og-default.jpg",
+  datePublished: "2026-04-24",
+  dateModified: "2026-04-24",
+  about: {
+    "@type": "Product",
+    name: "Boxautomat – Box & Kick Maschine",
+    sku: "2025101",
+    brand: { "@type": "Brand", name: "AutomatPlanet" },
+    category: "Unterhaltungsautomat / Boxautomat",
+  },
+  author: {
+    "@type": "Organization",
+    name: "SMEA GmbH",
+    url: "https://automatplanet.de",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "AutomatPlanet",
+    url: "https://automatplanet.de",
+  },
+  keywords:
+    "Boxautomat Handbuch, Box Maschine Anleitung, Kick Maschine, Schlagkraft Messgerät, Boxautomat Wartung, Boxautomat Fehlerbehebung, Münzprüfer, Schlagball wechseln, Boxautomat kaufen",
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ_ITEMS.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Startseite", item: "https://automatplanet.de/" },
+    { "@type": "ListItem", position: 2, name: "Handbücher", item: "https://automatplanet.de/handbuch" },
+    { "@type": "ListItem", position: 3, name: "Boxautomat", item: PAGE_URL },
+  ],
+};
+
 const HandbuchBoxautomat = () => {
   return (
     <>
       <Helmet>
-        <title>Handbuch Boxautomat – Box & Kick Maschine | AutomatPlanet.de</title>
+        <title>{PAGE_TITLE}</title>
+        <meta name="description" content={PAGE_DESCRIPTION} />
         <meta
-          name="description"
-          content="Benutzerhandbuch für den Boxautomat (Box & Kick Maschine): Sicherheitshinweise, technische Daten, Wartung, Fehlerbehebung und Menüführung."
+          name="keywords"
+          content="Boxautomat Handbuch, Box Maschine Anleitung, Kick Maschine, Schlagkraft messen, Boxautomat Wartung, Boxautomat Fehlerbehebung, Münzprüfer reinigen, Schlagball wechseln, Boxautomat Bedienungsanleitung, Box & Kick Maschine"
         />
-        <link rel="canonical" href="https://automatplanet.de/handbuch/boxautomat" />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <meta name="author" content="SMEA GmbH" />
+        <link rel="canonical" href={PAGE_URL} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://automatplanet.de/handbuch/boxautomat" />
-        <meta property="og:title" content="Handbuch Boxautomat – Box & Kick Maschine | AutomatPlanet.de" />
-        <meta
-          property="og:description"
-          content="Benutzerhandbuch für den Boxautomat (Box & Kick Maschine): Sicherheitshinweise, technische Daten, Wartung, Fehlerbehebung und Menüführung."
-        />
+        <meta property="og:locale" content="de_DE" />
+        <meta property="og:url" content={PAGE_URL} />
+        <meta property="og:title" content={PAGE_TITLE} />
+        <meta property="og:description" content={PAGE_DESCRIPTION} />
         <meta property="og:image" content="https://automatplanet.de/images/og/og-default.jpg" />
         <meta property="og:site_name" content="AutomatPlanet" />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={PAGE_TITLE} />
+        <meta name="twitter:description" content={PAGE_DESCRIPTION} />
+        <meta name="twitter:image" content="https://automatplanet.de/images/og/og-default.jpg" />
+        <script type="application/ld+json">{JSON.stringify(articleJsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>
       </Helmet>
       <Navbar />
       <main className="min-h-screen pt-28 pb-16 bg-background">
@@ -64,7 +164,18 @@ const HandbuchBoxautomat = () => {
             <div>
               <h2 className="text-2xl font-semibold text-foreground mb-3">1. Verwendungszweck</h2>
               <p>
-                Der Boxautomat ist ein Unterhaltungsgerät zur Messung der Schlag- und Trittkraft.
+                Der <strong className="text-foreground">Boxautomat</strong> – auch als{" "}
+                <strong className="text-foreground">Box &amp; Kick Maschine</strong> bekannt – ist
+                ein professionelles Unterhaltungsgerät zur präzisen Messung der Schlag- und
+                Trittkraft. Die robuste Box-Maschine wird in der Gastronomie, in Nachtclubs, in
+                Bars und in Fitnessstudios eingesetzt und verbindet sportliche Herausforderung mit
+                attraktivem Münzumsatz für den Betreiber.
+              </p>
+              <p className="mt-3">
+                Diese Bedienungsanleitung beschreibt alle wichtigen Themen rund um den
+                Boxautomaten: Aufbau und Inbetriebnahme, Wartung und Pflege, Reinigung des
+                Münzprüfers, Wechsel des Schlagballs sowie typische Fehlerbehebung. So bleibt Ihre
+                Box &amp; Kick Maschine dauerhaft betriebsbereit.
               </p>
               <p className="mt-3 font-semibold text-foreground">Das Gerät bietet zwei Spielmodi:</p>
               <ul className="list-disc pl-6 space-y-1">
@@ -281,6 +392,38 @@ const HandbuchBoxautomat = () => {
                 <li>Wartung regelmäßig durchführen</li>
                 <li>Bei Problemen sofort abschalten</li>
               </ul>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-semibold text-foreground mb-3">❓ Häufig gestellte Fragen zum Boxautomat</h2>
+              <p>
+                Antworten auf die wichtigsten Fragen rund um die Box &amp; Kick Maschine – von der
+                Wartung über die Fehlerbehebung bis zur Menüführung.
+              </p>
+              <div className="mt-4 space-y-4">
+                {FAQ_ITEMS.map((item) => (
+                  <article
+                    key={item.question}
+                    className="rounded-lg border border-white/10 bg-white/5 p-4"
+                    itemScope
+                    itemType="https://schema.org/Question"
+                  >
+                    <h3
+                      className="text-lg font-semibold text-foreground mb-2"
+                      itemProp="name"
+                    >
+                      {item.question}
+                    </h3>
+                    <div
+                      itemScope
+                      itemProp="acceptedAnswer"
+                      itemType="https://schema.org/Answer"
+                    >
+                      <p itemProp="text">{item.answer}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
 
             <div>
