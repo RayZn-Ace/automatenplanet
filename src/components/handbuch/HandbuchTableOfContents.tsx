@@ -241,29 +241,41 @@ const HandbuchTableOfContents = ({ sections, extraEntries }: Props) => {
         </p>
       ) : (
         <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 list-none pl-0 text-sm">
-          {visibleSections.map(({ section }) => (
-            <li key={section.id}>
-              <a
-                href={`#${section.id}`}
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <span className="text-foreground/60 mr-1">{section.number}.</span>
-                {section.icon ? `${section.icon} ` : ""}
-                {section.title}
-              </a>
-            </li>
-          ))}
-          {visibleExtras.map(({ entry }) => (
-            <li key={entry.id}>
-              <a
-                href={`#${entry.id}`}
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <span className="text-foreground/60 mr-1">{entry.icon}</span>
-                {entry.label}
-              </a>
-            </li>
-          ))}
+          {visibleSections.map(({ section }) => {
+            const isActive = section.id === activeId;
+            return (
+              <li key={section.id}>
+                <a
+                  href={`#${section.id}`}
+                  aria-current={isActive ? "location" : undefined}
+                  className={cn(linkBase, isActive ? linkActive : linkInactive)}
+                >
+                  <span className={cn("mr-1", isActive ? "text-primary/80" : "text-foreground/60")}>
+                    {section.number}.
+                  </span>
+                  {section.icon ? `${section.icon} ` : ""}
+                  {section.title}
+                </a>
+              </li>
+            );
+          })}
+          {visibleExtras.map(({ entry }) => {
+            const isActive = entry.id === activeId;
+            return (
+              <li key={entry.id}>
+                <a
+                  href={`#${entry.id}`}
+                  aria-current={isActive ? "location" : undefined}
+                  className={cn(linkBase, isActive ? linkActive : linkInactive)}
+                >
+                  <span className={cn("mr-1", isActive ? "text-primary/80" : "text-foreground/60")}>
+                    {entry.icon}
+                  </span>
+                  {entry.label}
+                </a>
+              </li>
+            );
+          })}
         </ol>
       )}
     </nav>
