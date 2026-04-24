@@ -662,6 +662,7 @@ const Handbuch = () => {
                         </p>
                       </div>
                     </div>
+                    <img
                       ref={imgRef}
                       src={handbuchElektronik}
                       alt="Steuerplatine des Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V Strom, Lautsprecher, Lautstärkeregler, DIP-Schalter (System-Einstellung), Torschalter A & B, Münzeinwurf, Display A & B und Ballwurfpumpe – Detailansicht"
