@@ -355,12 +355,64 @@ async function renderPdf(): Promise<{ bytes: Uint8Array; contentHash: string; ge
   doc.font(FONT_BOLD).fontSize(14).fillColor(COLORS.text)
     .text("Inhaltsverzeichnis", MARGIN.left, doc.y, { ...TXT, width: CONTENT_W });
   doc.y += 8;
-  doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.text);
+
+  // ---- TOC entries with clickable links + page-number placeholders ---------
+  // Build a list of all TOC entries (sections + FAQ + Support). Each entry
+  // gets a clickable link annotation that jumps to its named destination.
+  // The page numbers are filled in during a second pass after every section
+  // has been rendered (so we know which physical page each heading lives on).
+  type TocEntry = {
+    number: string;
+    title: string;
+    anchor: string;
+    y: number;       // baseline y of the entry on the cover page
+    pageIdx: number; // page index (0-based) where this TOC line was drawn
+  };
+  const tocEntries: TocEntry[] = [];
+
+  const tocLineHeight = 14;
+  const tocLeftIndent = 12;
+  const tocPageColW = 32; // reserved width on the right for "123"
+  const tocLabelX = MARGIN.left + tocLeftIndent;
+  const tocLabelW = CONTENT_W - tocLeftIndent - tocPageColW - 4;
+  const tocPageColX = MARGIN.left + CONTENT_W - tocPageColW;
+
+  const drawTocEntry = (number: string, title: string, anchor: string) => {
+    doc.font(FONT_REGULAR).fontSize(BODY_SIZE).fillColor(COLORS.primary);
+    const text = `${number}. ${sanitize(title)}`;
+    const yStart = doc.y;
+    doc.text(text, tocLabelX, yStart, {
+      ...TXT, width: tocLabelW, lineBreak: false, ellipsis: true,
+    });
+    // Register clickable link covering the full row width (label + dots + page).
+    try {
+      doc.link(MARGIN.left, yStart - 2, CONTENT_W, tocLineHeight, { goTo: anchor });
+    } catch {
+      // Older pdfkit signatures: (x, y, w, h, urlOrOptions)
+      try { (doc as any).link(MARGIN.left, yStart - 2, CONTENT_W, tocLineHeight, anchor); } catch { /* ignore */ }
+    }
+    const pageRange = doc.bufferedPageRange();
+    tocEntries.push({
+      number, title, anchor, y: yStart,
+      pageIdx: pageRange.start + pageRange.count - 1,
+    });
+    doc.y = yStart + tocLineHeight;
+    resetStyle();
+  };
+
   HANDBUCH_BOXAUTOMAT_SECTIONS.forEach((section) => {
-    doc.text(`${section.number}. ${sanitize(section.title)}`, MARGIN.left + 12, doc.y, { ...TXT, width: CONTENT_W - 12 });
+    drawTocEntry(section.number, section.title, `sec-${section.id}`);
   });
-  doc.text(`${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1}. Häufig gestellte Fragen`, MARGIN.left + 12, doc.y, { ...TXT, width: CONTENT_W - 12 });
-  doc.text(`${HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2}. Support & Kontakt`, MARGIN.left + 12, doc.y, { ...TXT, width: CONTENT_W - 12 });
+  drawTocEntry(
+    String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 1),
+    "Häufig gestellte Fragen",
+    "sec-faq",
+  );
+  drawTocEntry(
+    String(HANDBUCH_BOXAUTOMAT_SECTIONS.length + 2),
+    "Support & Kontakt",
+    "sec-support",
+  );
 
   // ---- Sections ----
   HANDBUCH_BOXAUTOMAT_SECTIONS.forEach((section, idx) => {
