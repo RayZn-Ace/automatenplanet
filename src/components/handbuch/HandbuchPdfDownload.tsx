@@ -120,6 +120,7 @@ const HandbuchPdfDownload = ({
   const [bytesReceived, setBytesReceived] = useState(0);
   const [bytesTotal, setBytesTotal] = useState<number | null>(null);
   const [readyBlobUrl, setReadyBlobUrl] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const tickRef = useRef<number | null>(null);
 
   // Cleanup blob URL on unmount or when a new download starts.
