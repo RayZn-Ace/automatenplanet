@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Download, AlertTriangle, Info, Loader2, CheckCircle2, Eye, ExternalLink } from "lucide-react";
+import { Download, AlertTriangle, Info, Loader2, CheckCircle2, Eye, ExternalLink, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
