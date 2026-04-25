@@ -379,15 +379,51 @@ const HandbuchPdfDownload = ({
   const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!dynamicFunctionName) return; // let the <a href> default action run
     e.preventDefault();
+
+    // --- Re-click guards ---------------------------------------------------
+    // 1) A generation is currently in flight → just surface its status,
+    //    don't queue or restart it.
+    if (inFlightRef.current || loading) {
+      setThrottleNotice(
+        "Generierung läuft bereits – bitte warten oder „Abbrechen" verwenden.",
+      );
+      window.setTimeout(() => setThrottleNotice(null), 4000);
+      return;
+    }
+
+    // 2) Cooldown after a recent successful run → re-use the existing blob
+    //    instead of re-triggering the edge function.
+    const sinceLast = Date.now() - lastTriggerRef.current;
+    if (sinceLast < COOLDOWN_MS) {
+      const waitMs = COOLDOWN_MS - sinceLast;
+      const waitSec = Math.ceil(waitMs / 1000);
+      if (readyBlobUrl) {
+        setThrottleNotice(
+          `Letzter Download war gerade eben – aktuelle Version wird wiederverwendet (neue Erzeugung in ${waitSec}s möglich).`,
+        );
+        // Re-open the preview / re-trigger the browser save with the cached blob.
+        setPreviewOpen(true);
+      } else {
+        setThrottleNotice(
+          `Bitte ${waitSec}s warten, bevor erneut generiert werden kann.`,
+        );
+      }
+      startCooldown(waitMs);
+      window.setTimeout(() => setThrottleNotice(null), 4000);
+      return;
+    }
+
+    setThrottleNotice(null);
     resetProgress();
     setLoading(true);
     setStage("connecting");
+    lastTriggerRef.current = Date.now();
     const controller = new AbortController();
     abortRef.current = controller;
-    try {
-      let blob: Blob;
+
+    const run = async (): Promise<Blob> => {
       try {
-        blob = await fetchPdfWithProgress(controller.signal);
+        return await fetchPdfWithProgress(controller.signal);
       } catch (streamErr) {
         if (controller.signal.aborted) throw streamErr;
         // Fallback to supabase-js if the direct fetch failed (e.g. CORS).
@@ -401,12 +437,18 @@ const HandbuchPdfDownload = ({
         );
         if (controller.signal.aborted) throw new DOMException("Aborted", "AbortError");
         if (error) throw error;
-        blob =
+        const fallbackBlob =
           data instanceof Blob
             ? data
             : new Blob([data as ArrayBuffer], { type: "application/pdf" });
         setProgress(100);
+        return fallbackBlob;
       }
+    };
+
+    inFlightRef.current = run();
+    try {
+      const blob = await inFlightRef.current;
       if (!blob.size) throw new Error("PDF leer (0 Bytes)");
 
       // Build a downloadable URL and surface it as a persistent link.
@@ -418,14 +460,17 @@ const HandbuchPdfDownload = ({
 
       // Show preview modal first; user triggers the actual save from there.
       setPreviewOpen(true);
+      // Start cooldown only after a successful run.
+      startCooldown(COOLDOWN_MS);
     } catch (err) {
       stopGenerationTicker();
       const isAbort =
         (err instanceof DOMException && err.name === "AbortError") ||
         controller.signal.aborted;
       if (isAbort) {
-        // Silent reset — handleCancel already updated the UI.
         console.info("PDF-Generierung vom Nutzer abgebrochen.");
+        // No cooldown on cancel — let the user retry immediately.
+        lastTriggerRef.current = 0;
         return;
       }
       console.error("Dynamic PDF generation failed, using static fallback:", err);
@@ -440,6 +485,7 @@ const HandbuchPdfDownload = ({
       a.click();
       document.body.removeChild(a);
     } finally {
+      inFlightRef.current = null;
       if (abortRef.current === controller) abortRef.current = null;
       setLoading(false);
     }
