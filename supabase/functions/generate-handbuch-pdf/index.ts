@@ -712,7 +712,7 @@ Deno.serve(async (req) => {
     if (req.method === "HEAD") {
       return new Response(null, { status: 200, headers });
     }
-    return new Response(new Blob([bytes], { type: "application/pdf" }), {
+    return new Response(new Blob([toArrayBuffer(bytes)], { type: "application/pdf" }), {
       status: 200,
       headers,
     });
@@ -747,7 +747,7 @@ Deno.serve(async (req) => {
         return new Response(null, { status: 200, headers: fallbackHeaders });
       }
       return new Response(
-        new Blob([lastGoodPdf.bytes], { type: "application/pdf" }),
+        new Blob([toArrayBuffer(lastGoodPdf.bytes)], { type: "application/pdf" }),
         { status: 200, headers: fallbackHeaders },
       );
     }
@@ -770,7 +770,7 @@ Deno.serve(async (req) => {
         return new Response(null, { status: 200, headers: staticHeaders });
       }
       return new Response(
-        new Blob([staticBytes], { type: "application/pdf" }),
+        new Blob([toArrayBuffer(staticBytes)], { type: "application/pdf" }),
         { status: 200, headers: staticHeaders },
       );
     }
