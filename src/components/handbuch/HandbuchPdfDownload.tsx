@@ -128,6 +128,38 @@ const HandbuchPdfDownload = ({
   const abortRef = useRef<AbortController | null>(null);
   const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
 
+  // --- Throttle / re-click protection ---------------------------------------
+  // Minimum time (ms) between two real download triggers. Within this window,
+  // additional clicks reuse the in-flight or just-finished result instead of
+  // launching a new generation.
+  const COOLDOWN_MS = 8000;
+  const lastTriggerRef = useRef<number>(0);
+  const inFlightRef = useRef<Promise<Blob> | null>(null);
+  const [cooldownLeft, setCooldownLeft] = useState(0);
+  const [throttleNotice, setThrottleNotice] = useState<string | null>(null);
+  const cooldownTickRef = useRef<number | null>(null);
+
+  const startCooldown = (ms: number) => {
+    setCooldownLeft(Math.ceil(ms / 1000));
+    if (cooldownTickRef.current !== null) {
+      window.clearInterval(cooldownTickRef.current);
+    }
+    const startedAt = Date.now();
+    cooldownTickRef.current = window.setInterval(() => {
+      const remain = ms - (Date.now() - startedAt);
+      if (remain <= 0) {
+        setCooldownLeft(0);
+        if (cooldownTickRef.current !== null) {
+          window.clearInterval(cooldownTickRef.current);
+          cooldownTickRef.current = null;
+        }
+      } else {
+        setCooldownLeft(Math.ceil(remain / 1000));
+      }
+    }, 250);
+  };
+
+
   // Cleanup blob URL on unmount or when a new download starts.
   useEffect(() => {
     return () => {
