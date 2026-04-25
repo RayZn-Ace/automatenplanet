@@ -291,7 +291,24 @@ const HandbuchPdfDownload = ({
       },
       signal,
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+    if (!res.ok) {
+      // Try to read the error body for richer diagnostics (truncated to 300 chars).
+      let bodyText: string | undefined;
+      try {
+        const raw = await res.text();
+        bodyText = raw ? raw.slice(0, 300) : undefined;
+      } catch {
+        /* ignore */
+      }
+      const retryAfterRaw = res.headers.get("retry-after");
+      const retryAfter = retryAfterRaw ? Number(retryAfterRaw) : null;
+      throw new PdfHttpError(
+        res.status,
+        res.statusText,
+        bodyText,
+        Number.isFinite(retryAfter) ? retryAfter : null,
+      );
+    }
 
     // Capture cache diagnostics (exposed via Access-Control-Expose-Headers).
     const cacheHeader = (res.headers.get("x-pdf-cache") || "").toUpperCase();
