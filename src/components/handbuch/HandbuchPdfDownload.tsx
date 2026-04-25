@@ -424,14 +424,7 @@ const HandbuchPdfDownload = ({
             Vorschau ansehen
           </Button>
           <Button asChild size="sm" variant="secondary" className="gap-2">
-            <a
-              href={readyBlobUrl}
-              download={fileName}
-              onClick={() => triggerBlobDownload(
-                // re-trigger via helper not needed; native download attr handles it
-                new Blob(), fileName,
-              ) as unknown as void}
-            >
+            <a href={readyBlobUrl} download={fileName}>
               <Download className="h-4 w-4" />
               Erneut speichern
             </a>
