@@ -678,6 +678,67 @@ const HandbuchPdfDownload = ({
               )}
             </div>
           )}
+          {stage === "error" && (
+            <div className="mt-2 pt-2 border-t space-y-2">
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <AlertTriangle className="h-3.5 w-3.5 text-destructive shrink-0" />
+                <span className="font-medium text-destructive">
+                  Fehler beim Download
+                </span>
+                {errorDetail?.status && (
+                  <span className="font-mono px-1.5 py-0.5 rounded bg-destructive/15 text-destructive">
+                    HTTP {errorDetail.status}
+                    {errorDetail.statusText ? ` ${errorDetail.statusText}` : ""}
+                  </span>
+                )}
+                {errorDetail?.retryAfter ? (
+                  <span className="text-[11px] text-muted-foreground">
+                    Server schlägt vor: in {errorDetail.retryAfter}s erneut versuchen
+                  </span>
+                ) : null}
+              </div>
+              {errorDetail?.body && (
+                <pre className="max-h-24 overflow-auto whitespace-pre-wrap break-words rounded bg-muted/60 px-2 py-1.5 text-[11px] font-mono text-muted-foreground">
+                  {errorDetail.body}
+                </pre>
+              )}
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="default"
+                  className="gap-1.5 h-7 text-xs"
+                  onClick={() =>
+                    handleClick({
+                      preventDefault: () => undefined,
+                    } as unknown as React.MouseEvent<HTMLAnchorElement>)
+                  }
+                  disabled={loading}
+                >
+                  <Loader2
+                    className={
+                      "h-3.5 w-3.5 " + (loading ? "animate-spin" : "hidden")
+                    }
+                  />
+                  {!loading && <Download className="h-3.5 w-3.5" />}
+                  Erneut versuchen
+                </Button>
+                {staticUrl && (
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="outline"
+                    className="gap-1.5 h-7 text-xs"
+                  >
+                    <a href={staticUrl} download={fileName}>
+                      <Download className="h-3.5 w-3.5" />
+                      Statische Version laden
+                    </a>
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
