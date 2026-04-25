@@ -248,6 +248,18 @@ const HandbuchPdfDownload = ({
     });
     if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
 
+    // Capture cache diagnostics (exposed via Access-Control-Expose-Headers).
+    const cacheHeader = (res.headers.get("x-pdf-cache") || "").toUpperCase();
+    if (cacheHeader) {
+      setCacheStatus(
+        (["HIT", "MISS", "REVALIDATED", "FALLBACK"].includes(cacheHeader)
+          ? cacheHeader
+          : "UNKNOWN") as CacheStatus,
+      );
+    }
+    const generatedAt = res.headers.get("x-pdf-generated-at");
+    if (generatedAt) setCacheGeneratedAt(generatedAt);
+
     setStage("generating");
     setProgress(10);
     startGenerationTicker();
