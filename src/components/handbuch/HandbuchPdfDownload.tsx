@@ -511,6 +511,7 @@ const HandbuchPdfDownload = ({
           download={fileName}
           aria-label={ariaLabel}
           onClick={handleClick}
+          aria-disabled={loading || cooldownLeft > 0}
         >
           {loading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
@@ -519,9 +520,22 @@ const HandbuchPdfDownload = ({
           )}
           {loading
             ? "PDF wird erzeugt …"
+            : cooldownLeft > 0
+            ? `Bitte warten (${cooldownLeft}s) …`
             : (children ?? "Handbuch als PDF herunterladen")}
         </a>
       </Button>
+
+      {throttleNotice && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="inline-flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300"
+        >
+          <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+          <span>{throttleNotice}</span>
+        </div>
+      )}
 
       {(loading || stage === "ready" || stage === "error") && stage !== "idle" && (
         <div
