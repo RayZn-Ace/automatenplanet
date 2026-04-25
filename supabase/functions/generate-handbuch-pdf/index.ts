@@ -30,6 +30,11 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
 };
 
+// Convert Uint8Array → plain ArrayBuffer (not SharedArrayBuffer) so it
+// satisfies the strict BlobPart type used by the Response/Blob constructors.
+const toArrayBuffer = (u8: Uint8Array): ArrayBuffer =>
+  u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength) as ArrayBuffer;
+
 // ---- Theme ------------------------------------------------------------------
 const COLORS = {
   text: "#1a1a1a",
