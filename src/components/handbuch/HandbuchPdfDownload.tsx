@@ -371,6 +371,56 @@ const HandbuchPdfDownload = ({
         </a>
       </Button>
 
+      {(loading || stage === "ready" || stage === "error") && stage !== "idle" && (
+        <div
+          className="w-full max-w-md mt-1 rounded-md border bg-card/50 px-3 py-2.5"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-center justify-between gap-2 text-xs mb-1.5">
+            <span className="inline-flex items-center gap-1.5 font-medium">
+              {stage === "ready" ? (
+                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+              ) : stage === "error" ? (
+                <AlertTriangle className="h-3.5 w-3.5 text-destructive" />
+              ) : (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              )}
+              {stageLabels[stage]}
+            </span>
+            <span className="font-mono tabular-nums text-muted-foreground">
+              {Math.round(progress)}%
+            </span>
+          </div>
+          <Progress value={progress} className="h-1.5" />
+          {(bytesReceived > 0 || bytesTotal) && (
+            <p className="mt-1.5 text-[11px] text-muted-foreground font-mono tabular-nums">
+              {formatSize(bytesReceived)}
+              {bytesTotal ? ` / ${formatSize(bytesTotal)}` : ""}
+            </p>
+          )}
+        </div>
+      )}
+
+      {stage === "ready" && readyBlobUrl && (
+        <div className="flex flex-wrap items-center gap-2 mt-1">
+          <Button asChild size="sm" variant="secondary" className="gap-2">
+            <a href={readyBlobUrl} download={fileName}>
+              <Download className="h-4 w-4" />
+              Erneut speichern
+            </a>
+          </Button>
+          <a
+            href={readyBlobUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            Im neuen Tab öffnen
+          </a>
+        </div>
+      )}
+
       {info && (
         <p className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
           <Info className="h-3.5 w-3.5" aria-hidden="true" />
