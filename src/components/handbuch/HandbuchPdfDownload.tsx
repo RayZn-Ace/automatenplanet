@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { Download, AlertTriangle, Info, Loader2, CheckCircle2 } from "lucide-react";
+import { Download, AlertTriangle, Info, Loader2, CheckCircle2, Eye, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 
 interface PdfManifest {
@@ -112,6 +120,7 @@ const HandbuchPdfDownload = ({
   const [bytesReceived, setBytesReceived] = useState(0);
   const [bytesTotal, setBytesTotal] = useState<number | null>(null);
   const [readyBlobUrl, setReadyBlobUrl] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const tickRef = useRef<number | null>(null);
 
   // Cleanup blob URL on unmount or when a new download starts.
@@ -319,8 +328,8 @@ const HandbuchPdfDownload = ({
       setBytesReceived(blob.size);
       setStage("ready");
 
-      // Auto-trigger the browser download.
-      triggerBlobDownload(blob, fileName);
+      // Show preview modal first; user triggers the actual save from there.
+      setPreviewOpen(true);
     } catch (err) {
       stopGenerationTicker();
       console.error("Dynamic PDF generation failed, using static fallback:", err);
@@ -404,6 +413,16 @@ const HandbuchPdfDownload = ({
 
       {stage === "ready" && readyBlobUrl && (
         <div className="flex flex-wrap items-center gap-2 mt-1">
+          <Button
+            type="button"
+            size="sm"
+            variant="default"
+            className="gap-2"
+            onClick={() => setPreviewOpen(true)}
+          >
+            <Eye className="h-4 w-4" />
+            Vorschau ansehen
+          </Button>
           <Button asChild size="sm" variant="secondary" className="gap-2">
             <a href={readyBlobUrl} download={fileName}>
               <Download className="h-4 w-4" />
@@ -420,6 +439,67 @@ const HandbuchPdfDownload = ({
           </a>
         </div>
       )}
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-5xl w-[95vw] p-0 gap-0 overflow-hidden">
+          <DialogHeader className="px-6 pt-6 pb-3">
+            <DialogTitle className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-primary" />
+              PDF-Vorschau bereit
+            </DialogTitle>
+            <DialogDescription>
+              Prüfen Sie das Handbuch hier im Browser. Speichern oder in einem
+              neuen Tab öffnen, sobald Sie zufrieden sind.
+              {bytesTotal ? ` (${formatSize(bytesTotal)})` : ""}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="bg-muted/30 border-y">
+            {readyBlobUrl ? (
+              <iframe
+                src={readyBlobUrl}
+                title="Handbuch PDF Vorschau"
+                className="w-full h-[70vh] bg-background"
+              />
+            ) : (
+              <div className="h-[70vh] flex items-center justify-center text-muted-foreground text-sm">
+                Vorschau nicht verfügbar.
+              </div>
+            )}
+          </div>
+          <DialogFooter className="px-6 py-4 sm:justify-between gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setPreviewOpen(false)}
+            >
+              Schließen
+            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              {readyBlobUrl && (
+                <Button asChild variant="outline" className="gap-2">
+                  <a
+                    href={readyBlobUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    In neuem Tab
+                  </a>
+                </Button>
+              )}
+              {readyBlobUrl && (
+                <Button asChild className="gap-2">
+                  <a href={readyBlobUrl} download={fileName}>
+                    <Download className="h-4 w-4" />
+                    Jetzt speichern
+                  </a>
+                </Button>
+              )}
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
 
       {info && (
         <p className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
