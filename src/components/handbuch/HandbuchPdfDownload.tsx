@@ -84,6 +84,18 @@ const triggerBlobDownload = (blob: Blob, filename: string) => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 
+class PdfHttpError extends Error {
+  constructor(
+    public status: number,
+    public statusText: string,
+    public bodyText?: string,
+    public retryAfter?: number | null,
+  ) {
+    super(`HTTP ${status} ${statusText}`.trim());
+    this.name = "PdfHttpError";
+  }
+}
+
 /**
  * Download button for the handbook PDF.
  *
@@ -112,6 +124,12 @@ const HandbuchPdfDownload = ({
   const [info, setInfo] = useState<PdfManifest | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [errorDetail, setErrorDetail] = useState<{
+    status?: number;
+    statusText?: string;
+    body?: string;
+    retryAfter?: number | null;
+  } | null>(null);
 
   // Progress state
   type Stage = "idle" | "connecting" | "generating" | "downloading" | "ready" | "error";
@@ -240,6 +258,7 @@ const HandbuchPdfDownload = ({
     setBytesReceived(0);
     setBytesTotal(null);
     setErrorMsg(null);
+    setErrorDetail(null);
     setCacheStatus(null);
     setCacheGeneratedAt(null);
   };
@@ -279,7 +298,24 @@ const HandbuchPdfDownload = ({
       },
       signal,
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+    if (!res.ok) {
+      // Try to read the error body for richer diagnostics (truncated to 300 chars).
+      let bodyText: string | undefined;
+      try {
+        const raw = await res.text();
+        bodyText = raw ? raw.slice(0, 300) : undefined;
+      } catch {
+        /* ignore */
+      }
+      const retryAfterRaw = res.headers.get("retry-after");
+      const retryAfter = retryAfterRaw ? Number(retryAfterRaw) : null;
+      throw new PdfHttpError(
+        res.status,
+        res.statusText,
+        bodyText,
+        Number.isFinite(retryAfter) ? retryAfter : null,
+      );
+    }
 
     // Capture cache diagnostics (exposed via Access-Control-Expose-Headers).
     const cacheHeader = (res.headers.get("x-pdf-cache") || "").toUpperCase();
@@ -473,17 +509,30 @@ const HandbuchPdfDownload = ({
         lastTriggerRef.current = 0;
         return;
       }
-      console.error("Dynamic PDF generation failed, using static fallback:", err);
+      console.error("Dynamic PDF generation failed:", err);
       setStage("error");
-      setErrorMsg(
-        "Dynamische Generierung fehlgeschlagen – statische Version wird geladen.",
-      );
-      const a = document.createElement("a");
-      a.href = staticUrl;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      if (err instanceof PdfHttpError) {
+        setErrorDetail({
+          status: err.status,
+          statusText: err.statusText,
+          body: err.bodyText,
+          retryAfter: err.retryAfter ?? null,
+        });
+        setErrorMsg(
+          `Server antwortete mit HTTP ${err.status}${err.statusText ? ` ${err.statusText}` : ""}.`,
+        );
+      } else {
+        setErrorDetail({
+          body: err instanceof Error ? err.message : String(err),
+        });
+        setErrorMsg(
+          err instanceof Error
+            ? err.message
+            : "Unbekannter Fehler bei der PDF-Erzeugung.",
+        );
+      }
+      // Allow immediate retry — no cooldown after errors.
+      lastTriggerRef.current = 0;
     } finally {
       inFlightRef.current = null;
       if (abortRef.current === controller) abortRef.current = null;
@@ -627,6 +676,67 @@ const HandbuchPdfDownload = ({
                   · erstellt {formatDate(cacheGeneratedAt)}
                 </span>
               )}
+            </div>
+          )}
+          {stage === "error" && (
+            <div className="mt-2 pt-2 border-t space-y-2">
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <AlertTriangle className="h-3.5 w-3.5 text-destructive shrink-0" />
+                <span className="font-medium text-destructive">
+                  Fehler beim Download
+                </span>
+                {errorDetail?.status && (
+                  <span className="font-mono px-1.5 py-0.5 rounded bg-destructive/15 text-destructive">
+                    HTTP {errorDetail.status}
+                    {errorDetail.statusText ? ` ${errorDetail.statusText}` : ""}
+                  </span>
+                )}
+                {errorDetail?.retryAfter ? (
+                  <span className="text-[11px] text-muted-foreground">
+                    Server schlägt vor: in {errorDetail.retryAfter}s erneut versuchen
+                  </span>
+                ) : null}
+              </div>
+              {errorDetail?.body && (
+                <pre className="max-h-24 overflow-auto whitespace-pre-wrap break-words rounded bg-muted/60 px-2 py-1.5 text-[11px] font-mono text-muted-foreground">
+                  {errorDetail.body}
+                </pre>
+              )}
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="default"
+                  className="gap-1.5 h-7 text-xs"
+                  onClick={() =>
+                    handleClick({
+                      preventDefault: () => undefined,
+                    } as unknown as React.MouseEvent<HTMLAnchorElement>)
+                  }
+                  disabled={loading}
+                >
+                  <Loader2
+                    className={
+                      "h-3.5 w-3.5 " + (loading ? "animate-spin" : "hidden")
+                    }
+                  />
+                  {!loading && <Download className="h-3.5 w-3.5" />}
+                  Erneut versuchen
+                </Button>
+                {staticUrl && (
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="outline"
+                    className="gap-1.5 h-7 text-xs"
+                  >
+                    <a href={staticUrl} download={fileName}>
+                      <Download className="h-3.5 w-3.5" />
+                      Statische Version laden
+                    </a>
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>
