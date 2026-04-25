@@ -223,7 +223,7 @@ const HandbuchPdfDownload = ({
     }
   };
 
-  const fetchPdfWithProgress = async (): Promise<Blob> => {
+  const fetchPdfWithProgress = async (signal: AbortSignal): Promise<Blob> => {
     // Build the function URL directly so we can use fetch + ReadableStream
     // for byte-level progress (supabase.functions.invoke buffers internally).
     const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID as string;
@@ -239,6 +239,7 @@ const HandbuchPdfDownload = ({
         apikey: anonKey,
         Authorization: `Bearer ${anonKey}`,
       },
+      signal,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
 
@@ -262,36 +263,67 @@ const HandbuchPdfDownload = ({
     }
 
     const reader = res.body.getReader();
+    readerRef.current = reader;
+    const onAbort = () => {
+      // Cancel the underlying stream so the network request stops immediately.
+      reader.cancel("user-cancelled").catch(() => undefined);
+    };
+    signal.addEventListener("abort", onAbort);
+
     const chunks: Uint8Array[] = [];
     let received = 0;
     let firstChunk = true;
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      if (value) {
-        if (firstChunk) {
-          // First byte → server has finished generating, real download starts.
-          stopGenerationTicker();
-          setStage("downloading");
-          setProgress((p) => Math.max(p, 65));
-          firstChunk = false;
+    try {
+      while (true) {
+        if (signal.aborted) {
+          throw new DOMException("Aborted", "AbortError");
         }
-        chunks.push(value);
-        received += value.length;
-        setBytesReceived(received);
-        if (total) {
-          // Map 65 % → 99 % to the real byte progress.
-          const pct = 65 + (received / total) * 34;
-          setProgress(Math.min(99, pct));
-        } else {
-          setProgress((p) => Math.min(95, p + 0.5));
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value) {
+          if (firstChunk) {
+            // First byte → server has finished generating, real download starts.
+            stopGenerationTicker();
+            setStage("downloading");
+            setProgress((p) => Math.max(p, 65));
+            firstChunk = false;
+          }
+          chunks.push(value);
+          received += value.length;
+          setBytesReceived(received);
+          if (total) {
+            // Map 65 % → 99 % to the real byte progress.
+            const pct = 65 + (received / total) * 34;
+            setProgress(Math.min(99, pct));
+          } else {
+            setProgress((p) => Math.min(95, p + 0.5));
+          }
         }
       }
+    } finally {
+      signal.removeEventListener("abort", onAbort);
+      readerRef.current = null;
     }
 
     setProgress(100);
     return new Blob(chunks as BlobPart[], { type: "application/pdf" });
+  };
+
+  const handleCancel = () => {
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
+    if (readerRef.current) {
+      readerRef.current.cancel("user-cancelled").catch(() => undefined);
+      readerRef.current = null;
+    }
+    stopGenerationTicker();
+    resetProgress();
+    setStage("idle");
+    setLoading(false);
+    setErrorMsg(null);
   };
 
   const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -300,11 +332,14 @@ const HandbuchPdfDownload = ({
     resetProgress();
     setLoading(true);
     setStage("connecting");
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
       let blob: Blob;
       try {
-        blob = await fetchPdfWithProgress();
+        blob = await fetchPdfWithProgress(controller.signal);
       } catch (streamErr) {
+        if (controller.signal.aborted) throw streamErr;
         // Fallback to supabase-js if the direct fetch failed (e.g. CORS).
         console.warn("Streaming fetch failed, retrying via supabase-js:", streamErr);
         stopGenerationTicker();
@@ -314,6 +349,7 @@ const HandbuchPdfDownload = ({
           dynamicFunctionName,
           { method: "GET" },
         );
+        if (controller.signal.aborted) throw new DOMException("Aborted", "AbortError");
         if (error) throw error;
         blob =
           data instanceof Blob
@@ -334,6 +370,14 @@ const HandbuchPdfDownload = ({
       setPreviewOpen(true);
     } catch (err) {
       stopGenerationTicker();
+      const isAbort =
+        (err instanceof DOMException && err.name === "AbortError") ||
+        controller.signal.aborted;
+      if (isAbort) {
+        // Silent reset — handleCancel already updated the UI.
+        console.info("PDF-Generierung vom Nutzer abgebrochen.");
+        return;
+      }
       console.error("Dynamic PDF generation failed, using static fallback:", err);
       setStage("error");
       setErrorMsg(
@@ -346,6 +390,7 @@ const HandbuchPdfDownload = ({
       a.click();
       document.body.removeChild(a);
     } finally {
+      if (abortRef.current === controller) abortRef.current = null;
       setLoading(false);
     }
   };
