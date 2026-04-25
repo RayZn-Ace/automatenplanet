@@ -165,6 +165,7 @@ const HandbuchPdfDownload = ({
     return () => {
       if (readyBlobUrl) URL.revokeObjectURL(readyBlobUrl);
       if (tickRef.current !== null) window.clearInterval(tickRef.current);
+      if (cooldownTickRef.current !== null) window.clearInterval(cooldownTickRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
