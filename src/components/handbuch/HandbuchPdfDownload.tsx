@@ -258,6 +258,7 @@ const HandbuchPdfDownload = ({
     setBytesReceived(0);
     setBytesTotal(null);
     setErrorMsg(null);
+    setErrorDetail(null);
     setCacheStatus(null);
     setCacheGeneratedAt(null);
   };
