@@ -509,17 +509,30 @@ const HandbuchPdfDownload = ({
         lastTriggerRef.current = 0;
         return;
       }
-      console.error("Dynamic PDF generation failed, using static fallback:", err);
+      console.error("Dynamic PDF generation failed:", err);
       setStage("error");
-      setErrorMsg(
-        "Dynamische Generierung fehlgeschlagen – statische Version wird geladen.",
-      );
-      const a = document.createElement("a");
-      a.href = staticUrl;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      if (err instanceof PdfHttpError) {
+        setErrorDetail({
+          status: err.status,
+          statusText: err.statusText,
+          body: err.bodyText,
+          retryAfter: err.retryAfter ?? null,
+        });
+        setErrorMsg(
+          `Server antwortete mit HTTP ${err.status}${err.statusText ? ` ${err.statusText}` : ""}.`,
+        );
+      } else {
+        setErrorDetail({
+          body: err instanceof Error ? err.message : String(err),
+        });
+        setErrorMsg(
+          err instanceof Error
+            ? err.message
+            : "Unbekannter Fehler bei der PDF-Erzeugung.",
+        );
+      }
+      // Allow immediate retry — no cooldown after errors.
+      lastTriggerRef.current = 0;
     } finally {
       inFlightRef.current = null;
       if (abortRef.current === controller) abortRef.current = null;
