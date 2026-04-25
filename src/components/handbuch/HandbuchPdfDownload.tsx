@@ -449,12 +449,28 @@ const HandbuchPdfDownload = ({
             </span>
           </div>
           <Progress value={progress} className="h-1.5" />
-          {(bytesReceived > 0 || bytesTotal) && (
-            <p className="mt-1.5 text-[11px] text-muted-foreground font-mono tabular-nums">
-              {formatSize(bytesReceived)}
-              {bytesTotal ? ` / ${formatSize(bytesTotal)}` : ""}
-            </p>
-          )}
+          <div className="mt-1.5 flex items-center justify-between gap-2">
+            {(bytesReceived > 0 || bytesTotal) ? (
+              <p className="text-[11px] text-muted-foreground font-mono tabular-nums">
+                {formatSize(bytesReceived)}
+                {bytesTotal ? ` / ${formatSize(bytesTotal)}` : ""}
+              </p>
+            ) : (
+              <span />
+            )}
+            {loading && stage !== "ready" && stage !== "error" && (
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="h-6 px-2 text-[11px] gap-1 text-muted-foreground hover:text-destructive"
+                onClick={handleCancel}
+              >
+                <X className="h-3 w-3" />
+                Abbrechen
+              </Button>
+            )}
+          </div>
         </div>
       )}
 
