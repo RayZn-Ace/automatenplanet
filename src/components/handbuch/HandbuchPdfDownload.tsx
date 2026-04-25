@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Download, AlertTriangle, Info, Loader2, CheckCircle2, Eye, ExternalLink } from "lucide-react";
+import { Download, AlertTriangle, Info, Loader2, CheckCircle2, Eye, ExternalLink, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -122,6 +122,8 @@ const HandbuchPdfDownload = ({
   const [readyBlobUrl, setReadyBlobUrl] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const tickRef = useRef<number | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
 
   // Cleanup blob URL on unmount or when a new download starts.
   useEffect(() => {
@@ -221,7 +223,7 @@ const HandbuchPdfDownload = ({
     }
   };
 
-  const fetchPdfWithProgress = async (): Promise<Blob> => {
+  const fetchPdfWithProgress = async (signal: AbortSignal): Promise<Blob> => {
     // Build the function URL directly so we can use fetch + ReadableStream
     // for byte-level progress (supabase.functions.invoke buffers internally).
     const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID as string;
@@ -237,6 +239,7 @@ const HandbuchPdfDownload = ({
         apikey: anonKey,
         Authorization: `Bearer ${anonKey}`,
       },
+      signal,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
 
@@ -260,36 +263,67 @@ const HandbuchPdfDownload = ({
     }
 
     const reader = res.body.getReader();
+    readerRef.current = reader;
+    const onAbort = () => {
+      // Cancel the underlying stream so the network request stops immediately.
+      reader.cancel("user-cancelled").catch(() => undefined);
+    };
+    signal.addEventListener("abort", onAbort);
+
     const chunks: Uint8Array[] = [];
     let received = 0;
     let firstChunk = true;
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      if (value) {
-        if (firstChunk) {
-          // First byte → server has finished generating, real download starts.
-          stopGenerationTicker();
-          setStage("downloading");
-          setProgress((p) => Math.max(p, 65));
-          firstChunk = false;
+    try {
+      while (true) {
+        if (signal.aborted) {
+          throw new DOMException("Aborted", "AbortError");
         }
-        chunks.push(value);
-        received += value.length;
-        setBytesReceived(received);
-        if (total) {
-          // Map 65 % → 99 % to the real byte progress.
-          const pct = 65 + (received / total) * 34;
-          setProgress(Math.min(99, pct));
-        } else {
-          setProgress((p) => Math.min(95, p + 0.5));
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value) {
+          if (firstChunk) {
+            // First byte → server has finished generating, real download starts.
+            stopGenerationTicker();
+            setStage("downloading");
+            setProgress((p) => Math.max(p, 65));
+            firstChunk = false;
+          }
+          chunks.push(value);
+          received += value.length;
+          setBytesReceived(received);
+          if (total) {
+            // Map 65 % → 99 % to the real byte progress.
+            const pct = 65 + (received / total) * 34;
+            setProgress(Math.min(99, pct));
+          } else {
+            setProgress((p) => Math.min(95, p + 0.5));
+          }
         }
       }
+    } finally {
+      signal.removeEventListener("abort", onAbort);
+      readerRef.current = null;
     }
 
     setProgress(100);
     return new Blob(chunks as BlobPart[], { type: "application/pdf" });
+  };
+
+  const handleCancel = () => {
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
+    if (readerRef.current) {
+      readerRef.current.cancel("user-cancelled").catch(() => undefined);
+      readerRef.current = null;
+    }
+    stopGenerationTicker();
+    resetProgress();
+    setStage("idle");
+    setLoading(false);
+    setErrorMsg(null);
   };
 
   const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -298,11 +332,14 @@ const HandbuchPdfDownload = ({
     resetProgress();
     setLoading(true);
     setStage("connecting");
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
       let blob: Blob;
       try {
-        blob = await fetchPdfWithProgress();
+        blob = await fetchPdfWithProgress(controller.signal);
       } catch (streamErr) {
+        if (controller.signal.aborted) throw streamErr;
         // Fallback to supabase-js if the direct fetch failed (e.g. CORS).
         console.warn("Streaming fetch failed, retrying via supabase-js:", streamErr);
         stopGenerationTicker();
@@ -312,6 +349,7 @@ const HandbuchPdfDownload = ({
           dynamicFunctionName,
           { method: "GET" },
         );
+        if (controller.signal.aborted) throw new DOMException("Aborted", "AbortError");
         if (error) throw error;
         blob =
           data instanceof Blob
@@ -332,6 +370,14 @@ const HandbuchPdfDownload = ({
       setPreviewOpen(true);
     } catch (err) {
       stopGenerationTicker();
+      const isAbort =
+        (err instanceof DOMException && err.name === "AbortError") ||
+        controller.signal.aborted;
+      if (isAbort) {
+        // Silent reset — handleCancel already updated the UI.
+        console.info("PDF-Generierung vom Nutzer abgebrochen.");
+        return;
+      }
       console.error("Dynamic PDF generation failed, using static fallback:", err);
       setStage("error");
       setErrorMsg(
@@ -344,6 +390,7 @@ const HandbuchPdfDownload = ({
       a.click();
       document.body.removeChild(a);
     } finally {
+      if (abortRef.current === controller) abortRef.current = null;
       setLoading(false);
     }
   };
@@ -402,12 +449,28 @@ const HandbuchPdfDownload = ({
             </span>
           </div>
           <Progress value={progress} className="h-1.5" />
-          {(bytesReceived > 0 || bytesTotal) && (
-            <p className="mt-1.5 text-[11px] text-muted-foreground font-mono tabular-nums">
-              {formatSize(bytesReceived)}
-              {bytesTotal ? ` / ${formatSize(bytesTotal)}` : ""}
-            </p>
-          )}
+          <div className="mt-1.5 flex items-center justify-between gap-2">
+            {(bytesReceived > 0 || bytesTotal) ? (
+              <p className="text-[11px] text-muted-foreground font-mono tabular-nums">
+                {formatSize(bytesReceived)}
+                {bytesTotal ? ` / ${formatSize(bytesTotal)}` : ""}
+              </p>
+            ) : (
+              <span />
+            )}
+            {loading && stage !== "ready" && stage !== "error" && (
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="h-6 px-2 text-[11px] gap-1 text-muted-foreground hover:text-destructive"
+                onClick={handleCancel}
+              >
+                <X className="h-3 w-3" />
+                Abbrechen
+              </Button>
+            )}
+          </div>
         </div>
       )}
 
