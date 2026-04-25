@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { Download, AlertTriangle, Info, Loader2, CheckCircle2 } from "lucide-react";
+import { Download, AlertTriangle, Info, Loader2, CheckCircle2, Eye, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 
 interface PdfManifest {
