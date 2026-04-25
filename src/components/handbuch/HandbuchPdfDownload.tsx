@@ -122,6 +122,8 @@ const HandbuchPdfDownload = ({
   const [readyBlobUrl, setReadyBlobUrl] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const tickRef = useRef<number | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
 
   // Cleanup blob URL on unmount or when a new download starts.
   useEffect(() => {
