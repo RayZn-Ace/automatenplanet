@@ -8,8 +8,8 @@
 // The renderer mirrors scripts/generate-handbuch-pdf.ts so the on-demand PDF
 // is identical to the build-time one.
 
-// @ts-ignore -- npm specifier resolved at runtime by Deno edge runtime
-import PDFDocument from "npm:pdfkit@0.15.0";
+// @ts-ignore -- esm.sh bundle works in both the lint sandbox and Deno edge runtime
+import PDFDocument from "https://esm.sh/pdfkit@0.15.0?target=deno&bundle";
 import { createHash } from "node:crypto";
 import { Buffer } from "node:buffer";
 import {
@@ -29,6 +29,11 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
   "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
 };
+
+// Convert Uint8Array → plain ArrayBuffer (not SharedArrayBuffer) so it
+// satisfies the strict BlobPart type used by the Response/Blob constructors.
+const toArrayBuffer = (u8: Uint8Array): ArrayBuffer =>
+  u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength) as ArrayBuffer;
 
 // ---- Theme ------------------------------------------------------------------
 const COLORS = {
@@ -712,7 +717,7 @@ Deno.serve(async (req) => {
     if (req.method === "HEAD") {
       return new Response(null, { status: 200, headers });
     }
-    return new Response(new Blob([bytes], { type: "application/pdf" }), {
+    return new Response(new Blob([toArrayBuffer(bytes)], { type: "application/pdf" }), {
       status: 200,
       headers,
     });
@@ -747,7 +752,7 @@ Deno.serve(async (req) => {
         return new Response(null, { status: 200, headers: fallbackHeaders });
       }
       return new Response(
-        new Blob([lastGoodPdf.bytes], { type: "application/pdf" }),
+        new Blob([toArrayBuffer(lastGoodPdf.bytes)], { type: "application/pdf" }),
         { status: 200, headers: fallbackHeaders },
       );
     }
@@ -770,7 +775,7 @@ Deno.serve(async (req) => {
         return new Response(null, { status: 200, headers: staticHeaders });
       }
       return new Response(
-        new Blob([staticBytes], { type: "application/pdf" }),
+        new Blob([toArrayBuffer(staticBytes)], { type: "application/pdf" }),
         { status: 200, headers: staticHeaders },
       );
     }
