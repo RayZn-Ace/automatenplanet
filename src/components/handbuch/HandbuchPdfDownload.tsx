@@ -207,6 +207,8 @@ const HandbuchPdfDownload = ({
     setBytesReceived(0);
     setBytesTotal(null);
     setErrorMsg(null);
+    setCacheStatus(null);
+    setCacheGeneratedAt(null);
   };
 
   // While the server is rendering (no bytes yet), we don't get real progress
