@@ -28,6 +28,9 @@ const corsHeaders = {
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
   "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+  // Allow the browser to read these custom headers from the JS fetch response.
+  "Access-Control-Expose-Headers":
+    "X-Pdf-Cache, X-Pdf-Fallback, X-Pdf-Fallback-Reason, X-Pdf-Generated-At, ETag, Content-Length",
 };
 
 // Convert Uint8Array → plain ArrayBuffer (not SharedArrayBuffer) so it

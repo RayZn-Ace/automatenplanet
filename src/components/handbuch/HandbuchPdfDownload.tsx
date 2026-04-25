@@ -121,6 +121,9 @@ const HandbuchPdfDownload = ({
   const [bytesTotal, setBytesTotal] = useState<number | null>(null);
   const [readyBlobUrl, setReadyBlobUrl] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
+  type CacheStatus = "HIT" | "MISS" | "REVALIDATED" | "FALLBACK" | "UNKNOWN";
+  const [cacheStatus, setCacheStatus] = useState<CacheStatus | null>(null);
+  const [cacheGeneratedAt, setCacheGeneratedAt] = useState<string | null>(null);
   const tickRef = useRef<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
@@ -204,6 +207,8 @@ const HandbuchPdfDownload = ({
     setBytesReceived(0);
     setBytesTotal(null);
     setErrorMsg(null);
+    setCacheStatus(null);
+    setCacheGeneratedAt(null);
   };
 
   // While the server is rendering (no bytes yet), we don't get real progress
@@ -242,6 +247,18 @@ const HandbuchPdfDownload = ({
       signal,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+
+    // Capture cache diagnostics (exposed via Access-Control-Expose-Headers).
+    const cacheHeader = (res.headers.get("x-pdf-cache") || "").toUpperCase();
+    if (cacheHeader) {
+      setCacheStatus(
+        (["HIT", "MISS", "REVALIDATED", "FALLBACK"].includes(cacheHeader)
+          ? cacheHeader
+          : "UNKNOWN") as CacheStatus,
+      );
+    }
+    const generatedAt = res.headers.get("x-pdf-generated-at");
+    if (generatedAt) setCacheGeneratedAt(generatedAt);
 
     setStage("generating");
     setProgress(10);
@@ -471,6 +488,54 @@ const HandbuchPdfDownload = ({
               </Button>
             )}
           </div>
+          {stage === "ready" && cacheStatus && (
+            <div className="mt-2 pt-2 border-t flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px]">
+              <span className="text-muted-foreground">Cache:</span>
+              <span
+                className={
+                  "inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono font-medium " +
+                  (cacheStatus === "HIT"
+                    ? "bg-primary/15 text-primary"
+                    : cacheStatus === "MISS"
+                    ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                    : cacheStatus === "REVALIDATED"
+                    ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                    : cacheStatus === "FALLBACK"
+                    ? "bg-destructive/15 text-destructive"
+                    : "bg-muted text-muted-foreground")
+                }
+                title={
+                  cacheStatus === "HIT"
+                    ? "Aus dem Server-Cache geliefert (keine Neuerzeugung)."
+                    : cacheStatus === "MISS"
+                    ? "Frisch erzeugt – Inhalt hatte sich geändert oder war nicht im Cache."
+                    : cacheStatus === "REVALIDATED"
+                    ? "Browser-Cache war noch gültig (304)."
+                    : cacheStatus === "FALLBACK"
+                    ? "Letzte erfolgreiche Version aus dem Fallback-Cache."
+                    : "Cache-Status unbekannt."
+                }
+              >
+                {cacheStatus}
+              </span>
+              <span className="text-muted-foreground">
+                {cacheStatus === "HIT"
+                  ? "aus Cache geliefert"
+                  : cacheStatus === "MISS"
+                  ? "neu erzeugt"
+                  : cacheStatus === "REVALIDATED"
+                  ? "unverändert (304)"
+                  : cacheStatus === "FALLBACK"
+                  ? "Fallback verwendet"
+                  : "Status unbekannt"}
+              </span>
+              {cacheGeneratedAt && (
+                <span className="text-muted-foreground/80">
+                  · erstellt {formatDate(cacheGeneratedAt)}
+                </span>
+              )}
+            </div>
+          )}
         </div>
       )}
 
