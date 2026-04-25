@@ -84,6 +84,18 @@ const triggerBlobDownload = (blob: Blob, filename: string) => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 
+class PdfHttpError extends Error {
+  constructor(
+    public status: number,
+    public statusText: string,
+    public bodyText?: string,
+    public retryAfter?: number | null,
+  ) {
+    super(`HTTP ${status} ${statusText}`.trim());
+    this.name = "PdfHttpError";
+  }
+}
+
 /**
  * Download button for the handbook PDF.
  *
