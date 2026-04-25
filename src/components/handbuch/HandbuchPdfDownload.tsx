@@ -124,6 +124,12 @@ const HandbuchPdfDownload = ({
   const [info, setInfo] = useState<PdfManifest | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [errorDetail, setErrorDetail] = useState<{
+    status?: number;
+    statusText?: string;
+    body?: string;
+    retryAfter?: number | null;
+  } | null>(null);
 
   // Progress state
   type Stage = "idle" | "connecting" | "generating" | "downloading" | "ready" | "error";
