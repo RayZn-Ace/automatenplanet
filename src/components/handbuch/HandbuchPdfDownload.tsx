@@ -488,6 +488,54 @@ const HandbuchPdfDownload = ({
               </Button>
             )}
           </div>
+          {stage === "ready" && cacheStatus && (
+            <div className="mt-2 pt-2 border-t flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px]">
+              <span className="text-muted-foreground">Cache:</span>
+              <span
+                className={
+                  "inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono font-medium " +
+                  (cacheStatus === "HIT"
+                    ? "bg-primary/15 text-primary"
+                    : cacheStatus === "MISS"
+                    ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                    : cacheStatus === "REVALIDATED"
+                    ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                    : cacheStatus === "FALLBACK"
+                    ? "bg-destructive/15 text-destructive"
+                    : "bg-muted text-muted-foreground")
+                }
+                title={
+                  cacheStatus === "HIT"
+                    ? "Aus dem Server-Cache geliefert (keine Neuerzeugung)."
+                    : cacheStatus === "MISS"
+                    ? "Frisch erzeugt – Inhalt hatte sich geändert oder war nicht im Cache."
+                    : cacheStatus === "REVALIDATED"
+                    ? "Browser-Cache war noch gültig (304)."
+                    : cacheStatus === "FALLBACK"
+                    ? "Letzte erfolgreiche Version aus dem Fallback-Cache."
+                    : "Cache-Status unbekannt."
+                }
+              >
+                {cacheStatus}
+              </span>
+              <span className="text-muted-foreground">
+                {cacheStatus === "HIT"
+                  ? "aus Cache geliefert"
+                  : cacheStatus === "MISS"
+                  ? "neu erzeugt"
+                  : cacheStatus === "REVALIDATED"
+                  ? "unverändert (304)"
+                  : cacheStatus === "FALLBACK"
+                  ? "Fallback verwendet"
+                  : "Status unbekannt"}
+              </span>
+              {cacheGeneratedAt && (
+                <span className="text-muted-foreground/80">
+                  · erstellt {formatDate(cacheGeneratedAt)}
+                </span>
+              )}
+            </div>
+          )}
         </div>
       )}
 
