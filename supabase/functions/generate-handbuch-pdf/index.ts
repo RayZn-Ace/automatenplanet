@@ -555,6 +555,10 @@ type CachedPdf = {
 };
 
 let pdfCache: CachedPdf | null = null;
+// Last successfully rendered PDF in this worker, regardless of whether its
+// hash still matches the current data. Used as in-memory fallback when a
+// fresh render fails (e.g. transient PDFKit error, OOM, image decode bug).
+let lastGoodPdf: CachedPdf | null = null;
 let inFlight: Promise<CachedPdf> | null = null;
 
 async function getOrRenderPdf(contentHash: string): Promise<CachedPdf & { cacheStatus: "HIT" | "MISS" }> {
@@ -582,6 +586,7 @@ async function getOrRenderPdf(contentHash: string): Promise<CachedPdf & { cacheS
       cachedAt: Date.now(),
     };
     pdfCache = entry;
+    lastGoodPdf = entry; // promote: this render succeeded
     return entry;
   })();
 
@@ -591,6 +596,40 @@ async function getOrRenderPdf(contentHash: string): Promise<CachedPdf & { cacheS
   } finally {
     inFlight = null;
   }
+}
+
+// ---- Static last-good fallback -------------------------------------------
+// If the worker has never successfully rendered a PDF (cold start + immediate
+// failure), fall back to the snapshot the build pipeline pinned to the
+// public site under /downloads/handbuch-boxautomat.last-good.pdf.
+const STATIC_FALLBACK_URL =
+  "https://automatplanet.de/downloads/handbuch-boxautomat.last-good.pdf";
+const STATIC_FALLBACK_BACKUP_URL =
+  "https://automatenplanet.lovable.app/downloads/handbuch-boxautomat.last-good.pdf";
+
+async function fetchStaticLastGood(): Promise<Uint8Array | null> {
+  for (const url of [STATIC_FALLBACK_URL, STATIC_FALLBACK_BACKUP_URL]) {
+    try {
+      const res = await fetch(url, { redirect: "follow" });
+      if (!res.ok) {
+        console.warn(`Static fallback ${url} returned HTTP ${res.status}`);
+        continue;
+      }
+      const buf = await res.arrayBuffer();
+      if (buf.byteLength > 0) {
+        console.log(
+          `↺ Static last-good fallback served from ${url} (${buf.byteLength} bytes).`,
+        );
+        return new Uint8Array(buf);
+      }
+    } catch (err) {
+      console.warn(
+        `Static fallback ${url} unreachable:`,
+        err instanceof Error ? err.message : String(err),
+      );
+    }
+  }
+  return null;
 }
 
 Deno.serve(async (req) => {
@@ -604,34 +643,44 @@ Deno.serve(async (req) => {
     });
   }
 
+  // Compute the content hash WITHOUT building the PDF. This is a cheap
+  // JSON.stringify + SHA-256, so it's safe to do on every request — and it
+  // must succeed even if the renderer later fails, so we keep it outside
+  // the main try/catch.
+  let contentHash: string;
   try {
-    // 1) Compute the content hash WITHOUT building the PDF. This is a cheap
-    //    JSON.stringify + SHA-256, so it's safe to do on every request.
-    const contentHash = computeContentHash();
-    const etag = `"${contentHash}"`;
+    contentHash = computeContentHash();
+  } catch (err) {
+    console.error("Content hash computation failed:", err);
+    return new Response(
+      JSON.stringify({ error: "Content hash failed", message: String(err) }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
+  }
+  const etag = `"${contentHash}"`;
 
-    // 2) HTTP-level conditional GET: if the client already has the same
-    //    hash, return 304 Not Modified and skip rendering entirely.
-    const ifNoneMatch = req.headers.get("if-none-match");
-    if (ifNoneMatch && ifNoneMatch === etag) {
-      return new Response(null, {
-        status: 304,
-        headers: {
-          ...corsHeaders,
-          ETag: etag,
-          "Cache-Control": "public, max-age=300, must-revalidate",
-          "X-Pdf-Content-Hash": contentHash,
-          "X-Pdf-Cache": "REVALIDATED",
-        },
-      });
-    }
+  // HTTP-level conditional GET: if the client already has the same hash,
+  // return 304 Not Modified and skip rendering entirely.
+  const ifNoneMatch = req.headers.get("if-none-match");
+  if (ifNoneMatch && ifNoneMatch === etag) {
+    return new Response(null, {
+      status: 304,
+      headers: {
+        ...corsHeaders,
+        ETag: etag,
+        "Cache-Control": "public, max-age=300, must-revalidate",
+        "X-Pdf-Content-Hash": contentHash,
+        "X-Pdf-Cache": "REVALIDATED",
+      },
+    });
+  }
 
-    // 3) In-memory cache: if a previous request in this worker already
-    //    rendered the same hash, reuse those bytes verbatim.
+  // Try the fresh render first; on any failure, walk the fallback chain:
+  //   1. in-memory last-good PDF from this worker
+  //   2. static last-good snapshot from the public site
+  //   3. 503 with a structured error payload
+  try {
     const { bytes, generatedAt, cacheStatus } = await getOrRenderPdf(contentHash);
-
-    // Drift detection: compare against the EXPECTED_CONTENT_HASH that the
-    // build script pinned when it last synced the data file.
     const inSync = contentHash === EXPECTED_CONTENT_HASH;
     if (!inSync) {
       console.warn(
@@ -648,8 +697,6 @@ Deno.serve(async (req) => {
       "Content-Type": "application/pdf",
       "Content-Disposition": 'inline; filename="handbuch-boxautomat.pdf"',
       "Content-Length": String(bytes.byteLength),
-      // `must-revalidate` lets the browser send If-None-Match after max-age
-      // expires, which then cheaply hits our 304 branch above.
       "Cache-Control": "public, max-age=300, must-revalidate",
       ETag: etag,
       "X-Pdf-Version": HANDBUCH_BOXAUTOMAT_META.version,
@@ -659,22 +706,93 @@ Deno.serve(async (req) => {
       "X-Pdf-Synced-At": SYNCED_AT,
       "X-Pdf-Generated-At": generatedAt,
       "X-Pdf-Cache": cacheStatus,
+      "X-Pdf-Fallback": "none",
     };
 
     if (req.method === "HEAD") {
       return new Response(null, { status: 200, headers });
     }
-    // Wrap in Blob for cross-runtime BodyInit compatibility
     return new Response(new Blob([bytes], { type: "application/pdf" }), {
       status: 200,
       headers,
     });
   } catch (err) {
-    console.error("PDF generation failed:", err);
     const message = err instanceof Error ? err.message : String(err);
+    console.error("PDF generation failed, attempting fallback:", message);
+
+    // Fallback 1: in-memory last-good PDF from this worker.
+    if (lastGoodPdf) {
+      console.log(
+        `↺ Serving in-memory last-good PDF (hash ${lastGoodPdf.contentHash}, generated ${lastGoodPdf.generatedAt}).`,
+      );
+      const fallbackHeaders = {
+        ...corsHeaders,
+        "Content-Type": "application/pdf",
+        "Content-Disposition": 'inline; filename="handbuch-boxautomat.pdf"',
+        "Content-Length": String(lastGoodPdf.bytes.byteLength),
+        // Short cache: client should retry the live endpoint soon.
+        "Cache-Control": "public, max-age=60, must-revalidate",
+        ETag: lastGoodPdf.etag,
+        "X-Pdf-Version": HANDBUCH_BOXAUTOMAT_META.version,
+        "X-Pdf-Content-Hash": lastGoodPdf.contentHash,
+        "X-Pdf-Expected-Hash": EXPECTED_CONTENT_HASH,
+        "X-Pdf-In-Sync": String(lastGoodPdf.contentHash === EXPECTED_CONTENT_HASH),
+        "X-Pdf-Synced-At": SYNCED_AT,
+        "X-Pdf-Generated-At": lastGoodPdf.generatedAt,
+        "X-Pdf-Cache": "FALLBACK",
+        "X-Pdf-Fallback": "in-memory-last-good",
+        "X-Pdf-Fallback-Reason": message.slice(0, 200),
+      };
+      if (req.method === "HEAD") {
+        return new Response(null, { status: 200, headers: fallbackHeaders });
+      }
+      return new Response(
+        new Blob([lastGoodPdf.bytes], { type: "application/pdf" }),
+        { status: 200, headers: fallbackHeaders },
+      );
+    }
+
+    // Fallback 2: static last-good snapshot from the public site.
+    const staticBytes = await fetchStaticLastGood();
+    if (staticBytes) {
+      const staticHeaders = {
+        ...corsHeaders,
+        "Content-Type": "application/pdf",
+        "Content-Disposition":
+          'inline; filename="handbuch-boxautomat.pdf"',
+        "Content-Length": String(staticBytes.byteLength),
+        "Cache-Control": "public, max-age=60, must-revalidate",
+        "X-Pdf-Cache": "FALLBACK",
+        "X-Pdf-Fallback": "static-last-good",
+        "X-Pdf-Fallback-Reason": message.slice(0, 200),
+      };
+      if (req.method === "HEAD") {
+        return new Response(null, { status: 200, headers: staticHeaders });
+      }
+      return new Response(
+        new Blob([staticBytes], { type: "application/pdf" }),
+        { status: 200, headers: staticHeaders },
+      );
+    }
+
+    // Fallback 3: nothing available → 503 with structured error.
+    console.error("All fallbacks exhausted — no PDF could be served.");
     return new Response(
-      JSON.stringify({ error: "PDF generation failed", message }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      JSON.stringify({
+        error: "PDF generation failed",
+        message,
+        fallbackAttempted: ["in-memory-last-good", "static-last-good"],
+      }),
+      {
+        status: 503,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+          "X-Pdf-Fallback": "exhausted",
+          "X-Pdf-Fallback-Reason": message.slice(0, 200),
+          "Retry-After": "60",
+        },
+      },
     );
   }
 });
