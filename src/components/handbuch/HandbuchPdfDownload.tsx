@@ -328,8 +328,8 @@ const HandbuchPdfDownload = ({
       setBytesReceived(blob.size);
       setStage("ready");
 
-      // Auto-trigger the browser download.
-      triggerBlobDownload(blob, fileName);
+      // Show preview modal first; user triggers the actual save from there.
+      setPreviewOpen(true);
     } catch (err) {
       stopGenerationTicker();
       console.error("Dynamic PDF generation failed, using static fallback:", err);
