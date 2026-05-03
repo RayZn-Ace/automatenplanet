@@ -8,8 +8,8 @@
 // The renderer mirrors scripts/generate-handbuch-pdf.ts so the on-demand PDF
 // is identical to the build-time one.
 
-// @ts-ignore -- esm.sh bundle works in both the lint sandbox and Deno edge runtime
-import PDFDocument from "https://esm.sh/pdfkit@0.15.0?target=deno&bundle";
+// @ts-ignore -- npm specifier resolved by Deno edge runtime
+import PDFDocument from "npm:pdfkit@0.15.0";
 import { createHash } from "node:crypto";
 import { Buffer } from "node:buffer";
 import {
