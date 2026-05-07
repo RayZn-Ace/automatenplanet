@@ -105,10 +105,13 @@ All colors MUST be HSL.
   background: hsl(var(--primary)); 
 }
 
-/* Glowing text utility */
-.text-glow {
-  text-shadow: 0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary));
-}
+/* Neon glows removed for light theme — keep colored text without text-shadow */
+.text-glow,
 .text-glow-blue {
-  text-shadow: 0 0 10px hsl(var(--secondary)), 0 0 20px hsl(var(--secondary));
+  text-shadow: none;
+}
+.shadow-neon,
+.shadow-neon-blue,
+.shadow-neon-purple {
+  box-shadow: none;
 }
