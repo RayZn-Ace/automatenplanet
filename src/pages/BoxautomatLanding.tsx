@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getProductBySlug } from "@/data/products";
+import ScrollFrameSequence from "@/components/ScrollFrameSequence";
 
 const PRODUCT_SLUG = "boxautomat-mit-geldscheinakzeptor";
 
@@ -90,11 +91,17 @@ const BoxautomatLanding = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="relative mb-8 max-w-2xl mx-auto"
+              className="relative mb-8 max-w-md mx-auto"
             >
-              <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/10 via-card to-secondary/10 border border-border p-8 flex items-center justify-center">
-                <img src={product.image} alt={product.name} className="w-full h-full object-contain" loading="eager" />
-              </div>
+              <ScrollFrameSequence
+                framesBase="/boxautomat-frames/f"
+                frameCount={87}
+                ext="webp"
+                width={360}
+                height={480}
+                alt={product.name}
+                className="w-full aspect-[3/4]"
+              />
             </motion.div>
 
             <div className="flex flex-wrap justify-center gap-4 mb-8">
