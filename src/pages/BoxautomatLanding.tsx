@@ -157,30 +157,18 @@ const BoxautomatLanding = () => {
                 <Button
                   size="lg"
                   className="w-full text-base h-14"
-                  onClick={() => buyNow(PRODUCT_SLUG)}
-                  disabled={buyLoading}
+                  onClick={() => addBySlug(PRODUCT_SLUG)}
+                  disabled={cartLoading}
                 >
-                  {buyLoading
-                    ? <><Loader2 className="mr-2 animate-spin" /> Jetzt kaufen</>
-                    : <><ShoppingCart className="mr-2" /> Jetzt kaufen</>
+                  {cartLoading
+                    ? <><Loader2 className="mr-2 animate-spin" /> In den Warenkorb</>
+                    : <><ShoppingCart className="mr-2" /> In den Warenkorb</>
                   }
                 </Button>
 
-                {/* Payment providers */}
-                <div className="mt-6">
-                  <div className="text-xs text-muted-foreground mb-3 text-center">Sichere Zahlung mit</div>
-                  <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-semibold text-muted-foreground">
-                    <span className="px-2 py-1 rounded bg-background border border-border">AmEx</span>
-                    <span className="px-2 py-1 rounded bg-background border border-border">MasterCard</span>
-                    <span className="px-2 py-1 rounded bg-background border border-border">VISA</span>
-                    <span className="px-2 py-1 rounded bg-background border border-border">SEPA</span>
-                    <span className="px-2 py-1 rounded bg-background border border-border">Klarna</span>
-                    <span className="px-2 py-1 rounded bg-background border border-border">giropay</span>
-                    <span className="px-2 py-1 rounded bg-background border border-border">Apple Pay</span>
-                    <span className="px-2 py-1 rounded bg-background border border-border">G Pay</span>
-                    <span className="px-2 py-1 rounded bg-background border border-border">PayPal</span>
-                  </div>
-                </div>
+                <WhatsAppConsultButton productName={product.name} className="w-full h-14 text-base mt-3" />
+
+                <PaymentMethods className="mt-6" />
               </div>
             </div>
 
@@ -229,21 +217,8 @@ const BoxautomatLanding = () => {
               </div>
             </div>
 
-            {/* Order form */}
-            <form onSubmit={handleOrder} id="kaufen-form" className="mt-10 pt-10 border-t border-border max-w-2xl mx-auto space-y-4">
-              <h3 className="text-2xl font-bold mb-2 text-center">Direkt bestellen</h3>
-              <Input placeholder="Name *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-              <Input type="email" placeholder="E-Mail *" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-              <Input type="tel" placeholder="Telefon *" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-              <Input type="number" min="1" placeholder="Menge" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} />
-              <Textarea placeholder="Lieferadresse" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} rows={3} />
-              <Button type="submit" size="lg" className="w-full">
-                <ShoppingCart className="mr-2" /> Verbindlich bestellen
-              </Button>
-              <p className="text-xs text-muted-foreground text-center">
-                Wir bestätigen Ihre Bestellung innerhalb von 2 Stunden per E-Mail.
-              </p>
-            </form>
+            </div>
+
           </div>
         </div>
       </section>
