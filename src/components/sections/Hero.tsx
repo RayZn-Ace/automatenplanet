@@ -57,7 +57,7 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-foreground shadow-neon h-14 px-8 text-lg rounded-xl">
+            <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-neon h-14 px-8 text-lg rounded-xl">
               Automaten entdecken
               <ChevronRight className="ml-2 w-5 h-5" />
             </Button>

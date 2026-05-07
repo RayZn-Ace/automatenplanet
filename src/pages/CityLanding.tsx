@@ -107,7 +107,7 @@ const CityLanding = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-primary hover:bg-primary/80 text-foreground shadow-neon">
+              <Button size="lg" className="bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon">
                 <Phone className="mr-2 w-5 h-5" /> Jetzt beraten lassen
               </Button>
               <Button size="lg" variant="outline" className="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-foreground" asChild>
@@ -205,7 +205,7 @@ const CityLanding = () => {
           </div>
           
           <div className="text-center mt-10">
-            <Button asChild className="bg-primary hover:bg-primary/80 text-foreground shadow-neon">
+            <Button asChild className="bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon">
               <Link to="/#produkte">Alle Automaten ansehen</Link>
             </Button>
           </div>
@@ -223,7 +223,7 @@ const CityLanding = () => {
               Wir beraten Sie kostenlos und unverbindlich zu den besten Standorten und Automaten für Ihr Business in {city.name}.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild className="bg-primary hover:bg-primary/80 text-foreground shadow-neon">
+              <Button size="lg" asChild className="bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon">
                 <Link to="/#kontakt">Kostenlose Beratung</Link>
               </Button>
               <Button size="lg" variant="outline" className="border-2 border-secondary text-secondary hover:bg-secondary hover:text-background" asChild>

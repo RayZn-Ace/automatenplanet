@@ -130,7 +130,7 @@ const Contact = () => {
                 </Select>
               </div>
               <Textarea placeholder="Ihre Nachricht..." value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="bg-muted/50 border-border min-h-[120px]" />
-              <Button type="submit" className="w-full bg-primary hover:bg-primary/80 text-foreground shadow-neon h-12 text-lg">
+              <Button type="submit" className="w-full bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon h-12 text-lg">
                 <Send className="mr-2 w-5 h-5" /> Anfrage senden
               </Button>
             </form>

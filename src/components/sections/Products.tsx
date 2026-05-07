@@ -67,7 +67,7 @@ const Products = () => {
                   </div>
                 </div>
                 <div className="flex gap-2 mt-6">
-                  <Button className="flex-1 bg-primary hover:bg-primary/80 text-foreground shadow-neon" asChild>
+                  <Button className="flex-1 bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon" asChild>
                     <Link to={`/produkte/${p.slug}`}>
                       <ShoppingCart className="mr-1 w-4 h-4" /> Details
                     </Link>

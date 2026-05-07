@@ -65,7 +65,7 @@ const Navbar = () => {
             <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground border-2">
               {t("nav.consultation")}
             </Button>
-            <Button className="bg-primary hover:bg-primary/80 text-foreground shadow-neon">
+            <Button className="bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon">
               {t("nav.inquiry")}
             </Button>
           </div>
