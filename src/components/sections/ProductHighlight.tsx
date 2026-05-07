@@ -13,6 +13,7 @@ interface ProductHighlightProps {
   ctaLabel: string;
   image: string;
   imageAlt: string;
+  video?: string;
   imageSide?: "left" | "right";
   highlighted?: boolean;
 }
@@ -27,6 +28,7 @@ const ProductHighlight = ({
   ctaLabel,
   image,
   imageAlt,
+  video,
   imageSide = "right",
   highlighted = false,
 }: ProductHighlightProps) => {
@@ -42,21 +44,37 @@ const ProductHighlight = ({
           }`}
         >
           <div className="grid md:grid-cols-2 gap-0 items-center">
-            {/* Image */}
+            {/* Image / Video */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className={`relative flex items-center justify-center p-6 md:p-10 min-h-[340px] md:min-h-[480px] bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 ${imageOrder}`}
+              className={`relative flex items-center justify-center p-6 md:p-10 min-h-[340px] md:min-h-[480px] ${
+                video ? "bg-white" : "bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"
+              } ${imageOrder}`}
             >
               <Link to={ctaHref} aria-label={title} className="block w-full max-w-md">
-                <img
-                  src={image}
-                  alt={imageAlt}
-                  loading="lazy"
-                  className="w-full h-auto object-contain max-h-[420px] md:max-h-[520px] mx-auto transition-transform duration-500 hover:scale-105"
-                />
+                {video ? (
+                  <video
+                    src={video}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    disablePictureInPicture
+                    controls={false}
+                    aria-label={imageAlt}
+                    className="w-full aspect-[3/4] object-contain pointer-events-none"
+                  />
+                ) : (
+                  <img
+                    src={image}
+                    alt={imageAlt}
+                    loading="lazy"
+                    className="w-full h-auto object-contain max-h-[420px] md:max-h-[520px] mx-auto transition-transform duration-500 hover:scale-105"
+                  />
+                )}
               </Link>
             </motion.div>
 
