@@ -61,8 +61,8 @@ const BoxautomatLanding = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Boxautomat kaufen – Direktbestellung ab 1.949€ | AutomatPlanet</title>
-        <meta name="description" content="Profi-Boxautomat mit Geldscheinakzeptor. Bis zu 1.500€/Monat. Versand in 24h. Jetzt direkt online bestellen." />
+        <title>Boxautomat Premium kaufen – ab 1.799€ netto | AutomatPlanet</title>
+        <meta name="description" content="Boxautomat Premium in 2 Varianten: Münzfach (1.799€) oder Münz- & Geldscheinfach (1.949€). Bis zu 1.500€/Monat. Versand in 24h." />
         <link rel="canonical" href="https://automatplanet.de/boxautomat" />
       </Helmet>
 
@@ -80,7 +80,7 @@ const BoxautomatLanding = () => {
               Der Boxautomat, der sich <span className="text-primary">selbst bezahlt</span>.
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8">
-              Profi-Qualität mit Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat – pro Standort.
+              Profi-Qualität – wahlweise mit oder ohne Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat – pro Standort.
               Versand in 24 Stunden, 2 Jahre Garantie.
             </p>
 
