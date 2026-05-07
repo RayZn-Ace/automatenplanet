@@ -74,44 +74,47 @@ const BoxautomatLanding = () => {
       {/* HERO */}
       <section className="pt-32 pb-16 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 mb-6">
-                <Star className="w-4 h-4 fill-primary text-primary" />
-                <span className="text-sm font-medium">Bestseller 2026 · 500+ verkauft</span>
-              </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                Der Boxautomat, der sich <span className="text-primary">selbst bezahlt</span>.
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground mb-8">
-                Profi-Qualität mit Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat – pro Standort.
-                Versand in 24 Stunden, 2 Jahre Garantie.
-              </p>
-              <div className="flex flex-wrap gap-4 mb-8">
-                <Button size="lg" asChild>
-                  <a href="#bestellen">
-                    <ShoppingCart className="mr-2" /> Jetzt bestellen
-                  </a>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <a href="tel:051112282957">
-                    <Phone className="mr-2" /> 0511 12282957
-                  </a>
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Versand in 24h</div>
-                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> 2 Jahre Garantie</div>
-                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Rechnung möglich</div>
-              </div>
-            </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 mb-6">
+              <Star className="w-4 h-4 fill-primary text-primary" />
+              <span className="text-sm font-medium">Bestseller 2026 · 500+ verkauft</span>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              Der Boxautomat, der sich <span className="text-primary">selbst bezahlt</span>.
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground mb-8">
+              Profi-Qualität mit Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat – pro Standort.
+              Versand in 24 Stunden, 2 Jahre Garantie.
+            </p>
 
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="relative">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative mb-8 max-w-2xl mx-auto"
+            >
               <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/10 via-card to-secondary/10 border border-border p-8 flex items-center justify-center">
                 <img src={product.image} alt={product.name} className="w-full h-full object-contain" loading="eager" />
               </div>
             </motion.div>
-          </div>
+
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <Button size="lg" asChild>
+                <a href="#bestellen">
+                  <ShoppingCart className="mr-2" /> Jetzt bestellen
+                </a>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <a href="tel:051112282957">
+                  <Phone className="mr-2" /> 0511 12282957
+                </a>
+              </Button>
+            </div>
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Versand in 24h</div>
+              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> 2 Jahre Garantie</div>
+              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Rechnung möglich</div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
