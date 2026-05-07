@@ -326,7 +326,7 @@ const HandbuchPdfPreview = ({
       <p className="mt-3 text-xs text-muted-foreground">
         Hinweis: Die Vorschau nutzt den eingebauten PDF-Viewer deines Browsers.
         Auf manchen mobilen Browsern ist die Inline-Anzeige eingeschränkt –
-        in dem Fall öffne das PDF über „Neuer Tab".
+        in dem Fall öffne das PDF über "Neuer Tab".
       </p>
     </section>
   );

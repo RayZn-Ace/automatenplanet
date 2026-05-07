@@ -421,7 +421,7 @@ const HandbuchPdfDownload = ({
     //    don't queue or restart it.
     if (inFlightRef.current || loading) {
       setThrottleNotice(
-        'Generierung läuft bereits – bitte warten oder „Abbrechen“ verwenden.',
+        'Generierung läuft bereits – bitte warten oder "Abbrechen" verwenden.',
       );
       window.setTimeout(() => setThrottleNotice(null), 4000);
       return;
