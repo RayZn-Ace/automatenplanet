@@ -44,9 +44,21 @@ const App = () => (
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/standorte" element={<Standorte />} />
             <Route path="/standorte/:slug" element={<CityLanding />} />
-            {/* /produkte/boxautomat-* now redirects to the dedicated landing page */}
+            {/* Boxautomat product slugs now redirect to the dedicated landing page */}
+            <Route
+              path="/produkte/boxautomat-premium"
+              element={<Navigate to="/boxautomat" replace />}
+            />
             <Route
               path="/produkte/boxautomat-mit-geldscheinakzeptor"
+              element={<Navigate to="/boxautomat" replace />}
+            />
+            <Route
+              path="/produkte/boxautomat-ohne-geldscheinakzeptor"
+              element={<Navigate to="/boxautomat" replace />}
+            />
+            <Route
+              path="/produkte/combo-boxautomat"
               element={<Navigate to="/boxautomat" replace />}
             />
             <Route path="/produkte/:slug" element={<ProductPage />} />

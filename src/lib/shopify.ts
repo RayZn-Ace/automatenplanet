@@ -4,12 +4,12 @@ export const SHOPIFY_STORE_PERMANENT_DOMAIN = "3c3782-2.myshopify.com";
 export const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
 export const SHOPIFY_STOREFRONT_TOKEN = "37302f0e61572056b0637dba2393b994";
 
-// Map of local product slug → Shopify ProductVariant GID
+// Map of local product slug → Shopify ProductVariant GID.
+// For products with multiple variants (e.g. boxautomat-premium), use the slug for the default variant
+// and provide additional variant GIDs via SHOPIFY_VARIANTS_BY_SLUG below.
 export const SHOPIFY_VARIANT_BY_SLUG: Record<string, string> = {
   "greifautomat": "gid://shopify/ProductVariant/53845312045397",
-  "boxautomat-mit-geldscheinakzeptor": "gid://shopify/ProductVariant/53845335146837",
-  "combo-boxautomat": "gid://shopify/ProductVariant/53845395112277",
-  "boxautomat-ohne-geldscheinakzeptor": "gid://shopify/ProductVariant/53845465530709",
+  "boxautomat-premium": "gid://shopify/ProductVariant/53846024454485", // Nur Münzfach (default)
   "basketball-machine": "gid://shopify/ProductVariant/53845522219349",
   "air-hockey-table": "gid://shopify/ProductVariant/53845554528597",
   "arcade-machine": "gid://shopify/ProductVariant/53845650669909",
@@ -26,6 +26,31 @@ export const SHOPIFY_VARIANT_BY_SLUG: Record<string, string> = {
   "furby-car": "gid://shopify/ProductVariant/53845958361429",
   "helicopter-ride": "gid://shopify/ProductVariant/53845959770453",
   "electric-dino-ride": "gid://shopify/ProductVariant/53845966553429",
+};
+
+// Multi-variant products (slug → list of variants with label and price)
+export interface ShopifyVariantOption {
+  variantId: string;
+  label: string;
+  price: number; // EUR netto
+  description?: string;
+}
+
+export const SHOPIFY_VARIANTS_BY_SLUG: Record<string, ShopifyVariantOption[]> = {
+  "boxautomat-premium": [
+    {
+      variantId: "gid://shopify/ProductVariant/53846024454485",
+      label: "Nur Münzfach",
+      price: 1799,
+      description: "Münzbetrieb",
+    },
+    {
+      variantId: "gid://shopify/ProductVariant/53846024487253",
+      label: "Münz- & Geldscheinfach",
+      price: 1949,
+      description: "Münzen + Scheine (5/10/20€)",
+    },
+  ],
 };
 
 export async function storefrontApiRequest(query: string, variables: Record<string, unknown> = {}) {

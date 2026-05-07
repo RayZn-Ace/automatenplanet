@@ -30,7 +30,11 @@ interface CartStore {
   isSyncing: boolean;
   openCart: () => void;
   closeCart: () => void;
-  addBySlug: (slug: string, quantity?: number) => Promise<void>;
+  addBySlug: (
+    slug: string,
+    quantity?: number,
+    overrides?: { variantId?: string; price?: number; nameSuffix?: string }
+  ) => Promise<void>;
   updateQuantity: (variantId: string, quantity: number) => Promise<void>;
   removeItem: (variantId: string) => Promise<void>;
   clearCart: () => void;
@@ -54,13 +58,17 @@ export const useCartStore = create<CartStore>()(
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
 
-      addBySlug: async (slug, quantity = 1) => {
-        const variantId = SHOPIFY_VARIANT_BY_SLUG[slug];
+      addBySlug: async (slug, quantity = 1, overrides) => {
+        const variantId = overrides?.variantId ?? SHOPIFY_VARIANT_BY_SLUG[slug];
         const product = findProductBySlug(slug);
         if (!variantId || !product) {
           toast.error("Produkt aktuell nicht im Shop verfügbar.");
           return;
         }
+        const itemPrice = overrides?.price ?? product.price;
+        const itemName = overrides?.nameSuffix
+          ? `${product.name} – ${overrides.nameSuffix}`
+          : product.name;
         set({ isLoading: true });
         try {
           const { items, cartId } = get();
@@ -79,7 +87,7 @@ export const useCartStore = create<CartStore>()(
               });
             } else {
               get().clearCart();
-              return get().addBySlug(slug, quantity);
+              return get().addBySlug(slug, quantity, overrides);
             }
           } else if (cartId) {
             const result = await shopifyAddToCart(cartId, variantId, quantity);
@@ -94,16 +102,16 @@ export const useCartStore = create<CartStore>()(
                     lineId: newLine?.lineId ?? null,
                     slug,
                     variantId,
-                    name: product.name,
+                    name: itemName,
                     image: product.image,
-                    price: product.price,
+                    price: itemPrice,
                     quantity,
                   },
                 ],
               });
             } else {
               get().clearCart();
-              return get().addBySlug(slug, quantity);
+              return get().addBySlug(slug, quantity, overrides);
             }
           } else {
             const result = await shopifyCreateCart(variantId, quantity);
@@ -116,15 +124,15 @@ export const useCartStore = create<CartStore>()(
                   lineId: newLine?.lineId ?? null,
                   slug,
                   variantId,
-                  name: product.name,
+                  name: itemName,
                   image: product.image,
-                  price: product.price,
+                  price: itemPrice,
                   quantity,
                 },
               ],
             });
           }
-          toast.success(`${product.name} wurde zum Warenkorb hinzugefügt.`, {
+          toast.success(`${itemName} wurde zum Warenkorb hinzugefügt.`, {
             position: "top-center",
             action: {
               label: "Anzeigen",

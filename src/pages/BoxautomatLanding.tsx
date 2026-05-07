@@ -16,7 +16,10 @@ import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
 
-const PRODUCT_SLUG = "boxautomat-mit-geldscheinakzeptor";
+import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
+
+const PRODUCT_SLUG = "boxautomat-premium";
+const VARIANTS = SHOPIFY_VARIANTS_BY_SLUG[PRODUCT_SLUG];
 
 const benefits = [
   { icon: TrendingUp, title: "Bis zu 1.500€/Monat", desc: "Hohe Einnahmen pro Aufstellort durch Highscore-Effekt." },
@@ -45,19 +48,21 @@ const BoxautomatLanding = () => {
   const product = getProductBySlug(PRODUCT_SLUG)!;
   const addBySlug = useCartStore((s) => s.addBySlug);
   const cartLoading = useCartStore((s) => s.isLoading);
+  const [variantIdx, setVariantIdx] = useState(1); // default: Münz- & Geldschein
+  const selectedVariant = VARIANTS[variantIdx];
   const [coinPrice, setCoinPrice] = useState(2);
   const [playsPerDay, setPlaysPerDay] = useState(40);
   const roi = useMemo(() => {
     const monthly = coinPrice * playsPerDay * 30;
-    const months = Math.max(1, Math.ceil(product.price / monthly));
+    const months = Math.max(1, Math.ceil(selectedVariant.price / monthly));
     return { monthly, months };
-  }, [coinPrice, playsPerDay, product.price]);
+  }, [coinPrice, playsPerDay, selectedVariant.price]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Boxautomat kaufen – Direktbestellung ab 1.949€ | AutomatPlanet</title>
-        <meta name="description" content="Profi-Boxautomat mit Geldscheinakzeptor. Bis zu 1.500€/Monat. Versand in 24h. Jetzt direkt online bestellen." />
+        <title>Boxautomat Premium kaufen – ab 1.799€ netto | AutomatPlanet</title>
+        <meta name="description" content="Boxautomat Premium in 2 Varianten: Münzfach (1.799€) oder Münz- & Geldscheinfach (1.949€). Bis zu 1.500€/Monat. Versand in 24h." />
         <link rel="canonical" href="https://automatplanet.de/boxautomat" />
       </Helmet>
 
@@ -75,7 +80,7 @@ const BoxautomatLanding = () => {
               Der Boxautomat, der sich <span className="text-primary">selbst bezahlt</span>.
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8">
-              Profi-Qualität mit Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat – pro Standort.
+              Profi-Qualität – wahlweise mit oder ohne Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat – pro Standort.
               Versand in 24 Stunden, 2 Jahre Garantie.
             </p>
 
@@ -148,16 +153,53 @@ const BoxautomatLanding = () => {
                   <div className="flex items-center gap-3"><Truck className="w-4 h-4 text-primary" /><span>Versand innerhalb 24h</span></div>
                 </div>
 
+                {/* Variant pills */}
+                <div className="mb-5">
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Variante wählen</div>
+                  <div className="flex flex-wrap gap-2">
+                    {VARIANTS.map((v, idx) => {
+                      const active = idx === variantIdx;
+                      return (
+                        <button
+                          key={v.variantId}
+                          type="button"
+                          onClick={() => setVariantIdx(idx)}
+                          className={`group rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                            active
+                              ? "border-primary bg-primary/15 text-foreground shadow-neon"
+                              : "border-border bg-background hover:border-primary/50"
+                          }`}
+                        >
+                          <span className="font-semibold">{v.label}</span>
+                          <span className={`ml-2 text-xs ${active ? "text-primary" : "text-muted-foreground"}`}>
+                            {v.price.toLocaleString("de-DE")}€
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <div className="flex items-baseline gap-3 mb-1">
-                  <span className="text-5xl font-bold text-primary">{product.price.toLocaleString("de-DE")}€</span>
+                  <span className="text-5xl font-bold text-primary">
+                    {selectedVariant.price.toLocaleString("de-DE")}€
+                  </span>
                   <span className="text-muted-foreground">netto</span>
                 </div>
-                <p className="text-sm text-muted-foreground mb-6">zzgl. MwSt. · inkl. Versand DACH</p>
+                <p className="text-sm text-muted-foreground mb-6">
+                  {selectedVariant.label} · zzgl. MwSt. · inkl. Versand DACH
+                </p>
 
                 <Button
                   size="lg"
                   className="w-full text-base h-14"
-                  onClick={() => addBySlug(PRODUCT_SLUG)}
+                  onClick={() =>
+                    addBySlug(PRODUCT_SLUG, 1, {
+                      variantId: selectedVariant.variantId,
+                      price: selectedVariant.price,
+                      nameSuffix: selectedVariant.label,
+                    })
+                  }
                   disabled={cartLoading}
                 >
                   {cartLoading
@@ -166,7 +208,8 @@ const BoxautomatLanding = () => {
                   }
                 </Button>
 
-                <WhatsAppConsultButton productName={product.name} className="w-full h-14 text-base mt-3" />
+                <WhatsAppConsultButton productName={`${product.name} – ${selectedVariant.label}`} className="w-full h-14 text-base mt-3" />
+
 
                 <PaymentMethods className="mt-6" />
               </div>
