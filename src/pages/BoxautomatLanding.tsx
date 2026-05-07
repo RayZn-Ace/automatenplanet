@@ -140,7 +140,7 @@ const BoxautomatLanding = () => {
             <div className="grid md:grid-cols-2 gap-10 items-center">
               {/* Product image gallery */}
               <ProductImageGallery
-                handle={PRODUCT_SLUG}
+                handle={SHOPIFY_HANDLE}
                 fallbackImage={product.image}
                 alt={product.name}
                 badge={
