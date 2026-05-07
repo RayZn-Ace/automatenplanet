@@ -520,34 +520,38 @@ const BoxautomatLanding = () => {
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-4xl mx-auto rounded-3xl border border-border bg-gradient-to-br from-primary/5 to-secondary/5 p-8 md:p-12">
             <div className="text-center mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">ROI-Rechner</h2>
-              <p className="text-muted-foreground">Wann hat sich Ihr Boxautomat amortisiert?</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">Wann hat sich der Automat von selbst bezahlt?</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Stell einfach ein, wie viel ein Spiel kostet und wie oft am Tag jemand spielt. Du siehst sofort, wie viel du im Monat verdienst – und nach wie vielen Monaten der Automat sich selbst bezahlt hat.
+              </p>
             </div>
             <div className="grid md:grid-cols-2 gap-8 mb-8">
               <div>
                 <label className="block text-sm font-medium mb-3">
-                  Preis pro Spiel: <span className="text-primary font-bold">{coinPrice}€</span>
+                  Was kostet ein Spiel? <span className="text-primary font-bold">{coinPrice}€</span>
                 </label>
                 <input type="range" min="1" max="5" step="0.5" value={coinPrice}
                   onChange={(e) => setCoinPrice(parseFloat(e.target.value))}
                   className="w-full accent-primary" />
+                <p className="text-xs text-muted-foreground mt-2">Üblich sind 1–2 € pro Spiel.</p>
               </div>
               <div>
                 <label className="block text-sm font-medium mb-3">
-                  Spiele pro Tag: <span className="text-primary font-bold">{playsPerDay}</span>
+                  Wie viele spielen pro Tag? <span className="text-primary font-bold">{playsPerDay}</span>
                 </label>
                 <input type="range" min="5" max="150" step="5" value={playsPerDay}
                   onChange={(e) => setPlaysPerDay(parseInt(e.target.value))}
                   className="w-full accent-primary" />
+                <p className="text-xs text-muted-foreground mt-2">In Bars & Spätis oft 30–80 Spiele am Tag.</p>
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="rounded-2xl bg-card border border-border p-6 text-center">
-                <div className="text-sm text-muted-foreground mb-2">Monatlicher Umsatz</div>
+                <div className="text-sm text-muted-foreground mb-2">Das verdienst du pro Monat</div>
                 <div className="text-4xl font-bold text-primary">{roi.monthly.toLocaleString("de-DE")}€</div>
               </div>
               <div className="rounded-2xl bg-card border border-border p-6 text-center">
-                <div className="text-sm text-muted-foreground mb-2">Amortisation</div>
+                <div className="text-sm text-muted-foreground mb-2">Nach so vielen Monaten ist er bezahlt</div>
                 <div className="text-4xl font-bold text-secondary">{roi.months} Monate</div>
               </div>
             </div>
