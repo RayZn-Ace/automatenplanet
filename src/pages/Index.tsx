@@ -53,6 +53,7 @@ const Index = () => {
           ctaHref="/produkte/boxautomat-premium"
           ctaLabel="Zum Boxautomat"
           image="/images/products/boxing-machine-new.png"
+          video="/boxautomat-loop.mp4"
           imageAlt="Boxautomat Premium"
           imageSide="left"
           highlighted
