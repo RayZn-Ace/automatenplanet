@@ -115,6 +115,8 @@ export const productSeoContent: SeoContentMap = {
     roiMonths: 3,
     lifestyleImage: "/images/products/lifestyle/boxing-machine-bar.jpg",
   },
+
+  "basketball-machine": {
     longDescription: {
       de: "Die Basketball Arcade Machine bringt den Nervenkitzel des Basketballs in Ihren Standort. Mit Timer, elektronischem Punktezähler und Multiplayer-Modus ist sie ein garantierter Publikumsmagnet. Die auffällige Neon-LED-Beleuchtung sorgt dafür, dass der Automat schon von Weitem alle Blicke auf sich zieht.",
       en: "The Basketball Arcade Machine brings the thrill of basketball to your location. With timer, electronic score counter, and multiplayer mode, it's a guaranteed crowd magnet. The eye-catching neon LED lighting ensures the machine draws attention from afar."
