@@ -179,7 +179,7 @@ const HandbuchPdfPreview = ({
     <section
       id="pdf-vorschau"
       aria-labelledby="pdf-vorschau-heading"
-      className="scroll-mt-28 mt-12 rounded-lg border border-white/10 bg-white/5 p-5"
+      className="scroll-mt-28 mt-12 rounded-lg border border-border bg-muted/40 p-5"
     >
       <header className="flex flex-wrap items-start justify-between gap-3 mb-4">
         <div>
@@ -283,7 +283,7 @@ const HandbuchPdfPreview = ({
 
       {/* Viewer */}
       <div
-        className="relative w-full overflow-hidden rounded-md border border-white/10 bg-white"
+        className="relative w-full overflow-hidden rounded-md border border-border bg-white"
         style={{ height }}
       >
         {loading && (

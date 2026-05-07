@@ -209,7 +209,7 @@ const HandbuchTableOfContents = ({ sections, extraEntries }: Props) => {
   return (
     <nav
       aria-label="Inhaltsübersicht"
-      className="mb-10 rounded-lg border border-white/10 bg-white/5 p-4 sm:p-5"
+      className="mb-10 rounded-lg border border-border bg-muted/40 p-4 sm:p-5"
     >
       {/* ---- Mobile disclosure trigger (hidden on >= sm) ---------------- */}
       <button
@@ -268,14 +268,14 @@ const HandbuchTableOfContents = ({ sections, extraEntries }: Props) => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Suche z. B. Sicherheit, Fehler …"
-              className="w-full h-9 rounded-md bg-background/60 border border-white/10 pl-8 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition"
+              className="w-full h-9 rounded-md bg-background/60 border border-border pl-8 pr-8 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition"
               aria-describedby="handbuch-toc-search-status"
             />
             {query && (
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-white/10 flex items-center justify-center transition"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 flex items-center justify-center transition"
                 aria-label="Suche zurücksetzen"
               >
                 <X className="h-3.5 w-3.5" />

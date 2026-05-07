@@ -24,7 +24,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm mb-6"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted/40 border border-border text-sm mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             Europas #1 für Arcade & Entertainment
@@ -57,17 +57,17 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white shadow-neon h-14 px-8 text-lg rounded-xl">
+            <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-neon h-14 px-8 text-lg rounded-xl">
               Automaten entdecken
               <ChevronRight className="ml-2 w-5 h-5" />
             </Button>
             
-            <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-secondary text-secondary hover:bg-secondary hover:text-background shadow-neon-blue h-14 px-8 text-lg rounded-xl backdrop-blur-sm">
+            <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground shadow-neon-blue h-14 px-8 text-lg rounded-xl backdrop-blur-sm">
               <MessageCircle className="mr-2 w-5 h-5" />
               Beratung anfragen
             </Button>
 
-            <Button size="lg" variant="ghost" className="w-full sm:w-auto h-14 px-8 text-lg hover:bg-white/5 rounded-xl">
+            <Button size="lg" variant="ghost" className="w-full sm:w-auto h-14 px-8 text-lg hover:bg-muted/40 rounded-xl">
               Preis anfragen
             </Button>
           </motion.div>

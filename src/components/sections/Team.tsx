@@ -33,9 +33,9 @@ const Team = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="text-center rounded-2xl border border-white/10 bg-card/40 backdrop-blur-sm p-8 hover:border-secondary/40 transition-all"
+              className="text-center rounded-2xl border border-border bg-card/40 backdrop-blur-sm p-8 hover:border-secondary/40 transition-all"
             >
-              <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border border-white/10">
+              <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border border-border">
                 <img
                   src={member.image}
                   alt={`${member.name} - Team AutomatPlanet`}

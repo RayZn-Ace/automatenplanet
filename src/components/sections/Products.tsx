@@ -32,7 +32,7 @@ const Products = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="group rounded-2xl border border-white/10 bg-card/40 backdrop-blur-sm overflow-hidden hover:border-accent/40 transition-all"
+              className="group rounded-2xl border border-border bg-card/40 backdrop-blur-sm overflow-hidden hover:border-accent/40 transition-all"
             >
               <Link to={`/produkte/${p.slug}`} className="block">
                 <div className="relative h-64 overflow-hidden bg-background/30">
@@ -43,7 +43,7 @@ const Products = () => {
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-                  <span className="absolute bottom-4 left-4 bg-primary/90 text-white text-sm font-bold px-3 py-1 rounded-full">
+                  <span className="absolute bottom-4 left-4 bg-primary/90 text-primary-foreground text-sm font-bold px-3 py-1 rounded-full">
                     {p.price.toLocaleString("de-DE")} € netto
                   </span>
                 </div>
@@ -67,7 +67,7 @@ const Products = () => {
                   </div>
                 </div>
                 <div className="flex gap-2 mt-6">
-                  <Button className="flex-1 bg-primary hover:bg-primary/80 text-white shadow-neon" asChild>
+                  <Button className="flex-1 bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon" asChild>
                     <Link to={`/produkte/${p.slug}`}>
                       <ShoppingCart className="mr-1 w-4 h-4" /> Details
                     </Link>
@@ -75,7 +75,7 @@ const Products = () => {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+                    className="border-green-500 text-green-500 hover:bg-green-500 hover:text-foreground"
                     asChild
                   >
                     <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">

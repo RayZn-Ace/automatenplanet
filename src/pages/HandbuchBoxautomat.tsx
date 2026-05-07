@@ -135,7 +135,7 @@ const renderBlock = (block: HandbuchBlock, key: string) => {
     case "table":
       return (
         <div key={key} className="overflow-x-auto">
-          <table className="w-full text-left border border-white/10 rounded">
+          <table className="w-full text-left border border-border rounded">
             <tbody className="divide-y divide-white/10">
               {block.rows.map((row) => (
                 <tr key={row.label}>
@@ -158,7 +158,7 @@ const renderBlock = (block: HandbuchBlock, key: string) => {
             alt={block.alt}
             loading="lazy"
             decoding="async"
-            className="rounded-lg border border-white/10 shadow-md w-full h-auto bg-black/20"
+            className="rounded-lg border border-border shadow-md w-full h-auto bg-black/20"
             style={{ maxWidth: `${widthPct}%` }}
           />
           {block.caption && (
@@ -297,7 +297,7 @@ const HandbuchBoxautomat = () => {
                 {HANDBUCH_BOXAUTOMAT_FAQ.map((item) => (
                   <article
                     key={item.question}
-                    className="rounded-lg border border-white/10 bg-white/5 p-4"
+                    className="rounded-lg border border-border bg-muted/40 p-4"
                     itemScope
                     itemType="https://schema.org/Question"
                   >

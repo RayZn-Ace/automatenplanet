@@ -658,7 +658,7 @@ const Handbuch = () => {
                 <p>Alle DIP-Schalter müssen auf OFF stehen, sonst sperrt sich das System.</p>
               </div>
               <figure className="mt-6 -mx-4 sm:mx-0">
-                <div className="group relative block w-full overflow-hidden sm:rounded-lg border-y sm:border border-white/10 bg-black/20">
+                <div className="group relative block w-full overflow-hidden sm:rounded-lg border-y sm:border border-border bg-black/20">
                   <img
                     src={handbuchElektronik}
                     alt="Steuerplatine des Tischkicker Pro CL mit beschrifteten Anschlüssen: 220V Strom, Lautsprecher, Lautstärkeregler, DIP-Schalter (System-Einstellung), Torschalter A & B, Münzeinwurf, Display A & B und Ballwurfpumpe"
@@ -793,7 +793,7 @@ const Handbuch = () => {
                       <div className="max-w-sm rounded-xl bg-black/75 text-white backdrop-blur-md px-4 py-3 shadow-lg text-center text-sm leading-relaxed">
                         <p className="font-medium mb-1">So nutzen Sie die Zoom-Ansicht</p>
                         <p className="hidden md:block opacity-90">
-                          Mit <kbd className="px-1 py-0.5 rounded bg-white/15 font-mono text-xs">+</kbd>/<kbd className="px-1 py-0.5 rounded bg-white/15 font-mono text-xs">−</kbd> zoomen,
+                          Mit <kbd className="px-1 py-0.5 rounded bg-muted font-mono text-xs">+</kbd>/<kbd className="px-1 py-0.5 rounded bg-muted font-mono text-xs">−</kbd> zoomen,
                           mit den Pfeiltasten verschieben. Im vergrößerten Zustand können Sie das Bild mit der Maus ziehen.
                         </p>
                         <p className="md:hidden opacity-90">
@@ -820,17 +820,17 @@ const Handbuch = () => {
                       Mit zwei Fingern zoomen · Doppeltippen für Schnellzoom
                     </div>
                     <div className="hidden md:flex absolute bottom-3 left-1/2 -translate-x-1/2 items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 text-white text-xs backdrop-blur-sm pointer-events-none">
-                      <kbd className="px-1.5 py-0.5 rounded bg-white/15 font-mono">+</kbd>
-                      <kbd className="px-1.5 py-0.5 rounded bg-white/15 font-mono">−</kbd>
+                      <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">+</kbd>
+                      <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">−</kbd>
                       <span>Zoom</span>
                       <span className="opacity-50">·</span>
-                      <kbd className="px-1.5 py-0.5 rounded bg-white/15 font-mono">↑↓←→</kbd>
+                      <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">↑↓←→</kbd>
                       <span>Verschieben</span>
                       <span className="opacity-50">·</span>
-                      <kbd className="px-1.5 py-0.5 rounded bg-white/15 font-mono">0</kbd>
+                      <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">0</kbd>
                       <span>Reset</span>
                       <span className="opacity-50">·</span>
-                      <kbd className="px-1.5 py-0.5 rounded bg-white/15 font-mono">Esc</kbd>
+                      <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">Esc</kbd>
                       <span>Schließen</span>
                     </div>
                   </div>
@@ -881,7 +881,7 @@ const Handbuch = () => {
             <div>
               <h2 className="text-2xl font-semibold text-foreground mb-3">📊 8. Technische Daten</h2>
               <div className="overflow-x-auto">
-                <table className="w-full text-left border border-white/10 rounded">
+                <table className="w-full text-left border border-border rounded">
                   <tbody className="divide-y divide-white/10">
                     <tr>
                       <th className="py-2 px-3 font-semibold text-foreground w-1/2">Modell</th>

@@ -63,7 +63,7 @@ const Standorte = () => {
               >
                 <Link
                   to={`/standorte/${city.slug}`}
-                  className="group block rounded-2xl border border-white/10 bg-card/40 backdrop-blur-sm overflow-hidden hover:border-primary/40 transition-all h-full"
+                  className="group block rounded-2xl border border-border bg-card/40 backdrop-blur-sm overflow-hidden hover:border-primary/40 transition-all h-full"
                 >
                   <div className="relative h-40 overflow-hidden">
                     <img

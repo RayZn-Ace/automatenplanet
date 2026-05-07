@@ -71,7 +71,7 @@ const Contact = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="rounded-2xl border border-white/10 bg-card/60 p-6 relative"
+                className="rounded-2xl border border-border bg-card/60 p-6 relative"
               >
                 <Quote className="absolute top-4 right-4 w-8 h-8 text-primary/20" />
                 <div className="flex gap-1 mb-4">
@@ -105,17 +105,17 @@ const Contact = () => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Input placeholder="Name *" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="bg-muted/50 border-white/10" />
-                <Input placeholder="Firma" value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} className="bg-muted/50 border-white/10" />
+                <Input placeholder="Name *" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="bg-muted/50 border-border" />
+                <Input placeholder="Firma" value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} className="bg-muted/50 border-border" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Input placeholder="Standort" value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} className="bg-muted/50 border-white/10" />
-                <Input type="email" placeholder="E-Mail *" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="bg-muted/50 border-white/10" />
+                <Input placeholder="Standort" value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} className="bg-muted/50 border-border" />
+                <Input type="email" placeholder="E-Mail *" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="bg-muted/50 border-border" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Input type="tel" placeholder="Telefon" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="bg-muted/50 border-white/10" />
+                <Input type="tel" placeholder="Telefon" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="bg-muted/50 border-border" />
                 <Select value={formData.machine} onValueChange={(v) => setFormData({ ...formData, machine: v })}>
-                  <SelectTrigger className="bg-muted/50 border-white/10">
+                  <SelectTrigger className="bg-muted/50 border-border">
                     <SelectValue placeholder="Automatentyp" />
                   </SelectTrigger>
                   <SelectContent>
@@ -129,8 +129,8 @@ const Contact = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <Textarea placeholder="Ihre Nachricht..." value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="bg-muted/50 border-white/10 min-h-[120px]" />
-              <Button type="submit" className="w-full bg-primary hover:bg-primary/80 text-white shadow-neon h-12 text-lg">
+              <Textarea placeholder="Ihre Nachricht..." value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="bg-muted/50 border-border min-h-[120px]" />
+              <Button type="submit" className="w-full bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon h-12 text-lg">
                 <Send className="mr-2 w-5 h-5" /> Anfrage senden
               </Button>
             </form>
@@ -145,21 +145,21 @@ const Contact = () => {
             {/* Quick Contact */}
             <div className="space-y-4">
               <h3 className="text-2xl font-bold mb-4">Schnellkontakt</h3>
-              <a href="tel:+4915123456789" className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-card/40 hover:border-primary/30 transition-all">
+              <a href="tel:+4915123456789" className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card/40 hover:border-primary/30 transition-all">
                 <div className="p-3 rounded-lg bg-primary/20"><Phone className="w-5 h-5 text-primary" /></div>
                 <div>
                   <p className="font-bold">Anrufen</p>
                   <p className="text-sm text-muted-foreground">+49 151 23456789</p>
                 </div>
               </a>
-              <a href="mailto:info@automatplanet.de" className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-card/40 hover:border-secondary/30 transition-all">
+              <a href="mailto:info@automatplanet.de" className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card/40 hover:border-secondary/30 transition-all">
                 <div className="p-3 rounded-lg bg-secondary/20"><Mail className="w-5 h-5 text-secondary" /></div>
                 <div>
                   <p className="font-bold">E-Mail</p>
                   <p className="text-sm text-muted-foreground">info@automatplanet.de</p>
                 </div>
               </a>
-              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-card/40 hover:border-green-500/30 transition-all">
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card/40 hover:border-green-500/30 transition-all">
                 <div className="p-3 rounded-lg bg-green-500/20"><MessageCircle className="w-5 h-5 text-green-500" /></div>
                 <div>
                   <p className="font-bold">WhatsApp</p>
@@ -173,8 +173,8 @@ const Contact = () => {
               <h3 className="text-xl font-bold mb-2">Newsletter</h3>
               <p className="text-sm text-muted-foreground mb-4">Neue Automaten, Angebote & Business-Tipps direkt in Ihr Postfach.</p>
               <form onSubmit={handleNewsletter} className="flex gap-2">
-                <Input type="email" placeholder="E-Mail Adresse" value={newsletter} onChange={(e) => setNewsletter(e.target.value)} className="bg-muted/50 border-white/10 flex-1" required />
-                <Button type="submit" className="bg-accent hover:bg-accent/80 text-white">
+                <Input type="email" placeholder="E-Mail Adresse" value={newsletter} onChange={(e) => setNewsletter(e.target.value)} className="bg-muted/50 border-border flex-1" required />
+                <Button type="submit" className="bg-accent hover:bg-accent/80 text-accent-foreground">
                   Anmelden
                 </Button>
               </form>

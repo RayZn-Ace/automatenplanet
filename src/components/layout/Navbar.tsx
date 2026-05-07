@@ -29,7 +29,7 @@ const Navbar = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-background/90 backdrop-blur-md border-b border-white/10 py-3"
+          ? "bg-background/90 backdrop-blur-md border-b border-border py-3"
           : "bg-transparent py-5"
       }`}
     >
@@ -46,7 +46,7 @@ const Navbar = () => {
               <li key={link.name}>
                 <a
                   href={link.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-white transition-colors"
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {link.name}
                 </a>
@@ -56,16 +56,16 @@ const Navbar = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setLang(lang === "de" ? "en" : "de")}
-              className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-white transition-colors px-2 py-1 rounded border border-white/10"
+              className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded border border-border"
               aria-label="Switch language"
             >
               <Globe className="w-3.5 h-3.5" />
               {lang.toUpperCase()}
             </button>
-            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white border-2">
+            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground border-2">
               {t("nav.consultation")}
             </Button>
-            <Button className="bg-primary hover:bg-primary/80 text-white shadow-neon">
+            <Button className="bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon">
               {t("nav.inquiry")}
             </Button>
           </div>
@@ -73,7 +73,7 @@ const Navbar = () => {
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden text-white"
+          className="md:hidden text-foreground"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -82,13 +82,13 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-white/10 p-4 flex flex-col gap-4">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border p-4 flex flex-col gap-4">
           <ul className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <li key={link.name}>
                 <a
                   href={link.href}
-                  className="text-lg font-medium text-muted-foreground hover:text-white block py-2"
+                  className="text-lg font-medium text-muted-foreground hover:text-foreground block py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.name}
@@ -98,7 +98,7 @@ const Navbar = () => {
           </ul>
           <button
             onClick={() => setLang(lang === "de" ? "en" : "de")}
-            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-white py-2"
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground py-2"
           >
             <Globe className="w-4 h-4" />
             {lang === "de" ? "English" : "Deutsch"}
@@ -107,7 +107,7 @@ const Navbar = () => {
             <Button variant="outline" className="w-full border-primary text-primary border-2">
               {t("nav.consultation")}
             </Button>
-            <Button className="w-full bg-primary text-white shadow-neon">
+            <Button className="w-full bg-primary text-primary-foreground shadow-neon">
               {t("nav.inquiry")}
             </Button>
           </div>

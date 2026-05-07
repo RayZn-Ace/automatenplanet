@@ -59,7 +59,7 @@ const FAQ = () => {
         >
           <Accordion type="single" collapsible className="space-y-3">
             {faqs.map((faq, i) => (
-              <AccordionItem key={i} value={`item-${i}`} className="border border-white/10 rounded-xl px-6 bg-card/40 data-[state=open]:border-accent/30">
+              <AccordionItem key={i} value={`item-${i}`} className="border border-border rounded-xl px-6 bg-card/40 data-[state=open]:border-accent/30">
                 <AccordionTrigger className="text-left hover:no-underline py-5 text-base">
                   {faq.q}
                 </AccordionTrigger>

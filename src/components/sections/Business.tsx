@@ -69,7 +69,7 @@ const Business = () => {
               <Slider value={avgEarning} onValueChange={setAvgEarning} min={300} max={5000} step={100} className="[&_[role=slider]]:bg-secondary [&_[role=slider]]:border-secondary [&_.bg-primary]:bg-secondary" />
             </div>
 
-            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
               <div className="text-center p-4 rounded-xl bg-secondary/10">
                 <p className="text-sm text-muted-foreground mb-1">Monatlich</p>
                 <p className="text-3xl font-bold text-secondary">{totalMonthly.toLocaleString("de-DE")}€</p>
@@ -101,7 +101,7 @@ const Business = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="p-6 rounded-xl border border-white/10 bg-card/40 hover:border-secondary/30 transition-all group"
+              className="p-6 rounded-xl border border-border bg-card/40 hover:border-secondary/30 transition-all group"
             >
               <loc.icon className="w-8 h-8 text-secondary mb-3 group-hover:scale-110 transition-transform" />
               <h4 className="font-bold mb-1">{loc.name}</h4>

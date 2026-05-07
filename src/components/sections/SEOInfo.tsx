@@ -27,7 +27,7 @@ const SEOInfo = () => {
             <Link
               key={city.slug}
               to={`/standorte/${city.slug}`}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-card/40 text-sm hover:border-primary/30 hover:text-primary transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card/40 text-sm hover:border-primary/30 hover:text-primary transition-all"
             >
               <MapPin className="w-3 h-3 text-primary" />
               Arcade Automaten {city.name}
@@ -36,7 +36,7 @@ const SEOInfo = () => {
         </div>
 
         <div className="text-center">
-          <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white border-2">
+          <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground border-2">
             <Link to="/standorte">
               Alle Standorte ansehen <ArrowRight className="ml-2 w-4 h-4" />
             </Link>
