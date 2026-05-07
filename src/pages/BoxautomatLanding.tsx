@@ -309,10 +309,10 @@ const BoxautomatLanding = () => {
                       transition={{ delay: i * 0.05 }}
                       className="rounded-2xl border border-border bg-card/60 backdrop-blur-sm p-5"
                     >
-                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
-                        <b.icon className="w-5 h-5 text-primary" />
-                      </div>
-                      <h3 className="font-bold mb-1.5 text-sm">{b.title}</h3>
+                      <h3 className="font-bold mb-1.5 text-sm flex items-center gap-2">
+                        <b.icon className="w-4 h-4 text-primary shrink-0" />
+                        {b.title}
+                      </h3>
                       <p className="text-xs text-muted-foreground">{b.desc}</p>
                     </motion.div>
                   ))}
