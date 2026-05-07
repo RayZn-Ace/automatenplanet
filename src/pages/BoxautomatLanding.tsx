@@ -63,7 +63,7 @@ const BoxautomatLanding = () => {
       <Helmet>
         <title>Boxautomat Premium kaufen – ab 1.799€ netto | AutomatPlanet</title>
         <meta name="description" content="Boxautomat Premium in 2 Varianten: Münzfach (1.799€) oder Münz- & Geldscheinfach (1.949€). Bis zu 1.500€/Monat. Versand in 24h." />
-        <link rel="canonical" href="https://automatplanet.de/boxautomat" />
+        <link rel="canonical" href="https://automatplanet.de/produkte/boxautomat-premium" />
       </Helmet>
 
       <Navbar />
