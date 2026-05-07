@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { I18nProvider } from "@/lib/i18n";
 import Index from "./pages/Index";
@@ -19,8 +19,14 @@ import HandbuchBoxautomat from "./pages/HandbuchBoxautomat";
 import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
 import BoxautomatLanding from "./pages/BoxautomatLanding";
 import WhatsAppButton from "./components/WhatsAppButton";
+import { useCartSync } from "@/hooks/useCartSync";
 
 const queryClient = new QueryClient();
+
+const CartSyncMount = () => {
+  useCartSync();
+  return null;
+};
 
 const App = () => (
   <HelmetProvider>
@@ -28,8 +34,9 @@ const App = () => (
       <I18nProvider>
         <TooltipProvider>
           <Toaster />
-          <Sonner />
+          <Sonner position="top-center" />
         <BrowserRouter>
+          <CartSyncMount />
           <WhatsAppButton />
           <Routes>
             <Route path="/" element={<Index />} />
@@ -37,6 +44,11 @@ const App = () => (
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/standorte" element={<Standorte />} />
             <Route path="/standorte/:slug" element={<CityLanding />} />
+            {/* /produkte/boxautomat-* now redirects to the dedicated landing page */}
+            <Route
+              path="/produkte/boxautomat-mit-geldscheinakzeptor"
+              element={<Navigate to="/boxautomat" replace />}
+            />
             <Route path="/produkte/:slug" element={<ProductPage />} />
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
