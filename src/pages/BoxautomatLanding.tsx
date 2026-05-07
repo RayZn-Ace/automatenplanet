@@ -13,7 +13,7 @@ const whyAutomatplanet = [
   { icon: Wrench, title: "Alles reparierbar", desc: "Sollte mal etwas sein, haben wir alle Ersatzteile da, geben Support oder schicken einen Techniker vorbei." },
   { icon: Move, title: "Einfacher Transport", desc: "Mit den Rollen einfach bewegt – passt in jeden Kastenwagen. Gewicht: 125 kg." },
   { icon: Headphones, title: "24/7 WhatsApp-Support", desc: "Immer alle Ersatzteile auf Lager und persönlicher Support rund um die Uhr." },
-  { icon: Award, title: "Eigene Manufaktur", desc: "Hergestellt und qualitätsgeprüft im AutomatPlanet-Werk." },
+  { icon: Truck, title: "Versand in 24h", desc: "Schnelle Lieferung direkt aus unserem Lager – europaweit." },
 ];
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
