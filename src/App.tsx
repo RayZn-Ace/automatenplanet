@@ -68,7 +68,7 @@ const App = () => (
               path="/downloads/handbuch-boxautomat"
               element={<HandbuchBoxautomatDownload />}
             />
-            <Route path="/boxautomat" element={<BoxautomatLanding />} />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
