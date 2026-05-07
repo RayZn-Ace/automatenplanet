@@ -15,6 +15,7 @@ import { useCartStore } from "@/stores/cartStore";
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
+import ProductImageGallery from "@/components/ProductImageGallery";
 
 import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
 
