@@ -167,7 +167,7 @@ const BoxautomatLanding = () => {
                 <p className="text-muted-foreground mb-6">{product.description}</p>
 
                 <div className="space-y-2 mb-6 text-sm">
-                  <div className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" /><span>Passive Einnahmen mit Laufkundschaft (je nach Ort bis zu 500&nbsp;€/Tag möglich)</span></div>
+                  <div className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" /><span>Passive Einnahmen mit Laufkundschaft</span></div>
                   <div className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" /><span>Der Automat zahlt sich nach ⌀ 2–4 Monaten von selbst ab</span></div>
                   <div className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" /><span>Kein Personal · kein Abo · kein Internet – anstecken und losboxen</span></div>
                 </div>
