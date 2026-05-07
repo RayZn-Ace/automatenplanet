@@ -32,42 +32,6 @@ const Contact = () => {
   return (
     <section id="kontakt" className="py-24 bg-card/30">
       <div className="container mx-auto px-4 md:px-6">
-        {/* Testimonials */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-24"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-12">
-            Kundenstimmen
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <motion.div
-                key={t.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="rounded-2xl border border-border bg-card/60 p-6 relative"
-              >
-                <Quote className="absolute top-4 right-4 w-8 h-8 text-primary/20" />
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-sm text-muted-foreground mb-4 italic">"{t.text}"</p>
-                <div>
-                  <p className="font-bold text-sm">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
         {/* Contact Form & Info */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <motion.div
