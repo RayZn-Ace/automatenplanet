@@ -383,16 +383,16 @@ const BoxautomatLanding = () => {
                 </div>
               </div>
 
-              <div className="max-w-2xl mb-10">
+              <div className="max-w-2xl mx-auto mb-10 text-center flex flex-col items-center">
                 <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-1.5 mb-5">
                   <BadgeCheck className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-white">Hersteller aus Deutschland</span>
+                  <span className="text-sm font-medium text-white">Direkt vom Hersteller</span>
                 </div>
                 <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white">
                   Warum <span className="text-primary">AutomatPlanet</span>?
                 </h2>
                 <p className="text-white/80 text-base md:text-lg mb-6">
-                  Eigene Manufaktur, faire Preise, persönlicher Support – wir sind nicht nur Verkäufer, sondern Hersteller.
+                  Faire Preise, schneller Versand und persönlicher Support – wir liefern Profi-Automaten ohne Umwege.
                 </p>
                 <WhatsAppConsultButton
                   productName="AutomatPlanet Beratung"
@@ -407,7 +407,7 @@ const BoxautomatLanding = () => {
                     className="w-12 h-12 rounded-full object-cover border-2 border-primary/40"
                     onError={(e) => { (e.currentTarget as HTMLImageElement).src = "https://i.pravatar.cc/96?img=12"; }}
                   />
-                  <div>
+                  <div className="text-left">
                     <div className="text-xs text-white/60 uppercase tracking-wider">Dein Ansprechpartner</div>
                     <div className="text-sm font-semibold text-white">Kay Engelmann</div>
                   </div>
