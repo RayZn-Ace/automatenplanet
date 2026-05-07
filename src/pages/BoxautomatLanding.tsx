@@ -4,7 +4,17 @@ import { motion } from "framer-motion";
 import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, Quote,
   TrendingUp, Zap, Ruler, Award, MessageCircle, Phone, Package, BadgeCheck,
+  Wrench, Move, Headphones, Euro,
 } from "lucide-react";
+
+const whyAutomatplanet = [
+  { icon: Euro, title: "Günstigster Anbieter im DACH-Raum", desc: "Direkt vom Hersteller – keine Zwischenhändler, faire Preise für Profi-Qualität." },
+  { icon: Shield, title: "Langlebig & wartungsarm", desc: "Unsere Automaten halten lange und brauchen kaum Service." },
+  { icon: Wrench, title: "Alles reparierbar", desc: "Sollte mal etwas sein, haben wir alle Ersatzteile da, geben Support oder schicken einen Techniker vorbei." },
+  { icon: Move, title: "Einfacher Transport", desc: "Mit den Rollen einfach bewegt – passt in jeden Kastenwagen. Gewicht: 125 kg." },
+  { icon: Headphones, title: "24/7 WhatsApp-Support", desc: "Immer alle Ersatzteile auf Lager und persönlicher Support rund um die Uhr." },
+  { icon: Award, title: "Eigene Manufaktur", desc: "Hergestellt und qualitätsgeprüft im AutomatPlanet-Werk." },
+];
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -317,6 +327,50 @@ const BoxautomatLanding = () => {
                     </motion.div>
                   ))}
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY AUTOMATPLANET */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 md:px-6">
+          <div
+            className="max-w-6xl mx-auto rounded-3xl border border-border overflow-hidden relative bg-cover bg-center"
+            style={{ backgroundImage: "url('/automatplanet-warehouse.jpg')" }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/70 to-black/85" />
+            <div className="relative p-6 md:p-12 lg:p-16">
+              <div className="max-w-2xl mb-10">
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-1.5 mb-5">
+                  <BadgeCheck className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-white">Hersteller aus Deutschland</span>
+                </div>
+                <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white">
+                  Warum <span className="text-primary">AutomatPlanet</span>?
+                </h2>
+                <p className="text-white/80 text-base md:text-lg">
+                  Eigene Manufaktur, faire Preise, persönlicher Support – wir sind nicht nur Verkäufer, sondern Hersteller.
+                </p>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {whyAutomatplanet.map((b, i) => (
+                  <motion.div
+                    key={b.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.05 }}
+                    className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 hover:border-primary/40 transition-colors"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <b.icon className="w-5 h-5 text-primary shrink-0" />
+                      <h3 className="font-bold text-sm text-white">{b.title}</h3>
+                    </div>
+                    <p className="text-xs text-white/70 leading-relaxed">{b.desc}</p>
+                  </motion.div>
+                ))}
               </div>
             </div>
           </div>
