@@ -37,7 +37,7 @@ const benefits = [
   { icon: TrendingUp, title: "Bis zu 1.500€/Monat", desc: "Hohe Einnahmen pro Aufstellort durch Highscore-Effekt." },
   { icon: Zap, title: "Sofort einsatzbereit", desc: "Plug & Play – einstecken, einschalten, verdienen." },
   { icon: Shield, title: "2 Jahre Garantie", desc: "Robuste Industriequalität für jahrelangen Dauerbetrieb." },
-  { icon: Truck, title: "Versand in 24h", desc: "Europaweite Lieferung direkt zu Ihrem Standort." },
+  { icon: Truck, title: "Versand in 24h", desc: "Europaweite Lieferung direkt zu deinem Standort." },
   { icon: Award, title: "Bewährte Technik", desc: "Über 500 verkaufte Boxautomaten in DACH." },
   { icon: CheckCircle, title: "Geldscheinakzeptor", desc: "5€, 10€, 20€ Scheine – mehr Umsatz pro Spiel." },
 ];
