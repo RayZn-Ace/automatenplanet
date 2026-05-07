@@ -333,6 +333,21 @@ const BoxautomatLanding = () => {
         </div>
       </section>
 
+      {/* TESTIMONIAL QUOTE */}
+      <section className="py-16">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <Quote className="w-10 h-10 text-primary mx-auto mb-6" />
+            <blockquote className="text-2xl md:text-4xl font-bold leading-tight italic text-foreground">
+              „500€ Umsatz am ersten Tag. Der Automat zieht Leute von alleine an."
+            </blockquote>
+            <p className="mt-6 text-base md:text-lg font-semibold text-muted-foreground">
+              – Späti Gifhorn
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* WHY AUTOMATPLANET */}
       <section className="py-20">
         <div className="container mx-auto px-4 md:px-6">
