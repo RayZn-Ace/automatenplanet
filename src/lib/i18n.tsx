@@ -10,11 +10,12 @@ function detectLanguage(): Lang {
 const translations = {
   de: {
     // Navbar
-    "nav.categories": "Kategorien",
-    "nav.benefits": "Vorteile",
-    "nav.products": "Automaten",
-    "nav.business": "Business",
-    "nav.faq": "FAQ",
+    "nav.boxautomat": "Boxautomat",
+    "nav.greifautomat": "Greifautomat",
+    "nav.allMachines": "Alle Automaten",
+    "nav.locations": "Standorte",
+    "nav.blog": "Blog",
+    "nav.contact": "Kontakt",
     "nav.consultation": "Beratung",
     "nav.inquiry": "Anfrage",
     // Product page
@@ -55,11 +56,12 @@ const translations = {
   },
   en: {
     // Navbar
-    "nav.categories": "Categories",
-    "nav.benefits": "Benefits",
-    "nav.products": "Machines",
-    "nav.business": "Business",
-    "nav.faq": "FAQ",
+    "nav.boxautomat": "Boxing Machine",
+    "nav.greifautomat": "Claw Machine",
+    "nav.allMachines": "All Machines",
+    "nav.locations": "Locations",
+    "nav.blog": "Blog",
+    "nav.contact": "Contact",
     "nav.consultation": "Consultation",
     "nav.inquiry": "Inquiry",
     // Product page
