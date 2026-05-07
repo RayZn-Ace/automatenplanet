@@ -65,7 +65,7 @@ const Benefits = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="relative rounded-2xl border border-white/10 bg-card/60 backdrop-blur-sm p-8 hover:border-secondary/30 transition-all group"
+              className="relative rounded-2xl border border-border bg-card/60 backdrop-blur-sm p-8 hover:border-secondary/30 transition-all group"
             >
               <div className="flex items-start gap-4 mb-6">
                 <div className="p-3 rounded-xl bg-secondary/10 group-hover:bg-secondary/20 transition-colors">

@@ -48,7 +48,7 @@ const ProductSlideshow = () => {
 
         <div className="relative max-w-5xl mx-auto">
           {/* Main slide */}
-          <div className="relative h-[400px] md:h-[500px] rounded-2xl border border-white/10 bg-card/40 backdrop-blur-sm overflow-hidden">
+          <div className="relative h-[400px] md:h-[500px] rounded-2xl border border-border bg-card/40 backdrop-blur-sm overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
                 key={current}
@@ -98,14 +98,14 @@ const ProductSlideshow = () => {
             {/* Nav arrows */}
             <button
               onClick={prev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur border border-white/10 flex items-center justify-center hover:bg-primary/20 transition-colors z-10"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur border border-border flex items-center justify-center hover:bg-primary/20 transition-colors z-10"
               aria-label="Previous"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={next}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur border border-white/10 flex items-center justify-center hover:bg-primary/20 transition-colors z-10"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur border border-border flex items-center justify-center hover:bg-primary/20 transition-colors z-10"
               aria-label="Next"
             >
               <ChevronRight className="w-5 h-5" />
@@ -116,7 +116,7 @@ const ProductSlideshow = () => {
           <div className="flex items-center justify-center gap-4 mt-6">
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary/20 transition-colors"
+              className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:bg-primary/20 transition-colors"
               aria-label={isPlaying ? "Pause" : "Play"}
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
@@ -152,7 +152,7 @@ const ProductSlideshow = () => {
                 className={`shrink-0 w-20 h-20 rounded-lg border overflow-hidden p-1 transition-all ${
                   i === current
                     ? "border-primary bg-primary/10 ring-2 ring-primary/30"
-                    : "border-white/10 bg-card/40 hover:border-white/30"
+                    : "border-border bg-card/40 hover:border-white/30"
                 }`}
               >
                 <img

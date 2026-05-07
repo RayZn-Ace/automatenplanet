@@ -42,7 +42,7 @@ const BlogPreview = ({ limit = 3, showHeading = true }: BlogPreviewProps) => {
             >
               <Link
                 to={`/blog/${article.slug}`}
-                className="group block rounded-2xl border border-white/10 bg-card/40 backdrop-blur-sm overflow-hidden hover:border-primary/40 transition-all"
+                className="group block rounded-2xl border border-border bg-card/40 backdrop-blur-sm overflow-hidden hover:border-primary/40 transition-all"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -52,7 +52,7 @@ const BlogPreview = ({ limit = 3, showHeading = true }: BlogPreviewProps) => {
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-                  <span className="absolute top-4 left-4 bg-primary/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  <span className="absolute top-4 left-4 bg-primary/90 text-foreground text-xs font-bold px-3 py-1 rounded-full">
                     {article.category}
                   </span>
                 </div>
@@ -77,7 +77,7 @@ const BlogPreview = ({ limit = 3, showHeading = true }: BlogPreviewProps) => {
 
         {showHeading && (
           <div className="text-center mt-12">
-            <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white border-2">
+            <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-foreground border-2">
               <Link to="/blog">
                 Alle Artikel ansehen <ArrowRight className="ml-2 w-4 h-4" />
               </Link>

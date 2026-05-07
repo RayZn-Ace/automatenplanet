@@ -58,7 +58,7 @@ const Media = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="relative group rounded-2xl overflow-hidden border border-white/10 cursor-pointer"
+              className="relative group rounded-2xl overflow-hidden border border-border cursor-pointer"
               onClick={() => setActiveVideo(v.videoId)}
             >
               <div className="relative aspect-video">
@@ -70,11 +70,11 @@ const Media = () => {
                 />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/30 transition-colors">
                   <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center shadow-neon group-hover:scale-110 transition-transform">
-                    <Play className="w-7 h-7 text-white ml-1" />
+                    <Play className="w-7 h-7 text-foreground ml-1" />
                   </div>
                 </div>
                 <div className="absolute bottom-4 left-4">
-                  <span className="bg-black/60 backdrop-blur-sm text-white text-sm px-3 py-1 rounded-full">
+                  <span className="bg-black/60 backdrop-blur-sm text-foreground text-sm px-3 py-1 rounded-full">
                     {v.title}
                   </span>
                 </div>

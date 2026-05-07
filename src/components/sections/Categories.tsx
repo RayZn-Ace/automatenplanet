@@ -67,11 +67,11 @@ const Categories = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group relative rounded-2xl border border-white/10 bg-card/50 backdrop-blur-sm p-8 hover:border-primary/50 transition-all duration-300 cursor-pointer overflow-hidden"
+              className="group relative rounded-2xl border border-border bg-card/50 backdrop-blur-sm p-8 hover:border-primary/50 transition-all duration-300 cursor-pointer overflow-hidden"
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${cat.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
               <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${cat.color} mb-4`}>
-                <cat.icon className="w-6 h-6 text-white" />
+                <cat.icon className="w-6 h-6 text-foreground" />
               </div>
               <h3 className="text-xl font-bold mb-2">{cat.title}</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">{cat.description}</p>
