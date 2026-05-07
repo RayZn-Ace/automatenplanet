@@ -31,10 +31,18 @@ const benefits = [
 ];
 
 const testimonials = [
-  { name: "Mehmet K.", role: "Späti-Besitzer, Berlin", text: "Der Boxautomat hat in der ersten Woche schon 380€ eingespielt. Verrückt!", rating: 5 },
-  { name: "Sarah L.", role: "Bar-Inhaberin, Hamburg", text: "Unsere Gäste lieben das Teil. Jeden Abend Wartezeit am Automaten.", rating: 5 },
-  { name: "Thomas R.", role: "Center-Manager, München", text: "Drei Monate – ROI erreicht. Bestelle jetzt einen zweiten.", rating: 5 },
+  { name: "Mehmet K.", role: "Späti-Besitzer, Berlin", text: "Der Boxautomat hat in der ersten Woche schon 380€ eingespielt. Verrückt!", rating: 5, verified: true },
+  { name: "Sarah L.", role: "Bar-Inhaberin, Hamburg", text: "Unsere Gäste lieben das Teil. Jeden Abend Wartezeit am Automaten.", rating: 5, verified: true },
+  { name: "Thomas R.", role: "Center-Manager, München", text: "Drei Monate – ROI erreicht. Bestelle jetzt einen zweiten.", rating: 5, verified: false },
+  { name: "Daniel B.", role: "Fitnessstudio, Köln", text: "Mega Aufmerksamkeit im Eingangsbereich. Mitglieder lieben es nach dem Training.", rating: 5, verified: true },
+  { name: "Aylin Y.", role: "Shisha-Bar, Frankfurt", text: "Top Verarbeitung, schneller Versand. Lief vom ersten Tag an.", rating: 5, verified: true },
+  { name: "Markus W.", role: "Eventagentur, Stuttgart", text: "Auf jedem Firmenevent der absolute Hit. Sehr robuste Technik.", rating: 5, verified: false },
+  { name: "Lisa H.", role: "Bowlingcenter, Dortmund", text: "Spielt sich praktisch von selbst ab. Wartung quasi null.", rating: 5, verified: true },
+  { name: "Kevin S.", role: "Kiosk, Leipzig", text: "ROI nach 9 Wochen. Klare Empfehlung für jede Lage mit Laufkundschaft.", rating: 5, verified: false },
+  { name: "Jasmin T.", role: "Bar, Düsseldorf", text: "Service vor und nach dem Kauf war absolut tadellos. Gerne wieder.", rating: 5, verified: true },
+  { name: "Robert F.", role: "Spielothek, Nürnberg", text: "Solide Industriequalität, läuft ohne Ausfall im Dauerbetrieb.", rating: 5, verified: true },
 ];
+
 
 const faqs = [
   { q: "Wie hoch ist der durchschnittliche Verdienst?", a: "Je nach Standort zwischen 400€ und 1.500€ pro Monat. Bars, Clubs und Einkaufszentren erzielen die höchsten Umsätze." },
@@ -304,22 +312,54 @@ const BoxautomatLanding = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-2">4,9 / 5 aus 312 Bewertungen</h2>
             <p className="text-muted-foreground">Was unsere Kunden sagen</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t) => (
-              <div key={t.name} className="rounded-2xl border border-border bg-card p-6 relative">
-                <Quote className="absolute top-4 right-4 w-8 h-8 text-primary/20" />
-                <div className="flex gap-1 mb-3">
-                  {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  ))}
+          <div
+            className="relative overflow-hidden"
+            style={{
+              maskImage:
+                "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+            }}
+          >
+            <style>{`
+              @keyframes boxautomat-marquee {
+                from { transform: translateX(0); }
+                to { transform: translateX(-50%); }
+              }
+            `}</style>
+            <div
+              className="flex gap-6 w-max"
+              style={{
+                animation: "boxautomat-marquee 60s linear infinite",
+              }}
+            >
+              {[...testimonials, ...testimonials].map((t, i) => (
+                <div
+                  key={`${t.name}-${i}`}
+                  className="w-[320px] md:w-[360px] shrink-0 rounded-2xl border border-border bg-card p-6 relative"
+                >
+                  <Quote className="absolute top-4 right-4 w-8 h-8 text-primary/20" />
+                  <div className="flex gap-1 mb-3">
+                    {Array.from({ length: t.rating }).map((_, j) => (
+                      <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="mb-4 italic text-sm">"{t.text}"</p>
+                  <div className="flex items-end justify-between gap-2">
+                    <div>
+                      <div className="font-bold">{t.name}</div>
+                      <div className="text-sm text-muted-foreground">{t.role}</div>
+                    </div>
+                    {t.verified && (
+                      <div className="flex items-center gap-1 text-[10px] text-muted-foreground/80 shrink-0">
+                        <BadgeCheck className="w-3 h-3 text-primary/70" />
+                        <span>Verifiziert</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <p className="mb-4 italic">"{t.text}"</p>
-                <div>
-                  <div className="font-bold">{t.name}</div>
-                  <div className="text-sm text-muted-foreground">{t.role}</div>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
