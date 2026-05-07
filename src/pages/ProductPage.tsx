@@ -24,6 +24,10 @@ const ProductPage = () => {
   const [imageOpen, setImageOpen] = useState(false);
   const { lang, t } = useI18n();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
+
   const whatsappUrl = `https://wa.me/4905111228957?text=${encodeURIComponent(`Hallo, ich interessiere mich für: ${product?.name || "ein Produkt"}`)}`;
 
   if (!product) {
