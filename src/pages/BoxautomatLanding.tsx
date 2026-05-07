@@ -342,7 +342,7 @@ const BoxautomatLanding = () => {
           >
             <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/70 to-black/85" />
             <div className="relative p-6 md:p-12 lg:p-16">
-              <div className="max-w-2xl mb-10">
+              <div className="max-w-2xl mx-auto mb-10 text-center flex flex-col items-center">
                 <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-1.5 mb-5">
                   <BadgeCheck className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium text-white">Hersteller aus Deutschland</span>
@@ -366,7 +366,7 @@ const BoxautomatLanding = () => {
                     className="w-12 h-12 rounded-full object-cover border-2 border-primary/40"
                     onError={(e) => { (e.currentTarget as HTMLImageElement).src = "https://i.pravatar.cc/96?img=12"; }}
                   />
-                  <div>
+                  <div className="text-left">
                     <div className="text-xs text-white/60 uppercase tracking-wider">Dein Ansprechpartner</div>
                     <div className="text-sm font-semibold text-white">Kay Engelmann</div>
                   </div>
@@ -418,7 +418,7 @@ const BoxautomatLanding = () => {
                     ].map((src, i) => (
                       <div
                         key={`${dup}-${i}`}
-                        className="w-[280px] h-[180px] shrink-0 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden"
+                        className="w-[380px] h-[240px] md:w-[440px] md:h-[280px] shrink-0 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden"
                       >
                         <img
                           src={src}
