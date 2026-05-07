@@ -44,23 +44,21 @@ const App = () => (
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/standorte" element={<Standorte />} />
             <Route path="/standorte/:slug" element={<CityLanding />} />
-            {/* Boxautomat product slugs now redirect to the dedicated landing page */}
-            <Route
-              path="/produkte/boxautomat-premium"
-              element={<Navigate to="/boxautomat" replace />}
-            />
+            {/* Boxautomat: dedicated landing page replaces the legacy product page */}
+            <Route path="/produkte/boxautomat-premium" element={<BoxautomatLanding />} />
             <Route
               path="/produkte/boxautomat-mit-geldscheinakzeptor"
-              element={<Navigate to="/boxautomat" replace />}
+              element={<Navigate to="/produkte/boxautomat-premium" replace />}
             />
             <Route
               path="/produkte/boxautomat-ohne-geldscheinakzeptor"
-              element={<Navigate to="/boxautomat" replace />}
+              element={<Navigate to="/produkte/boxautomat-premium" replace />}
             />
             <Route
               path="/produkte/combo-boxautomat"
-              element={<Navigate to="/boxautomat" replace />}
+              element={<Navigate to="/produkte/boxautomat-premium" replace />}
             />
+            <Route path="/boxautomat" element={<Navigate to="/produkte/boxautomat-premium" replace />} />
             <Route path="/produkte/:slug" element={<ProductPage />} />
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
@@ -70,7 +68,7 @@ const App = () => (
               path="/downloads/handbuch-boxautomat"
               element={<HandbuchBoxautomatDownload />}
             />
-            <Route path="/boxautomat" element={<BoxautomatLanding />} />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
