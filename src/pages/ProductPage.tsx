@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useI18n } from "@/lib/i18n";
+import { useShopifyBuy } from "@/hooks/useShopifyBuy";
+import { Loader2 } from "lucide-react";
 import {
   ArrowLeft, Ruler, Zap, ShoppingCart, Download, Truck, Phone,
   ZoomIn, CheckCircle, MapPin, Star, Package, TrendingUp, MessageCircle,
@@ -23,6 +25,7 @@ const ProductPage = () => {
   const seoContent = getSeoContent(slug || "");
   const [imageOpen, setImageOpen] = useState(false);
   const { lang, t } = useI18n();
+  const { buyNow, loading: buyLoading } = useShopifyBuy();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -207,10 +210,16 @@ const ProductPage = () => {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                <Button size="lg" className="flex-1 bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon text-base h-14" asChild>
-                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                    <ShoppingCart className="mr-2 w-5 h-5" /> {t("product.buyNow")}
-                  </a>
+                <Button
+                  size="lg"
+                  className="flex-1 bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon text-base h-14"
+                  onClick={() => buyNow(product.slug)}
+                  disabled={buyLoading}
+                >
+                  {buyLoading
+                    ? <><Loader2 className="mr-2 w-5 h-5 animate-spin" /> {t("product.buyNow")}</>
+                    : <><ShoppingCart className="mr-2 w-5 h-5" /> {t("product.buyNow")}</>
+                  }
                 </Button>
                 <Button size="lg" variant="outline" className="flex-1 border-border h-14 text-base">
                   <Download className="mr-2 w-5 h-5" /> {t("product.datasheet")}
