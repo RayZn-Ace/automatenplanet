@@ -350,9 +350,27 @@ const BoxautomatLanding = () => {
                 <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white">
                   Warum <span className="text-primary">AutomatPlanet</span>?
                 </h2>
-                <p className="text-white/80 text-base md:text-lg">
+                <p className="text-white/80 text-base md:text-lg mb-6">
                   Eigene Manufaktur, faire Preise, persönlicher Support – wir sind nicht nur Verkäufer, sondern Hersteller.
                 </p>
+                <WhatsAppConsultButton
+                  productName="AutomatPlanet Beratung"
+                  label="Jetzt beraten lassen"
+                  className="h-12 px-6 text-base"
+                />
+                <div className="mt-5 flex items-center gap-3">
+                  <img
+                    src="/kay-engelmann.jpg"
+                    alt="Kay Engelmann"
+                    loading="lazy"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-primary/40"
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = "https://i.pravatar.cc/96?img=12"; }}
+                  />
+                  <div>
+                    <div className="text-xs text-white/60 uppercase tracking-wider">Dein Ansprechpartner</div>
+                    <div className="text-sm font-semibold text-white">Kay Engelmann</div>
+                  </div>
+                </div>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {whyAutomatplanet.map((b, i) => (
@@ -371,6 +389,37 @@ const BoxautomatLanding = () => {
                     <p className="text-xs text-white/70 leading-relaxed">{b.desc}</p>
                   </motion.div>
                 ))}
+              </div>
+
+              {/* Infinite slider */}
+              <div
+                className="mt-10 -mx-6 md:-mx-12 lg:-mx-16 overflow-hidden relative"
+                style={{
+                  maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+                  WebkitMaskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+                }}
+              >
+                <style>{`
+                  @keyframes why-marquee {
+                    from { transform: translateX(0); }
+                    to { transform: translateX(-50%); }
+                  }
+                `}</style>
+                <div
+                  className="flex gap-4 w-max px-6"
+                  style={{ animation: "why-marquee 40s linear infinite" }}
+                >
+                  {[...Array(2)].flatMap((_, dup) =>
+                    Array.from({ length: 8 }).map((_, i) => (
+                      <div
+                        key={`${dup}-${i}`}
+                        className="w-[260px] h-[170px] shrink-0 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden flex items-center justify-center text-white/40 text-xs"
+                      >
+                        Bild {i + 1}
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           </div>
