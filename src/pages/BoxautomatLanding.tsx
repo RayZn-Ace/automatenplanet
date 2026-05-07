@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, Quote,
-  TrendingUp, Zap, Ruler, Award, MessageCircle, Phone, Send,
+  TrendingUp, Zap, Ruler, Award, MessageCircle, Phone, Send, Package, BadgeCheck,
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
