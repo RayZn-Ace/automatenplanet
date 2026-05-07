@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getProductBySlug } from "@/data/products";
+import ScrollFrameSequence from "@/components/ScrollFrameSequence";
 
 const PRODUCT_SLUG = "boxautomat-mit-geldscheinakzeptor";
 
