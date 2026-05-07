@@ -204,3 +204,31 @@ export async function shopifyFetchCart(cartId: string): Promise<ShopifyCartResul
   if (!cart) return null;
   return mapCart(cart);
 }
+
+const PRODUCT_BY_HANDLE_IMAGES = `
+  query productImages($handle: String!) {
+    product(handle: $handle) {
+      id
+      title
+      images(first: 20) { edges { node { url altText width height } } }
+    }
+  }
+`;
+
+export interface ShopifyImage {
+  url: string;
+  altText: string | null;
+  width?: number;
+  height?: number;
+}
+
+export async function shopifyFetchProductImages(handle: string): Promise<ShopifyImage[]> {
+  try {
+    const data = await storefrontApiRequest(PRODUCT_BY_HANDLE_IMAGES, { handle });
+    const edges = data?.data?.product?.images?.edges ?? [];
+    return edges.map((e: { node: ShopifyImage }) => e.node);
+  } catch {
+    return [];
+  }
+}
+
