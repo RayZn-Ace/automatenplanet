@@ -85,10 +85,15 @@ export default {
             height: "0",
           },
         },
+        "button-shine": {
+          "0%": { transform: "translateX(-150%) skewX(-20deg)" },
+          "60%, 100%": { transform: "translateX(250%) skewX(-20deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "button-shine": "button-shine 4s ease-in-out infinite",
       },
     },
   },
