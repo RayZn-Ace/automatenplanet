@@ -60,7 +60,7 @@ const faqs = [
   { q: "Wie hoch ist der durchschnittliche Verdienst?", a: "Je nach Standort zwischen 400€ und 1.500€ pro Monat. Bars, Clubs und Einkaufszentren erzielen die höchsten Umsätze." },
   { q: "Wie lange dauert die Lieferung?", a: "Wir versenden innerhalb von 24h ab Bestellung. Lieferzeit DACH-Region: 2–4 Werktage." },
   { q: "Brauche ich eine spezielle Genehmigung?", a: "Nein. Boxautomaten sind reine Geschicklichkeitsspiele und benötigen keine Spielhallen-Erlaubnis." },
-  { q: "Welche Garantie gibt es?", a: "Sie erhalten 2 Jahre Vollgarantie inkl. Ersatzteilversorgung und telefonischem Support." },
+  { q: "Welche Garantie gibt es?", a: "Du erhältst 2 Jahre Vollgarantie inkl. Ersatzteilversorgung und telefonischem Support." },
   { q: "Kann der Geldscheinakzeptor nachgerüstet werden?", a: "Ja, wir bieten den Akzeptor sowohl ab Werk als auch als Nachrüstkit an." },
 ];
 
