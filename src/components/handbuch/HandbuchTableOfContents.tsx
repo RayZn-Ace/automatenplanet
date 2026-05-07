@@ -291,14 +291,14 @@ const HandbuchTableOfContents = ({ sections, extraEntries }: Props) => {
           aria-live="polite"
         >
           {isSearching
-            ? `${totalVisible} Treffer für „${query}“.`
+            ? `${totalVisible} Treffer für "${query}".`
             : `${totalVisible} Kapitel verfügbar.`}
         </p>
 
         {totalVisible === 0 ? (
           <p className="text-sm text-muted-foreground italic">
-            Keine Treffer für „{query}“. Versuche einen anderen Begriff wie
-            „Wartung“, „Münzprüfer“ oder „Display“.
+            Keine Treffer für "{query}". Versuche einen anderen Begriff wie
+            "Wartung", "Münzprüfer" oder "Display".
           </p>
         ) : (
           <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 sm:gap-y-2 list-none pl-0 text-sm">
