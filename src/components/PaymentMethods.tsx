@@ -2,7 +2,17 @@ interface Props {
   className?: string;
 }
 
-const methods = ["AmEx", "MasterCard", "VISA", "SEPA", "Klarna", "giropay", "Apple Pay", "G Pay", "PayPal"];
+const methods: { name: string; src: string }[] = [
+  { name: "Visa", src: "/payment-icons/visa.svg" },
+  { name: "Mastercard", src: "/payment-icons/mastercard.svg" },
+  { name: "American Express", src: "/payment-icons/americanexpress.svg" },
+  { name: "PayPal", src: "/payment-icons/paypal.svg" },
+  { name: "Klarna", src: "/payment-icons/klarna.svg" },
+  { name: "SEPA", src: "/payment-icons/sepa.svg" },
+  { name: "giropay", src: "/payment-icons/giropay.svg" },
+  { name: "Apple Pay", src: "/payment-icons/applepay.svg" },
+  { name: "Google Pay", src: "/payment-icons/googlepay.svg" },
+];
 
 const PaymentMethods = ({ className }: Props) => {
   return (
@@ -11,10 +21,16 @@ const PaymentMethods = ({ className }: Props) => {
       <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-2 max-w-2xl mx-auto">
         {methods.map((m) => (
           <div
-            key={m}
-            className="h-10 px-2 rounded-md bg-background border border-border flex items-center justify-center text-[11px] font-semibold text-muted-foreground"
+            key={m.name}
+            className="h-10 px-2 rounded-md bg-white border border-border flex items-center justify-center"
+            title={m.name}
           >
-            {m}
+            <img
+              src={m.src}
+              alt={m.name}
+              loading="lazy"
+              className="max-h-6 max-w-full object-contain"
+            />
           </div>
         ))}
       </div>
