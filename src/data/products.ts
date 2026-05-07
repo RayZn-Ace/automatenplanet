@@ -15,7 +15,7 @@ export interface ProductData {
 export const products: ProductData[] = [
   {
     slug: "greifautomat",
-    name: "Claw Machine",
+    name: "Greifautomat",
     description: "Professioneller Greifautomat mit LED-Beleuchtung und einstellbarer Greifkraft. Der Klassiker für Kioske, Spätis, Shoppingcenter und Gastronomie. Hochwertige Verarbeitung und zuverlässige Technik für maximale Erträge.",
     price: 2499,
     image: "/images/products/claw-machine-new.png",

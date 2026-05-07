@@ -23,11 +23,12 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: t("nav.categories"), href: hashHref("#kategorien") },
-    { name: t("nav.benefits"), href: hashHref("#vorteile") },
-    { name: t("nav.products"), href: hashHref("#produkte") },
-    { name: t("nav.business"), href: hashHref("#business") },
-    { name: t("nav.faq"), href: hashHref("#faq") },
+    { name: t("nav.boxautomat"), href: "/produkte/boxautomat-premium", type: "route" as const },
+    { name: t("nav.greifautomat"), href: "/produkte/greifautomat", type: "route" as const },
+    { name: t("nav.allMachines"), href: hashHref("#produkte"), type: "hash" as const },
+    { name: t("nav.locations"), href: "/standorte", type: "route" as const },
+    { name: t("nav.blog"), href: "/blog", type: "route" as const },
+    { name: t("nav.contact"), href: hashHref("#kontakt"), type: "hash" as const },
   ];
 
   return (
@@ -49,12 +50,21 @@ const Navbar = () => {
           <ul className="flex items-center gap-6">
             {navLinks.map((link) => (
               <li key={link.name}>
-                <a
-                  href={link.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {link.name}
-                </a>
+                {link.type === "route" ? (
+                  <Link
+                    to={link.href}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                ) : (
+                  <a
+                    href={link.href}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {link.name}
+                  </a>
+                )}
               </li>
             ))}
           </ul>
@@ -95,13 +105,23 @@ const Navbar = () => {
           <ul className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <li key={link.name}>
-                <a
-                  href={link.href}
-                  className="text-lg font-medium text-muted-foreground hover:text-foreground block py-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.name}
-                </a>
+                {link.type === "route" ? (
+                  <Link
+                    to={link.href}
+                    className="text-lg font-medium text-muted-foreground hover:text-foreground block py-2"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                ) : (
+                  <a
+                    href={link.href}
+                    className="text-lg font-medium text-muted-foreground hover:text-foreground block py-2"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </a>
+                )}
               </li>
             ))}
           </ul>

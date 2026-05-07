@@ -4,14 +4,12 @@ import Hero from "@/components/sections/Hero";
 import PhoneBanner from "@/components/sections/PhoneBanner";
 import Categories from "@/components/sections/Categories";
 import Benefits from "@/components/sections/Benefits";
-import Products from "@/components/sections/Products";
-import ProductSlideshow from "@/components/sections/ProductSlideshow";
-import Media from "@/components/sections/Media";
+import ProductHighlight from "@/components/sections/ProductHighlight";
+import HomeTestimonials from "@/components/sections/HomeTestimonials";
 import Business from "@/components/sections/Business";
 import Team from "@/components/sections/Team";
 import BlogPreview from "@/components/sections/BlogPreview";
 import Contact from "@/components/sections/Contact";
-import FAQ from "@/components/sections/FAQ";
 import SEOInfo from "@/components/sections/SEOInfo";
 import Footer from "@/components/layout/Footer";
 
@@ -43,16 +41,46 @@ const Index = () => {
       <main>
         <Hero />
         <PhoneBanner />
+        <ProductHighlight
+          eyebrow="Bestseller 2026"
+          title="Boxautomat Premium"
+          description="Der günstigste Boxautomat Deutschlands – wahlweise mit Münzfach oder Münz- & Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat und Standort."
+          bullets={[
+            "Bis zu 1.500€/Monat passive Einnahmen",
+            "Versand in 24h · 2 Jahre Garantie",
+            "Plug & Play – kein Internet, kein Personal nötig",
+          ]}
+          priceFrom={1799}
+          ctaHref="/produkte/boxautomat-premium"
+          ctaLabel="Zum Boxautomat"
+          image="/images/products/boxing-machine-new.png"
+          imageAlt="Boxautomat Premium"
+          imageSide="left"
+          highlighted
+        />
+        <ProductHighlight
+          eyebrow="Klassiker"
+          title="Greifautomat – Der Klassiker für jeden Standort"
+          description="Professionelle Claw Machine mit LED-Beleuchtung und einstellbarer Greifkraft. Perfekt für Kioske, Spätis, Shoppingcenter und Gastronomie."
+          bullets={[
+            "Hochwertige Verarbeitung & zuverlässige Technik",
+            "Einstellbare Greifkraft für maximale Erträge",
+            "LED-Beleuchtung für maximale Aufmerksamkeit",
+          ]}
+          priceFrom={2499}
+          ctaHref="/produkte/greifautomat"
+          ctaLabel="Zum Greifautomat"
+          image="/images/products/claw-machine-new.png"
+          imageAlt="Greifautomat"
+          imageSide="right"
+        />
         <Categories />
         <Benefits />
-        <Products />
-        <ProductSlideshow />
-        <Media />
+        <HomeTestimonials />
         <Business />
         <Team />
         <BlogPreview limit={3} />
         <Contact />
-        <FAQ />
         <SEOInfo />
       </main>
       <Footer />
