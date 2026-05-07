@@ -17,6 +17,7 @@ import Datenschutz from "./pages/Datenschutz";
 import Handbuch from "./pages/Handbuch";
 import HandbuchBoxautomat from "./pages/HandbuchBoxautomat";
 import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
+import BoxautomatLanding from "./pages/BoxautomatLanding";
 import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
               path="/downloads/handbuch-boxautomat"
               element={<HandbuchBoxautomatDownload />}
             />
+            <Route path="/boxautomat" element={<BoxautomatLanding />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
