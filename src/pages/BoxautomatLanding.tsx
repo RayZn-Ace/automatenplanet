@@ -404,20 +404,59 @@ const BoxautomatLanding = () => {
               </div>
             </div>
 
-            {/* RIGHT: Asymmetric gallery */}
-            <div className="grid grid-cols-6 grid-rows-6 gap-3 h-[520px] md:h-[600px]">
-              <div className="col-span-4 row-span-4 rounded-2xl overflow-hidden shadow-lg">
+            {/* RIGHT: Scattered polaroid-style gallery */}
+            <div className="relative h-[560px] md:h-[640px] hidden lg:block">
+              {/* Main hero image - portrait */}
+              <motion.div
+                initial={{ opacity: 0, y: 20, rotate: -3 }}
+                whileInView={{ opacity: 1, y: 0, rotate: -3 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="absolute top-4 left-2 w-[55%] aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5 z-10"
+              >
                 <img src="/why-slide-2.jpg" alt="AutomatPlanet Werkstatt" loading="lazy" className="w-full h-full object-cover" />
-              </div>
-              <div className="col-span-2 row-span-3 rounded-2xl overflow-hidden shadow-lg">
+              </motion.div>
+
+              {/* Top right - landscape */}
+              <motion.div
+                initial={{ opacity: 0, y: 20, rotate: 4 }}
+                whileInView={{ opacity: 1, y: 0, rotate: 4 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="absolute top-0 right-0 w-[50%] aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5 z-20"
+              >
                 <img src="/why-slide-1.jpg" alt="AutomatPlanet Produktion" loading="lazy" className="w-full h-full object-cover" />
-              </div>
-              <div className="col-span-2 row-span-3 rounded-2xl overflow-hidden shadow-lg">
+              </motion.div>
+
+              {/* Mid right - square-ish */}
+              <motion.div
+                initial={{ opacity: 0, y: 20, rotate: -2 }}
+                whileInView={{ opacity: 1, y: 0, rotate: -2 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="absolute top-[42%] right-4 w-[42%] aspect-square rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5 z-30"
+              >
                 <img src="/why-slide-3.jpg" alt="AutomatPlanet Lager" loading="lazy" className="w-full h-full object-cover" />
-              </div>
-              <div className="col-span-6 row-span-2 rounded-2xl overflow-hidden shadow-lg">
+              </motion.div>
+
+              {/* Bottom left - small landscape */}
+              <motion.div
+                initial={{ opacity: 0, y: 20, rotate: 5 }}
+                whileInView={{ opacity: 1, y: 0, rotate: 5 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="absolute bottom-0 left-[20%] w-[40%] aspect-[5/4] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5 z-40"
+              >
                 <img src="/why-slide-4.jpg" alt="AutomatPlanet Team" loading="lazy" className="w-full h-full object-cover" />
-              </div>
+              </motion.div>
+            </div>
+
+            {/* Mobile: simple stacked gallery */}
+            <div className="grid grid-cols-2 gap-3 lg:hidden">
+              <img src="/why-slide-2.jpg" alt="" loading="lazy" className="w-full aspect-[3/4] object-cover rounded-2xl col-span-1 row-span-2" />
+              <img src="/why-slide-1.jpg" alt="" loading="lazy" className="w-full aspect-square object-cover rounded-2xl" />
+              <img src="/why-slide-3.jpg" alt="" loading="lazy" className="w-full aspect-square object-cover rounded-2xl" />
+              <img src="/why-slide-4.jpg" alt="" loading="lazy" className="w-full aspect-[16/9] object-cover rounded-2xl col-span-2" />
             </div>
           </div>
         </div>
