@@ -333,6 +333,21 @@ const BoxautomatLanding = () => {
         </div>
       </section>
 
+      {/* TESTIMONIAL QUOTE */}
+      <section className="py-16">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <Quote className="w-10 h-10 text-primary mx-auto mb-6" />
+            <blockquote className="text-2xl md:text-4xl font-bold leading-tight italic text-foreground">
+              „500€ Umsatz am ersten Tag. Der Automat zieht Leute von alleine an."
+            </blockquote>
+            <p className="mt-6 text-base md:text-lg font-semibold text-muted-foreground">
+              – Späti Gifhorn
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* WHY AUTOMATPLANET */}
       <section className="py-20">
         <div className="container mx-auto px-4 md:px-6">
@@ -373,7 +388,7 @@ const BoxautomatLanding = () => {
                       >
                         <img
                           src={src}
-                          alt={`AutomatPlanet Manufaktur ${i + 1}`}
+                          alt={`AutomatPlanet Werkstatt ${i + 1}`}
                           loading="lazy"
                           className="w-full h-full object-cover"
                         />
@@ -383,16 +398,16 @@ const BoxautomatLanding = () => {
                 </div>
               </div>
 
-              <div className="max-w-2xl mb-10">
+              <div className="max-w-2xl mx-auto mb-10 text-center flex flex-col items-center">
                 <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-1.5 mb-5">
                   <BadgeCheck className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-white">Hersteller aus Deutschland</span>
+                  <span className="text-sm font-medium text-white">Direkt vom Hersteller</span>
                 </div>
                 <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white">
                   Warum <span className="text-primary">AutomatPlanet</span>?
                 </h2>
                 <p className="text-white/80 text-base md:text-lg mb-6">
-                  Eigene Manufaktur, faire Preise, persönlicher Support – wir sind nicht nur Verkäufer, sondern Hersteller.
+                  Faire Preise, schneller Versand und persönlicher Support – wir liefern Profi-Automaten ohne Umwege.
                 </p>
                 <WhatsAppConsultButton
                   productName="AutomatPlanet Beratung"
@@ -407,7 +422,7 @@ const BoxautomatLanding = () => {
                     className="w-12 h-12 rounded-full object-cover border-2 border-primary/40"
                     onError={(e) => { (e.currentTarget as HTMLImageElement).src = "https://i.pravatar.cc/96?img=12"; }}
                   />
-                  <div>
+                  <div className="text-left">
                     <div className="text-xs text-white/60 uppercase tracking-wider">Dein Ansprechpartner</div>
                     <div className="text-sm font-semibold text-white">Kay Engelmann</div>
                   </div>
