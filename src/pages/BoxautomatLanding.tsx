@@ -4,7 +4,17 @@ import { motion } from "framer-motion";
 import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, Quote,
   TrendingUp, Zap, Ruler, Award, MessageCircle, Phone, Package, BadgeCheck,
+  Wrench, Move, Headphones, Euro,
 } from "lucide-react";
+
+const whyAutomatplanet = [
+  { icon: Euro, title: "Günstigster Anbieter im DACH-Raum", desc: "Direkt vom Hersteller – keine Zwischenhändler, faire Preise für Profi-Qualität." },
+  { icon: Shield, title: "Langlebig & wartungsarm", desc: "Unsere Automaten halten lange und brauchen kaum Service." },
+  { icon: Wrench, title: "Alles reparierbar", desc: "Sollte mal etwas sein, haben wir alle Ersatzteile da, geben Support oder schicken einen Techniker vorbei." },
+  { icon: Move, title: "Einfacher Transport", desc: "Mit den Rollen einfach bewegt – passt in jeden Kastenwagen. Gewicht: 125 kg." },
+  { icon: Headphones, title: "24/7 WhatsApp-Support", desc: "Immer alle Ersatzteile auf Lager und persönlicher Support rund um die Uhr." },
+  { icon: Award, title: "Eigene Manufaktur", desc: "Hergestellt und qualitätsgeprüft im AutomatPlanet-Werk." },
+];
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
