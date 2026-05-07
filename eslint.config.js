@@ -6,7 +6,7 @@ import tseslint from "typescript-eslint";
 import projectRules from "./eslint-rules/index.js";
 
 export default tseslint.config(
-  { ignores: ["dist", "eslint-rules/**", "scripts/**"] },
+  { ignores: ["dist", "eslint-rules/**", "scripts/**", "supabase/functions/**"] },
   {
     plugins: {
       "project-rules": projectRules,
