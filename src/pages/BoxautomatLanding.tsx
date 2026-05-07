@@ -201,7 +201,7 @@ const BoxautomatLanding = () => {
 
                 <Button
                   size="lg"
-                  className="w-full text-base h-14"
+                  className="w-full text-base h-14 relative overflow-hidden isolate"
                   onClick={() =>
                     addBySlug(PRODUCT_SLUG, 1, {
                       variantId: selectedVariant.variantId,
@@ -215,6 +215,12 @@ const BoxautomatLanding = () => {
                     ? <><Loader2 className="mr-2 animate-spin" /> In den Warenkorb</>
                     : <><ShoppingCart className="mr-2" /> In den Warenkorb</>
                   }
+                  {!cartLoading && (
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-button-shine"
+                    />
+                  )}
                 </Button>
 
                 <WhatsAppConsultButton productName={`${product.name} – ${selectedVariant.label}`} className="w-full h-14 text-base mt-3" />
