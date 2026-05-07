@@ -9,7 +9,7 @@ import {
   shopifyRemoveLine,
   shopifyFetchCart,
 } from "@/lib/shopify";
-import { products as ALL_PRODUCTS, type Product } from "@/data/products";
+import { products as ALL_PRODUCTS, type ProductData } from "@/data/products";
 
 export interface CartItem {
   lineId: string | null;
@@ -37,7 +37,7 @@ interface CartStore {
   syncCart: () => Promise<void>;
 }
 
-function findProductBySlug(slug: string): Product | undefined {
+function findProductBySlug(slug: string): ProductData | undefined {
   return ALL_PRODUCTS.find((p) => p.slug === slug);
 }
 
