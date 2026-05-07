@@ -410,12 +410,22 @@ const BoxautomatLanding = () => {
                   style={{ animation: "why-marquee 40s linear infinite" }}
                 >
                   {[...Array(2)].flatMap((_, dup) =>
-                    Array.from({ length: 8 }).map((_, i) => (
+                    [
+                      "/why-slide-1.jpg",
+                      "/why-slide-2.jpg",
+                      "/why-slide-3.jpg",
+                      "/why-slide-4.jpg",
+                    ].map((src, i) => (
                       <div
                         key={`${dup}-${i}`}
-                        className="w-[260px] h-[170px] shrink-0 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden flex items-center justify-center text-white/40 text-xs"
+                        className="w-[280px] h-[180px] shrink-0 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden"
                       >
-                        Bild {i + 1}
+                        <img
+                          src={src}
+                          alt={`AutomatPlanet Manufaktur ${i + 1}`}
+                          loading="lazy"
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     ))
                   )}
