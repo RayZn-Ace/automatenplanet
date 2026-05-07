@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { getProductBySlug, products } from "@/data/products";
 import { getSeoContent } from "@/data/productSeoContent";
@@ -23,6 +23,10 @@ const ProductPage = () => {
   const seoContent = getSeoContent(slug || "");
   const [imageOpen, setImageOpen] = useState(false);
   const { lang, t } = useI18n();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   const whatsappUrl = `https://wa.me/4905111228957?text=${encodeURIComponent(`Hallo, ich interessiere mich für: ${product?.name || "ein Produkt"}`)}`;
 
