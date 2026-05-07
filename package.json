@@ -8,7 +8,7 @@
     "generate:handbuch-pdf": "bun run scripts/generate-handbuch-pdf.ts",
     "normalize:quotes": "node scripts/normalize-smart-quotes.mjs",
     "check:quotes": "node scripts/normalize-smart-quotes.mjs --check",
-    "prebuild": "node scripts/normalize-smart-quotes.mjs && eslint . --rule \"{ 'project-rules/no-smart-quotes': 'error' }\" --no-inline-config && bun run scripts/generate-handbuch-pdf.ts",
+    "prebuild": "node scripts/normalize-smart-quotes.mjs && node scripts/normalize-smart-quotes.mjs --check && bun run scripts/generate-handbuch-pdf.ts",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
