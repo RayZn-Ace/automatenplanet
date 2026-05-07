@@ -37,13 +37,16 @@ export async function storefrontApiRequest(query: string, variables: Record<stri
     },
     body: JSON.stringify({ query, variables }),
   });
-  if (!response.ok) throw new Error(`Shopify HTTP ${response.status}`);
+  if (!response.ok) {
+    if (response.status === 402) return null;
+    throw new Error(`Shopify HTTP ${response.status}`);
+  }
   const data = await response.json();
   if (data.errors) throw new Error(`Shopify: ${data.errors.map((e: { message: string }) => e.message).join(", ")}`);
   return data;
 }
 
-function formatCheckoutUrl(checkoutUrl: string): string {
+export function formatCheckoutUrl(checkoutUrl: string): string {
   try {
     const url = new URL(checkoutUrl);
     url.searchParams.set("channel", "online_store");
@@ -53,10 +56,16 @@ function formatCheckoutUrl(checkoutUrl: string): string {
   }
 }
 
+const CART_QUERY = `
+  query cart($id: ID!) {
+    cart(id: $id) { id totalQuantity checkoutUrl lines(first: 100) { edges { node { id quantity merchandise { ... on ProductVariant { id } } } } } }
+  }
+`;
+
 const CART_CREATE = `
   mutation cartCreate($input: CartInput!) {
     cartCreate(input: $input) {
-      cart { id checkoutUrl lines(first: 50) { edges { node { id merchandise { ... on ProductVariant { id } } } } } }
+      cart { id checkoutUrl lines(first: 100) { edges { node { id quantity merchandise { ... on ProductVariant { id } } } } } }
       userErrors { message }
     }
   }
@@ -65,33 +74,108 @@ const CART_CREATE = `
 const CART_LINES_ADD = `
   mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
     cartLinesAdd(cartId: $cartId, lines: $lines) {
-      cart { id checkoutUrl lines(first: 50) { edges { node { id merchandise { ... on ProductVariant { id } } } } } }
+      cart { id checkoutUrl lines(first: 100) { edges { node { id quantity merchandise { ... on ProductVariant { id } } } } } }
       userErrors { message }
     }
   }
 `;
 
-export async function shopifyCreateCart(variantId: string, quantity = 1) {
+const CART_LINES_UPDATE = `
+  mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+    cartLinesUpdate(cartId: $cartId, lines: $lines) {
+      cart { id checkoutUrl lines(first: 100) { edges { node { id quantity merchandise { ... on ProductVariant { id } } } } } }
+      userErrors { message }
+    }
+  }
+`;
+
+const CART_LINES_REMOVE = `
+  mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+      cart { id checkoutUrl lines(first: 100) { edges { node { id quantity merchandise { ... on ProductVariant { id } } } } } }
+      userErrors { message }
+    }
+  }
+`;
+
+type CartLineEdge = { node: { id: string; quantity: number; merchandise: { id: string } } };
+export type ShopifyCartResult = {
+  cartId: string;
+  checkoutUrl: string;
+  lines: Array<{ lineId: string; variantId: string; quantity: number }>;
+};
+
+function mapCart(cart: { id: string; checkoutUrl: string; lines: { edges: CartLineEdge[] } }): ShopifyCartResult {
+  return {
+    cartId: cart.id,
+    checkoutUrl: formatCheckoutUrl(cart.checkoutUrl),
+    lines: cart.lines.edges.map((e) => ({
+      lineId: e.node.id,
+      variantId: e.node.merchandise.id,
+      quantity: e.node.quantity,
+    })),
+  };
+}
+
+function isCartNotFound(errs?: Array<{ message: string }>) {
+  return !!errs?.some((e) => /cart not found|does not exist/i.test(e.message));
+}
+
+export async function shopifyCreateCart(variantId: string, quantity = 1): Promise<ShopifyCartResult> {
   const data = await storefrontApiRequest(CART_CREATE, {
     input: { lines: [{ merchandiseId: variantId, quantity }] },
   });
   const cart = data?.data?.cartCreate?.cart;
   if (!cart?.checkoutUrl) throw new Error("Cart create failed");
-  return { cartId: cart.id as string, checkoutUrl: formatCheckoutUrl(cart.checkoutUrl) };
+  return mapCart(cart);
 }
 
-export async function shopifyAddToCart(cartId: string, variantId: string, quantity = 1) {
+export async function shopifyAddToCart(cartId: string, variantId: string, quantity = 1): Promise<ShopifyCartResult | null> {
   const data = await storefrontApiRequest(CART_LINES_ADD, {
     cartId,
     lines: [{ merchandiseId: variantId, quantity }],
   });
   const cart = data?.data?.cartLinesAdd?.cart;
+  const errs = data?.data?.cartLinesAdd?.userErrors;
   if (!cart?.checkoutUrl) {
-    const errs = data?.data?.cartLinesAdd?.userErrors;
-    if (errs?.some((e: { message: string }) => /cart not found|does not exist/i.test(e.message))) {
-      return null; // signal: recreate
-    }
+    if (isCartNotFound(errs)) return null;
     throw new Error("Cart add failed");
   }
-  return { cartId: cart.id as string, checkoutUrl: formatCheckoutUrl(cart.checkoutUrl) };
+  return mapCart(cart);
+}
+
+export async function shopifyUpdateLine(cartId: string, lineId: string, quantity: number): Promise<ShopifyCartResult | null> {
+  const data = await storefrontApiRequest(CART_LINES_UPDATE, {
+    cartId,
+    lines: [{ id: lineId, quantity }],
+  });
+  const cart = data?.data?.cartLinesUpdate?.cart;
+  const errs = data?.data?.cartLinesUpdate?.userErrors;
+  if (!cart) {
+    if (isCartNotFound(errs)) return null;
+    throw new Error("Cart update failed");
+  }
+  return mapCart(cart);
+}
+
+export async function shopifyRemoveLine(cartId: string, lineId: string): Promise<ShopifyCartResult | null> {
+  const data = await storefrontApiRequest(CART_LINES_REMOVE, {
+    cartId,
+    lineIds: [lineId],
+  });
+  const cart = data?.data?.cartLinesRemove?.cart;
+  const errs = data?.data?.cartLinesRemove?.userErrors;
+  if (!cart) {
+    if (isCartNotFound(errs)) return null;
+    throw new Error("Cart remove failed");
+  }
+  return mapCart(cart);
+}
+
+export async function shopifyFetchCart(cartId: string): Promise<ShopifyCartResult | null> {
+  const data = await storefrontApiRequest(CART_QUERY, { id: cartId });
+  if (!data) return null;
+  const cart = data?.data?.cart;
+  if (!cart) return null;
+  return mapCart(cart);
 }
