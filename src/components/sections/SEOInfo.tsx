@@ -36,7 +36,7 @@ const SEOInfo = () => {
         </div>
 
         <div className="text-center">
-          <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-foreground border-2">
+          <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground border-2">
             <Link to="/standorte">
               Alle Standorte ansehen <ArrowRight className="ml-2 w-4 h-4" />
             </Link>

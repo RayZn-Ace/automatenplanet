@@ -174,7 +174,7 @@ const Contact = () => {
               <p className="text-sm text-muted-foreground mb-4">Neue Automaten, Angebote & Business-Tipps direkt in Ihr Postfach.</p>
               <form onSubmit={handleNewsletter} className="flex gap-2">
                 <Input type="email" placeholder="E-Mail Adresse" value={newsletter} onChange={(e) => setNewsletter(e.target.value)} className="bg-muted/50 border-border flex-1" required />
-                <Button type="submit" className="bg-accent hover:bg-accent/80 text-foreground">
+                <Button type="submit" className="bg-accent hover:bg-accent/80 text-accent-foreground">
                   Anmelden
                 </Button>
               </form>

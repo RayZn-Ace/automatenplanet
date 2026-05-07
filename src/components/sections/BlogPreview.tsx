@@ -77,7 +77,7 @@ const BlogPreview = ({ limit = 3, showHeading = true }: BlogPreviewProps) => {
 
         {showHeading && (
           <div className="text-center mt-12">
-            <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-foreground border-2">
+            <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground border-2">
               <Link to="/blog">
                 Alle Artikel ansehen <ArrowRight className="ml-2 w-4 h-4" />
               </Link>

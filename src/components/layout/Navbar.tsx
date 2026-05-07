@@ -62,7 +62,7 @@ const Navbar = () => {
               <Globe className="w-3.5 h-3.5" />
               {lang.toUpperCase()}
             </button>
-            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-foreground border-2">
+            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground border-2">
               {t("nav.consultation")}
             </Button>
             <Button className="bg-primary hover:bg-primary/80 text-foreground shadow-neon">
@@ -107,7 +107,7 @@ const Navbar = () => {
             <Button variant="outline" className="w-full border-primary text-primary border-2">
               {t("nav.consultation")}
             </Button>
-            <Button className="w-full bg-primary text-foreground shadow-neon">
+            <Button className="w-full bg-primary text-primary-foreground shadow-neon">
               {t("nav.inquiry")}
             </Button>
           </div>

@@ -74,7 +74,7 @@ const Media = () => {
                   </div>
                 </div>
                 <div className="absolute bottom-4 left-4">
-                  <span className="bg-black/60 backdrop-blur-sm text-foreground text-sm px-3 py-1 rounded-full">
+                  <span className="bg-black/60 backdrop-blur-sm text-white text-sm px-3 py-1 rounded-full">
                     {v.title}
                   </span>
                 </div>

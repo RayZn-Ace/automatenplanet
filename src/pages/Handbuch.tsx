@@ -691,7 +691,7 @@ const Handbuch = () => {
                     type="button"
                     onClick={() => setZoomOpen(true)}
                     aria-label="Steuerplatine des Tischkicker Pro CL vergrößern – Vollbild-Detailansicht öffnen"
-                    className="absolute top-2 right-2 sm:top-3 sm:right-3 inline-flex items-center gap-1 rounded-md bg-black/70 hover:bg-black/85 px-2.5 py-1.5 text-xs font-medium text-foreground backdrop-blur-sm shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="absolute top-2 right-2 sm:top-3 sm:right-3 inline-flex items-center gap-1 rounded-md bg-black/70 hover:bg-black/85 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     <ZoomIn className="h-3.5 w-3.5" />
                     Vollbild
@@ -790,7 +790,7 @@ const Handbuch = () => {
                       }`}
                       aria-hidden={!showHint}
                     >
-                      <div className="max-w-sm rounded-xl bg-black/75 text-foreground backdrop-blur-md px-4 py-3 shadow-lg text-center text-sm leading-relaxed">
+                      <div className="max-w-sm rounded-xl bg-black/75 text-white backdrop-blur-md px-4 py-3 shadow-lg text-center text-sm leading-relaxed">
                         <p className="font-medium mb-1">So nutzen Sie die Zoom-Ansicht</p>
                         <p className="hidden md:block opacity-90">
                           Mit <kbd className="px-1 py-0.5 rounded bg-muted font-mono text-xs">+</kbd>/<kbd className="px-1 py-0.5 rounded bg-muted font-mono text-xs">−</kbd> zoomen,
@@ -816,10 +816,10 @@ const Handbuch = () => {
                         backfaceVisibility: "hidden",
                       }}
                     />
-                    <div className="md:hidden absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-black/70 text-foreground text-xs backdrop-blur-sm pointer-events-none">
+                    <div className="md:hidden absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-black/70 text-white text-xs backdrop-blur-sm pointer-events-none">
                       Mit zwei Fingern zoomen · Doppeltippen für Schnellzoom
                     </div>
-                    <div className="hidden md:flex absolute bottom-3 left-1/2 -translate-x-1/2 items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 text-foreground text-xs backdrop-blur-sm pointer-events-none">
+                    <div className="hidden md:flex absolute bottom-3 left-1/2 -translate-x-1/2 items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 text-white text-xs backdrop-blur-sm pointer-events-none">
                       <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">+</kbd>
                       <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">−</kbd>
                       <span>Zoom</span>
