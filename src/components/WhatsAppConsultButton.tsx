@@ -4,11 +4,12 @@ import { MessageCircle } from "lucide-react";
 interface Props {
   productName?: string;
   className?: string;
+  label?: string;
 }
 
 const WHATSAPP_PHONE = "4905111228957";
 
-const WhatsAppConsultButton = ({ productName, className }: Props) => {
+const WhatsAppConsultButton = ({ productName, className, label }: Props) => {
   const text = productName
     ? `Hallo, ich hätte gerne eine Beratung zu: ${productName}`
     : "Hallo, ich hätte gerne eine Beratung.";
@@ -21,7 +22,7 @@ const WhatsAppConsultButton = ({ productName, className }: Props) => {
     >
       <a href={href} target="_blank" rel="noopener noreferrer">
         <MessageCircle className="mr-2 w-5 h-5" />
-        Jetzt auf WhatsApp beraten lassen
+        {label ?? "Jetzt auf WhatsApp beraten lassen"}
       </a>
     </Button>
   );
