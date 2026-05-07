@@ -20,6 +20,7 @@ import ProductImageGallery from "@/components/ProductImageGallery";
 import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
 
 const PRODUCT_SLUG = "boxautomat-premium";
+const SHOPIFY_HANDLE = "boxing-machine-with-banknote-acceptor";
 const VARIANTS = SHOPIFY_VARIANTS_BY_SLUG[PRODUCT_SLUG];
 
 const benefits = [
@@ -139,7 +140,7 @@ const BoxautomatLanding = () => {
             <div className="grid md:grid-cols-2 gap-10 items-center">
               {/* Product image gallery */}
               <ProductImageGallery
-                handle={PRODUCT_SLUG}
+                handle={SHOPIFY_HANDLE}
                 fallbackImage={product.image}
                 alt={product.name}
                 badge={
