@@ -23,11 +23,11 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: t("nav.categories"), href: "#kategorien" },
-    { name: t("nav.benefits"), href: "#vorteile" },
-    { name: t("nav.products"), href: "#produkte" },
-    { name: t("nav.business"), href: "#business" },
-    { name: t("nav.faq"), href: "#faq" },
+    { name: t("nav.categories"), href: hashHref("#kategorien") },
+    { name: t("nav.benefits"), href: hashHref("#vorteile") },
+    { name: t("nav.products"), href: hashHref("#produkte") },
+    { name: t("nav.business"), href: hashHref("#business") },
+    { name: t("nav.faq"), href: hashHref("#faq") },
   ];
 
   return (
