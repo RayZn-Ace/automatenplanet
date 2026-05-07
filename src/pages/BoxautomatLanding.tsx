@@ -349,86 +349,23 @@ const BoxautomatLanding = () => {
       </section>
 
       {/* WHY AUTOMATPLANET */}
-      <section className="py-20">
+      <section className="py-20 bg-white text-neutral-900">
         <div className="container mx-auto px-4 md:px-6">
-          <div
-            className="max-w-6xl mx-auto rounded-3xl border border-border overflow-hidden relative bg-cover bg-center"
-            style={{ backgroundImage: "url('/automatplanet-warehouse.jpg')" }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/70 to-black/85" />
-            <div className="relative p-6 md:p-12 lg:p-16">
-              {/* Infinite slider - top */}
-              <div
-                className="mb-10 -mx-6 md:-mx-12 lg:-mx-16 overflow-hidden relative"
-                style={{
-                  maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
-                  WebkitMaskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
-                }}
-              >
-                <style>{`
-                  @keyframes why-marquee {
-                    from { transform: translateX(0); }
-                    to { transform: translateX(-50%); }
-                  }
-                `}</style>
-                <div
-                  className="flex gap-4 w-max px-6"
-                  style={{ animation: "why-marquee 40s linear infinite" }}
-                >
-                  {[...Array(2)].flatMap((_, dup) =>
-                    [
-                      "/why-slide-1.jpg",
-                      "/why-slide-2.jpg",
-                      "/why-slide-3.jpg",
-                      "/why-slide-4.jpg",
-                    ].map((src, i) => (
-                      <div
-                        key={`${dup}-${i}`}
-                        className="w-[280px] h-[180px] shrink-0 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden"
-                      >
-                        <img
-                          src={src}
-                          alt={`AutomatPlanet Werkstatt ${i + 1}`}
-                          loading="lazy"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ))
-                  )}
-                </div>
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* LEFT: Content */}
+            <div className="text-left">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 mb-5">
+                <BadgeCheck className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-neutral-900">Direkt vom Hersteller</span>
               </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 text-neutral-900">
+                Warum <span className="text-primary">AutomatPlanet</span>?
+              </h2>
+              <p className="text-neutral-600 text-base md:text-lg mb-8">
+                Faire Preise, schneller Versand und persönlicher Support – wir liefern Profi-Automaten ohne Umwege.
+              </p>
 
-              <div className="max-w-2xl mx-auto mb-10 text-center flex flex-col items-center">
-                <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-1.5 mb-5">
-                  <BadgeCheck className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-white">Direkt vom Hersteller</span>
-                </div>
-                <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white">
-                  Warum <span className="text-primary">AutomatPlanet</span>?
-                </h2>
-                <p className="text-white/80 text-base md:text-lg mb-6">
-                  Faire Preise, schneller Versand und persönlicher Support – wir liefern Profi-Automaten ohne Umwege.
-                </p>
-                <WhatsAppConsultButton
-                  productName="AutomatPlanet Beratung"
-                  label="Jetzt beraten lassen"
-                  className="h-12 px-6 text-base"
-                />
-                <div className="mt-5 flex items-center gap-3">
-                  <img
-                    src="/kay-engelmann.jpg"
-                    alt="Kay Engelmann"
-                    loading="lazy"
-                    className="w-12 h-12 rounded-full object-cover border-2 border-primary/40"
-                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = "https://i.pravatar.cc/96?img=12"; }}
-                  />
-                  <div className="text-left">
-                    <div className="text-xs text-white/60 uppercase tracking-wider">Dein Ansprechpartner</div>
-                    <div className="text-sm font-semibold text-white">Kay Engelmann</div>
-                  </div>
-                </div>
-              </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid sm:grid-cols-2 gap-4 mb-8">
                 {whyAutomatplanet.map((b, i) => (
                   <motion.div
                     key={b.title}
@@ -436,15 +373,50 @@ const BoxautomatLanding = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.05 }}
-                    className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 hover:border-primary/40 transition-colors"
+                    className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5 hover:border-primary/40 transition-colors"
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <b.icon className="w-5 h-5 text-primary shrink-0" />
-                      <h3 className="font-bold text-sm text-white">{b.title}</h3>
+                      <h3 className="font-bold text-sm text-neutral-900">{b.title}</h3>
                     </div>
-                    <p className="text-xs text-white/70 leading-relaxed">{b.desc}</p>
+                    <p className="text-xs text-neutral-600 leading-relaxed">{b.desc}</p>
                   </motion.div>
                 ))}
+              </div>
+
+              <WhatsAppConsultButton
+                productName="AutomatPlanet Beratung"
+                label="Jetzt beraten lassen"
+                className="h-12 px-6 text-base"
+              />
+              <div className="mt-5 flex items-center gap-3">
+                <img
+                  src="/kay-engelmann.jpg"
+                  alt="Kay Engelmann"
+                  loading="lazy"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-primary/40"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = "https://i.pravatar.cc/96?img=12"; }}
+                />
+                <div>
+                  <div className="text-xs text-neutral-500 uppercase tracking-wider">Dein Ansprechpartner</div>
+                  <div className="text-sm font-semibold text-neutral-900">Kay Engelmann</div>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT: Asymmetric gallery */}
+            <div className="grid grid-cols-6 grid-rows-6 gap-3 h-[520px] md:h-[600px]">
+              <div className="col-span-4 row-span-4 rounded-2xl overflow-hidden shadow-lg">
+                <img src="/why-slide-2.jpg" alt="AutomatPlanet Werkstatt" loading="lazy" className="w-full h-full object-cover" />
+              </div>
+              <div className="col-span-2 row-span-3 rounded-2xl overflow-hidden shadow-lg">
+                <img src="/why-slide-1.jpg" alt="AutomatPlanet Produktion" loading="lazy" className="w-full h-full object-cover" />
+              </div>
+              <div className="col-span-2 row-span-3 rounded-2xl overflow-hidden shadow-lg">
+                <img src="/why-slide-3.jpg" alt="AutomatPlanet Lager" loading="lazy" className="w-full h-full object-cover" />
+              </div>
+              <div className="col-span-6 row-span-2 rounded-2xl overflow-hidden shadow-lg">
+                <img src="/why-slide-4.jpg" alt="AutomatPlanet Team" loading="lazy" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
