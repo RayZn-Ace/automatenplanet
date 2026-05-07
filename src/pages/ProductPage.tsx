@@ -11,7 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useI18n } from "@/lib/i18n";
-import { useShopifyBuy } from "@/hooks/useShopifyBuy";
+import { useCartStore } from "@/stores/cartStore";
+import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
+import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
 import {
   ArrowLeft, Ruler, Zap, ShoppingCart, Download, Truck, Phone,
@@ -25,7 +27,8 @@ const ProductPage = () => {
   const seoContent = getSeoContent(slug || "");
   const [imageOpen, setImageOpen] = useState(false);
   const { lang, t } = useI18n();
-  const { buyNow, loading: buyLoading } = useShopifyBuy();
+  const addBySlug = useCartStore((s) => s.addBySlug);
+  const cartLoading = useCartStore((s) => s.isLoading);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -209,22 +212,25 @@ const ProductPage = () => {
               </div>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 mb-6">
+              <div className="flex flex-col gap-3 mb-6">
                 <Button
                   size="lg"
-                  className="flex-1 bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon text-base h-14"
-                  onClick={() => buyNow(product.slug)}
-                  disabled={buyLoading}
+                  className="w-full bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon text-base h-14"
+                  onClick={() => addBySlug(product.slug)}
+                  disabled={cartLoading}
                 >
-                  {buyLoading
-                    ? <><Loader2 className="mr-2 w-5 h-5 animate-spin" /> {t("product.buyNow")}</>
-                    : <><ShoppingCart className="mr-2 w-5 h-5" /> {t("product.buyNow")}</>
+                  {cartLoading
+                    ? <><Loader2 className="mr-2 w-5 h-5 animate-spin" /> In den Warenkorb</>
+                    : <><ShoppingCart className="mr-2 w-5 h-5" /> In den Warenkorb</>
                   }
                 </Button>
-                <Button size="lg" variant="outline" className="flex-1 border-border h-14 text-base">
+                <WhatsAppConsultButton productName={product.name} className="w-full h-14 text-base" />
+                <Button size="lg" variant="outline" className="w-full border-border h-14 text-base">
                   <Download className="mr-2 w-5 h-5" /> {t("product.datasheet")}
                 </Button>
               </div>
+
+              <PaymentMethods className="mb-6" />
 
               {/* Phone */}
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
