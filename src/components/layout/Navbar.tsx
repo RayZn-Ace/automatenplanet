@@ -3,6 +3,7 @@ import { Menu, X, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import logo from "@/assets/logo-automatplanet.png";
+import CartDrawer from "@/components/CartDrawer";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -68,16 +69,20 @@ const Navbar = () => {
             <Button className="bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon">
               {t("nav.inquiry")}
             </Button>
+            <CartDrawer />
           </div>
         </div>
 
         {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-foreground"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          <CartDrawer />
+          <button
+            className="text-foreground"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
