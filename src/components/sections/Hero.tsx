@@ -66,10 +66,6 @@ const Hero = () => {
               <MessageCircle className="mr-2 w-5 h-5" />
               Beratung anfragen
             </Button>
-
-            <Button size="lg" variant="ghost" className="w-full sm:w-auto h-14 px-8 text-lg hover:bg-muted/40 rounded-xl">
-              Preis anfragen
-            </Button>
           </motion.div>
         </div>
       </div>
