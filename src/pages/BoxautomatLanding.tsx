@@ -87,7 +87,7 @@ const BoxautomatLanding = () => {
               <span className="text-sm font-medium">Bestseller 2026 · 500+ verkauft</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              Der Boxautomat, der sich <span className="text-primary">selbst bezahlt</span>.
+              Der günstigste Boxautomat Deutschlands, der sich <span className="text-primary">selbst bezahlt</span>.
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8">
               Profi-Qualität – wahlweise mit oder ohne Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat – pro Standort.
