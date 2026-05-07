@@ -2,11 +2,10 @@ import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/sections/Hero";
 import PhoneBanner from "@/components/sections/PhoneBanner";
-import Categories from "@/components/sections/Categories";
 import Benefits from "@/components/sections/Benefits";
 import ProductHighlight from "@/components/sections/ProductHighlight";
+import MoreProductsSlider from "@/components/sections/MoreProductsSlider";
 import HomeTestimonials from "@/components/sections/HomeTestimonials";
-import Business from "@/components/sections/Business";
 import Team from "@/components/sections/Team";
 import BlogPreview from "@/components/sections/BlogPreview";
 import Contact from "@/components/sections/Contact";
@@ -74,10 +73,9 @@ const Index = () => {
           imageAlt="Greifautomat"
           imageSide="right"
         />
-        <Categories />
+        <MoreProductsSlider />
         <Benefits />
         <HomeTestimonials />
-        <Business />
         <Team />
         <BlogPreview limit={3} />
         <Contact />
