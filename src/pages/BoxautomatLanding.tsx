@@ -14,6 +14,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getProductBySlug } from "@/data/products";
 import ScrollFrameSequence from "@/components/ScrollFrameSequence";
+import { useShopifyBuy } from "@/hooks/useShopifyBuy";
+import { Loader2 } from "lucide-react";
 
 const PRODUCT_SLUG = "boxautomat-mit-geldscheinakzeptor";
 
@@ -163,10 +165,16 @@ const BoxautomatLanding = () => {
                 </div>
                 <p className="text-sm text-muted-foreground mb-6">zzgl. MwSt. · inkl. Versand DACH</p>
 
-                <Button size="lg" className="w-full text-base h-14" asChild>
-                  <a href="#kaufen-form">
-                    <ShoppingCart className="mr-2" /> Jetzt kaufen
-                  </a>
+                <Button
+                  size="lg"
+                  className="w-full text-base h-14"
+                  onClick={() => buyNow(PRODUCT_SLUG)}
+                  disabled={buyLoading}
+                >
+                  {buyLoading
+                    ? <><Loader2 className="mr-2 animate-spin" /> Jetzt kaufen</>
+                    : <><ShoppingCart className="mr-2" /> Jetzt kaufen</>
+                  }
                 </Button>
 
                 {/* Payment providers */}
