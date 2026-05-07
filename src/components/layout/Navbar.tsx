@@ -23,11 +23,12 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: t("nav.categories"), href: hashHref("#kategorien") },
-    { name: t("nav.benefits"), href: hashHref("#vorteile") },
-    { name: t("nav.products"), href: hashHref("#produkte") },
-    { name: t("nav.business"), href: hashHref("#business") },
-    { name: t("nav.faq"), href: hashHref("#faq") },
+    { name: t("nav.boxautomat"), href: "/produkte/boxautomat-premium", type: "route" as const },
+    { name: t("nav.greifautomat"), href: "/produkte/greifautomat", type: "route" as const },
+    { name: t("nav.allMachines"), href: hashHref("#produkte"), type: "hash" as const },
+    { name: t("nav.locations"), href: "/standorte", type: "route" as const },
+    { name: t("nav.blog"), href: "/blog", type: "route" as const },
+    { name: t("nav.contact"), href: hashHref("#kontakt"), type: "hash" as const },
   ];
 
   return (
