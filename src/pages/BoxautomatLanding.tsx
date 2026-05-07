@@ -93,14 +93,16 @@ const BoxautomatLanding = () => {
               animate={{ opacity: 1, scale: 1 }}
               className="relative mb-8 max-w-md mx-auto"
             >
-              <ScrollFrameSequence
-                framesBase="/boxautomat-frames/f"
-                frameCount={87}
-                ext="webp"
-                width={360}
-                height={480}
-                alt={product.name}
-                className="w-full aspect-[3/4]"
+              <video
+                src="/boxautomat-loop.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                disablePictureInPicture
+                controls={false}
+                aria-label={product.name}
+                className="w-full aspect-[3/4] object-contain pointer-events-none"
               />
             </motion.div>
 
