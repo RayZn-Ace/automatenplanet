@@ -373,7 +373,7 @@ const BoxautomatLanding = () => {
                       >
                         <img
                           src={src}
-                          alt={`AutomatPlanet Manufaktur ${i + 1}`}
+                          alt={`AutomatPlanet Werkstatt ${i + 1}`}
                           loading="lazy"
                           className="w-full h-full object-cover"
                         />
