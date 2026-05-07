@@ -15,6 +15,7 @@ import { useCartStore } from "@/stores/cartStore";
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
+import ProductImageGallery from "@/components/ProductImageGallery";
 
 import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
 
@@ -136,18 +137,17 @@ const BoxautomatLanding = () => {
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-6xl mx-auto rounded-3xl border border-border bg-card p-8 md:p-12">
             <div className="grid md:grid-cols-2 gap-10 items-center">
-              {/* Product image */}
-              <div className="relative rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 p-6 flex items-center justify-center">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full max-w-sm aspect-[3/4] object-contain"
-                  loading="lazy"
-                />
-                <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1 text-xs font-semibold">
-                  <Star className="w-3.5 h-3.5 fill-current" /> Bestseller
-                </div>
-              </div>
+              {/* Product image gallery */}
+              <ProductImageGallery
+                handle={PRODUCT_SLUG}
+                fallbackImage={product.image}
+                alt={product.name}
+                badge={
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1 text-xs font-semibold">
+                    <Star className="w-3.5 h-3.5 fill-current" /> Bestseller
+                  </div>
+                }
+              />
 
               {/* Product info */}
               <div>
