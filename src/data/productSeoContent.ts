@@ -69,13 +69,13 @@ export const productSeoContent: SeoContentMap = {
     lifestyleImage: "/images/products/lifestyle/claw-machine-supermarket.jpg",
   },
 
-  "boxautomat-mit-geldscheinakzeptor": {
+  "boxautomat-premium": {
     longDescription: {
-      de: "Der Boxautomat mit Geldscheinakzeptor ist der ultimative Umsatzbringer für Bars, Clubs und Fitnessstudios. Mit integriertem Geldscheinakzeptor akzeptiert er sowohl Münzen als auch Scheine, was die Umsätze deutlich steigert. Das digitale LED-Display und das Highscore-System motivieren Spieler zu wiederholten Versuchen.",
-      en: "The boxing machine with banknote acceptor is the ultimate revenue generator for bars, clubs, and fitness studios. With its integrated banknote acceptor, it accepts both coins and bills, significantly increasing revenue. The digital LED display and highscore system motivate players to try again."
+      de: "Der Boxautomat Premium ist der ultimative Umsatzbringer für Bars, Clubs und Fitnessstudios. Wahlweise nur mit Münzeinwurf oder mit zusätzlichem Geldscheinakzeptor – für höchste Umsätze. Digitales LED-Display, Highscore-System und robustes Boxpolster sorgen für Dauereinsatz und maximale Wiederholungsspiele.",
+      en: "The Boxautomat Premium is the ultimate revenue generator for bars, clubs, and fitness studios. Available with coin acceptor only or with an additional banknote acceptor for higher revenue. Digital LED display, highscore system, and robust boxing pad ensure continuous operation and maximum replays."
     },
     features: [
-      { de: "Integrierter Geldscheinakzeptor für höhere Umsätze", en: "Integrated banknote acceptor for higher revenue" },
+      { de: "Zwei Varianten: Münz oder Münz + Geldschein", en: "Two variants: coin or coin + banknote" },
       { de: "Digitales LED-Display mit Kraftanzeige", en: "Digital LED display with force readout" },
       { de: "Highscore-System mit Speicher", en: "Highscore system with memory" },
       { de: "Robustes Boxpolster für Dauerbetrieb", en: "Robust boxing pad for continuous operation" },
@@ -90,112 +90,31 @@ export const productSeoContent: SeoContentMap = {
       { de: "Messen & Events", en: "Trade Fairs & Events" },
     ],
     benefits: [
-      { de: "Höchste Umsätze durch Geldscheinakzeptor", en: "Highest revenue through banknote acceptor" },
+      { de: "Höchste Umsätze durch Geldscheinakzeptor (optional)", en: "Highest revenue through optional banknote acceptor" },
       { de: "Extrem robuste Bauweise", en: "Extremely robust construction" },
       { de: "Wettbewerbs-Charakter zieht Gruppen an", en: "Competitive character attracts groups" },
       { de: "Minimaler Wartungsaufwand", en: "Minimal maintenance" },
     ],
     faq: [
       {
+        question: { de: "Welche Varianten gibt es?", en: "Which variants are available?" },
+        answer: { de: "Nur Münzfach (1.799€ netto) oder Münz- & Geldscheinfach (1.949€ netto). Beide Varianten haben identische Premium-Ausstattung.", en: "Coin only (€1,799 net) or coin + banknote (€1,949 net). Both variants share the same premium build." }
+      },
+      {
         question: { de: "Welche Scheine akzeptiert der Geldscheinakzeptor?", en: "Which bills does the acceptor take?" },
         answer: { de: "Der Geldscheinakzeptor akzeptiert 5€, 10€ und 20€ Scheine. Die Akzeptanz kann individuell konfiguriert werden.", en: "The banknote acceptor takes €5, €10, and €20 bills. Acceptance can be individually configured." }
       },
-      {
-        question: { de: "Wie laut ist der Boxautomat?", en: "How loud is the boxing machine?" },
-        answer: { de: "Der Automat hat einen angemessenen Geräuschpegel, der für Bar- und Club-Umgebungen ideal ist. In ruhigeren Umgebungen kann die Lautstärke reduziert werden.", en: "The machine has an appropriate noise level ideal for bar and club environments. In quieter settings, the volume can be reduced." }
-      },
     ],
     included: [
-      { de: "1x Boxautomat komplett montiert", en: "1x Boxing machine fully assembled" },
-      { de: "1x Geldscheinakzeptor (installiert)", en: "1x Banknote acceptor (installed)" },
-      { de: "1x Münzprüfer", en: "1x Coin validator" },
+      { de: "1x Boxautomat Premium komplett montiert", en: "1x Boxautomat Premium fully assembled" },
+      { de: "1x Münzprüfer (bei beiden Varianten)", en: "1x Coin validator (both variants)" },
+      { de: "1x Geldscheinakzeptor (nur bei Münz- & Geldscheinfach)", en: "1x Banknote acceptor (only with coin + banknote variant)" },
       { de: "2x Schlüssel", en: "2x Keys" },
       { de: "1x Bedienungsanleitung", en: "1x User manual" },
     ],
     roiMonths: 3,
     lifestyleImage: "/images/products/lifestyle/boxing-machine-bar.jpg",
   },
-
-  "combo-boxautomat": {
-    longDescription: {
-      de: "Der Combo Boxautomat vereint Schlagkraftmessung mit interaktiven Spielmodi und bietet damit maximale Unterhaltung. Durch die Kombination verschiedener Spielvarianten bleibt der Automat auch für Stammkunden immer interessant und generiert überdurchschnittliche Umsätze.",
-      en: "The Combo Boxing Machine combines force measurement with interactive game modes, offering maximum entertainment. The combination of different game variants keeps the machine interesting even for regular customers, generating above-average revenue."
-    },
-    features: [
-      { de: "Mehrere interaktive Spielmodi", en: "Multiple interactive game modes" },
-      { de: "Präzise digitale Schlagkraftmessung", en: "Precise digital force measurement" },
-      { de: "Highscore-System mit Speicher", en: "Highscore system with memory" },
-      { de: "Premium LED-Beleuchtung", en: "Premium LED lighting" },
-      { de: "Verstärktes Boxpolster", en: "Reinforced boxing pad" },
-      { de: "Münz- und Scheinakzeptor", en: "Coin and banknote acceptor" },
-    ],
-    useCases: [
-      { de: "Premium Arcades", en: "Premium Arcades" },
-      { de: "Events & Firmenfeiern", en: "Events & Corporate Parties" },
-      { de: "Gastronomie & Nachtleben", en: "Gastronomy & Nightlife" },
-      { de: "Einkaufszentren", en: "Shopping Centers" },
-    ],
-    benefits: [
-      { de: "Mehrere Spielmodi = mehr Wiederholungen", en: "Multiple game modes = more replays" },
-      { de: "Premium-Bauweise für höchste Beanspruchung", en: "Premium build for highest demands" },
-      { de: "Überdurchschnittliche Umsätze", en: "Above-average revenue" },
-    ],
-    faq: [
-      {
-        question: { de: "Was unterscheidet den Combo vom Standard-Boxautomat?", en: "What differentiates the Combo from the standard boxing machine?" },
-        answer: { de: "Der Combo bietet mehrere Spielmodi statt nur reiner Kraftmessung. Dadurch ist er für ein breiteres Publikum interessant und generiert mehr Umsatz.", en: "The Combo offers multiple game modes instead of just force measurement. This makes it appealing to a broader audience and generates more revenue." }
-      },
-    ],
-    included: [
-      { de: "1x Combo Boxautomat komplett montiert", en: "1x Combo boxing machine fully assembled" },
-      { de: "1x Münz- und Geldscheinakzeptor", en: "1x Coin and banknote acceptor" },
-      { de: "2x Schlüssel", en: "2x Keys" },
-      { de: "1x Bedienungsanleitung", en: "1x User manual" },
-    ],
-    roiMonths: 3,
-    lifestyleImage: "/images/products/lifestyle/boxing-machine-bar.jpg",
-  },
-
-  "boxautomat-ohne-geldscheinakzeptor": {
-    longDescription: {
-      de: "Der münzbetriebene Boxautomat ist die günstige Einstiegsoption für jeden Standort. Er bietet dieselbe robuste Qualität und das beliebte Highscore-System, verzichtet aber auf den Geldscheinakzeptor – ideal wenn Münzbetrieb ausreicht.",
-      en: "The coin-operated boxing machine is the affordable entry option for any location. It offers the same robust quality and popular highscore system but without the banknote acceptor – ideal when coin operation is sufficient."
-    },
-    features: [
-      { de: "Digitales LED-Display mit Kraftanzeige", en: "Digital LED display with force readout" },
-      { de: "Highscore-System mit Speicher", en: "Highscore system with memory" },
-      { de: "Robustes Boxpolster", en: "Robust boxing pad" },
-      { de: "Münzprüfer für gängige Münzen", en: "Coin validator for common coins" },
-      { de: "Einstellbare Schwierigkeitsgrade", en: "Adjustable difficulty levels" },
-    ],
-    useCases: [
-      { de: "Bars & Kneipen", en: "Bars & Pubs" },
-      { de: "Imbisse & Restaurants", en: "Snack Bars & Restaurants" },
-      { de: "Jugendclubs", en: "Youth Clubs" },
-      { de: "Freizeiteinrichtungen", en: "Leisure Facilities" },
-    ],
-    benefits: [
-      { de: "Günstigster Einstiegspreis", en: "Lowest entry price" },
-      { de: "Bewährte Technik", en: "Proven technology" },
-      { de: "Schnelle Amortisation", en: "Quick ROI" },
-    ],
-    faq: [
-      {
-        question: { de: "Kann ich später einen Geldscheinakzeptor nachrüsten?", en: "Can I add a banknote acceptor later?" },
-        answer: { de: "Ja, ein Geldscheinakzeptor kann jederzeit nachgerüstet werden. Kontaktieren Sie uns für die Nachrüstoption.", en: "Yes, a banknote acceptor can be retrofitted at any time. Contact us for the retrofit option." }
-      },
-    ],
-    included: [
-      { de: "1x Boxautomat komplett montiert", en: "1x Boxing machine fully assembled" },
-      { de: "1x Münzprüfer", en: "1x Coin validator" },
-      { de: "2x Schlüssel", en: "2x Keys" },
-      { de: "1x Bedienungsanleitung", en: "1x User manual" },
-    ],
-    roiMonths: 4,
-    lifestyleImage: "/images/products/lifestyle/boxing-machine-bar.jpg",
-  },
-
-  "basketball-machine": {
     longDescription: {
       de: "Die Basketball Arcade Machine bringt den Nervenkitzel des Basketballs in Ihren Standort. Mit Timer, elektronischem Punktezähler und Multiplayer-Modus ist sie ein garantierter Publikumsmagnet. Die auffällige Neon-LED-Beleuchtung sorgt dafür, dass der Automat schon von Weitem alle Blicke auf sich zieht.",
       en: "The Basketball Arcade Machine brings the thrill of basketball to your location. With timer, electronic score counter, and multiplayer mode, it's a guaranteed crowd magnet. The eye-catching neon LED lighting ensures the machine draws attention from afar."
