@@ -10,6 +10,9 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { lang, setLang, t } = useI18n();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+  const hashHref = (hash: string) => (isHome ? hash : `/${hash}`);
 
   useEffect(() => {
     const handleScroll = () => {
