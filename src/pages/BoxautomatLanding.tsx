@@ -282,27 +282,43 @@ const BoxautomatLanding = () => {
       {/* BENEFITS */}
       <section className="py-20">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Warum dieser Boxautomat?</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">Sechs Gründe, warum Profis auf unser Modell setzen.</p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {benefits.map((b, i) => (
-              <motion.div
-                key={b.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="rounded-2xl border border-border bg-card p-6"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <b.icon className="w-6 h-6 text-primary" />
+          <div className="max-w-6xl mx-auto rounded-3xl border border-border bg-gradient-to-br from-primary/5 to-secondary/5 overflow-hidden">
+            <div className="grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-0 items-stretch">
+              {/* Image - left on desktop, bottom on mobile */}
+              <div className="order-last md:order-first relative flex items-end justify-center md:items-stretch min-h-[280px] md:min-h-0">
+                <img
+                  src="/boxautomat-closeup.png"
+                  alt="Boxautomat Premium Close-up"
+                  className="w-full h-full object-contain object-bottom md:object-left-bottom max-h-[480px] md:max-h-none"
+                  loading="lazy"
+                />
+              </div>
+              {/* Content */}
+              <div className="p-6 md:p-10 lg:p-12 order-first md:order-last">
+                <div className="mb-8">
+                  <h2 className="text-3xl md:text-4xl font-bold mb-3">Warum dieser Boxautomat?</h2>
+                  <p className="text-muted-foreground">Sechs Gründe, warum Profis auf unser Modell setzen.</p>
                 </div>
-                <h3 className="font-bold mb-2">{b.title}</h3>
-                <p className="text-sm text-muted-foreground">{b.desc}</p>
-              </motion.div>
-            ))}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {benefits.map((b, i) => (
+                    <motion.div
+                      key={b.title}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.05 }}
+                      className="rounded-2xl border border-border bg-card/60 backdrop-blur-sm p-5"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                        <b.icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <h3 className="font-bold mb-1.5 text-sm">{b.title}</h3>
+                      <p className="text-xs text-muted-foreground">{b.desc}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
