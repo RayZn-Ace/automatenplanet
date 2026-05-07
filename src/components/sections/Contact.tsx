@@ -3,30 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Phone, Mail, MessageCircle, Send, Star, Quote } from "lucide-react";
+import { Phone, Mail, MessageCircle, Send } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-
-const testimonials = [
-  {
-    name: "Mehmet K.",
-    role: "Kiosk-Besitzer, Berlin",
-    text: "Seit ich zwei Greifautomaten im Kiosk stehen habe, verdiene ich monatlich 1.800€ extra. Beste Investition!",
-    rating: 5,
-  },
-  {
-    name: "Sarah L.",
-    role: "Arcade Studio, Hamburg",
-    text: "AutomatPlanet hat unser komplettes Studio ausgestattet. Top Qualität und exzellenter Service.",
-    rating: 5,
-  },
-  {
-    name: "Thomas R.",
-    role: "Einkaufszentrum Manager, München",
-    text: "Die Boxautomaten sind der absolute Hit. Die Kunden lieben es und wir verdienen passiv.",
-    rating: 5,
-  },
-];
 
 const Contact = () => {
   const [formData, setFormData] = useState({
