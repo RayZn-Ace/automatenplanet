@@ -8,6 +8,11 @@ import projectRules from "./eslint-rules/index.js";
 export default tseslint.config(
   { ignores: ["dist"] },
   {
+    plugins: {
+      "project-rules": projectRules,
+    },
+  },
+  {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
