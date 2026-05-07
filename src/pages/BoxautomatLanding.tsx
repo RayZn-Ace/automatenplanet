@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, Quote,
-  TrendingUp, Zap, Ruler, Award, MessageCircle, Phone, Send,
+  TrendingUp, Zap, Ruler, Award, MessageCircle, Phone, Send, Package, BadgeCheck,
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -130,38 +130,123 @@ const BoxautomatLanding = () => {
       {/* PRODUCT / DIRECT BUY */}
       <section id="bestellen" className="py-20 bg-card/30">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-5xl mx-auto rounded-3xl border border-border bg-card p-8 md:p-12">
-            <div className="grid md:grid-cols-2 gap-10">
-              <div>
-                <h2 className="text-3xl font-bold mb-2">{product.name}</h2>
-                <p className="text-muted-foreground mb-6">{product.description}</p>
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center gap-3"><Ruler className="w-5 h-5 text-primary" /><span>{product.dimensions}</span></div>
-                  <div className="flex items-center gap-3"><Zap className="w-5 h-5 text-primary" /><span>{product.power}</span></div>
-                  <div className="flex items-center gap-3"><Truck className="w-5 h-5 text-primary" /><span>Versand innerhalb 24h</span></div>
+          <div className="max-w-6xl mx-auto rounded-3xl border border-border bg-card p-8 md:p-12">
+            <div className="grid md:grid-cols-2 gap-10 items-center">
+              {/* Product image */}
+              <div className="relative rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 p-6 flex items-center justify-center">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full max-w-sm aspect-[3/4] object-contain"
+                  loading="lazy"
+                />
+                <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1 text-xs font-semibold">
+                  <Star className="w-3.5 h-3.5 fill-current" /> Bestseller
                 </div>
-                <div className="flex items-baseline gap-3 mb-2">
+              </div>
+
+              {/* Product info */}
+              <div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">{product.category}</div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-3">{product.name}</h2>
+                <p className="text-muted-foreground mb-6">{product.description}</p>
+
+                <div className="space-y-2 mb-6 text-sm">
+                  <div className="flex items-center gap-3"><Ruler className="w-4 h-4 text-primary" /><span>{product.dimensions}</span></div>
+                  <div className="flex items-center gap-3"><Zap className="w-4 h-4 text-primary" /><span>{product.power}</span></div>
+                  <div className="flex items-center gap-3"><Truck className="w-4 h-4 text-primary" /><span>Versand innerhalb 24h</span></div>
+                </div>
+
+                <div className="flex items-baseline gap-3 mb-1">
                   <span className="text-5xl font-bold text-primary">{product.price.toLocaleString("de-DE")}€</span>
                   <span className="text-muted-foreground">netto</span>
                 </div>
-                <p className="text-sm text-muted-foreground">zzgl. MwSt. · inkl. Versand DACH</p>
-              </div>
+                <p className="text-sm text-muted-foreground mb-6">zzgl. MwSt. · inkl. Versand DACH</p>
 
-              <form onSubmit={handleOrder} className="space-y-4">
-                <h3 className="text-xl font-bold mb-2">Direkt bestellen</h3>
-                <Input placeholder="Name *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                <Input type="email" placeholder="E-Mail *" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                <Input type="tel" placeholder="Telefon *" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-                <Input type="number" min="1" placeholder="Menge" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} />
-                <Textarea placeholder="Lieferadresse" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} rows={3} />
-                <Button type="submit" size="lg" className="w-full">
-                  <ShoppingCart className="mr-2" /> Verbindlich bestellen
+                <Button size="lg" className="w-full text-base h-14" asChild>
+                  <a href="#kaufen-form">
+                    <ShoppingCart className="mr-2" /> Jetzt kaufen
+                  </a>
                 </Button>
-                <p className="text-xs text-muted-foreground text-center">
-                  Wir bestätigen Ihre Bestellung innerhalb von 2 Stunden per E-Mail.
-                </p>
-              </form>
+
+                {/* Payment providers */}
+                <div className="mt-6">
+                  <div className="text-xs text-muted-foreground mb-3 text-center">Sichere Zahlung mit</div>
+                  <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-semibold text-muted-foreground">
+                    <span className="px-2 py-1 rounded bg-background border border-border">AmEx</span>
+                    <span className="px-2 py-1 rounded bg-background border border-border">MasterCard</span>
+                    <span className="px-2 py-1 rounded bg-background border border-border">VISA</span>
+                    <span className="px-2 py-1 rounded bg-background border border-border">SEPA</span>
+                    <span className="px-2 py-1 rounded bg-background border border-border">Klarna</span>
+                    <span className="px-2 py-1 rounded bg-background border border-border">giropay</span>
+                    <span className="px-2 py-1 rounded bg-background border border-border">Apple Pay</span>
+                    <span className="px-2 py-1 rounded bg-background border border-border">G Pay</span>
+                    <span className="px-2 py-1 rounded bg-background border border-border">PayPal</span>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {/* Trust elements */}
+            <div className="mt-10 grid md:grid-cols-3 gap-3">
+              <div className="flex items-center gap-3 rounded-xl bg-background/50 border border-border px-4 py-3">
+                <Package className="w-5 h-5 text-primary shrink-0" />
+                <span className="text-sm">Sicherer und schneller Versand aus Deutschland</span>
+              </div>
+              <div className="flex items-center gap-3 rounded-xl bg-background/50 border border-border px-4 py-3">
+                <BadgeCheck className="w-5 h-5 text-primary shrink-0" />
+                <span className="text-sm">12 Monate Gewährleistung auf technische Fehler</span>
+              </div>
+              <div className="flex items-center gap-3 rounded-xl bg-background/50 border border-border px-4 py-3">
+                <MessageCircle className="w-5 h-5 text-primary shrink-0" />
+                <span className="text-sm">Hochwertige Automaten und 24/7 WhatsApp-Support</span>
+              </div>
+            </div>
+
+            {/* Mini reviews */}
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 border-t border-border">
+              <div className="flex -space-x-3">
+                {[
+                  "https://i.pravatar.cc/80?img=11",
+                  "https://i.pravatar.cc/80?img=32",
+                  "https://i.pravatar.cc/80?img=47",
+                  "https://i.pravatar.cc/80?img=68",
+                  "https://i.pravatar.cc/80?img=15",
+                ].map((src, i) => (
+                  <img
+                    key={i}
+                    src={src}
+                    alt={`Kunde ${i + 1}`}
+                    loading="lazy"
+                    className="w-10 h-10 rounded-full border-2 border-card object-cover"
+                  />
+                ))}
+              </div>
+              <div className="text-center sm:text-left">
+                <div className="flex items-center justify-center sm:justify-start gap-1 mb-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <div className="text-sm font-semibold">Bereits 300+ zufriedene Kunden</div>
+              </div>
+            </div>
+
+            {/* Order form */}
+            <form onSubmit={handleOrder} id="kaufen-form" className="mt-10 pt-10 border-t border-border max-w-2xl mx-auto space-y-4">
+              <h3 className="text-2xl font-bold mb-2 text-center">Direkt bestellen</h3>
+              <Input placeholder="Name *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+              <Input type="email" placeholder="E-Mail *" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              <Input type="tel" placeholder="Telefon *" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+              <Input type="number" min="1" placeholder="Menge" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} />
+              <Textarea placeholder="Lieferadresse" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} rows={3} />
+              <Button type="submit" size="lg" className="w-full">
+                <ShoppingCart className="mr-2" /> Verbindlich bestellen
+              </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                Wir bestätigen Ihre Bestellung innerhalb von 2 Stunden per E-Mail.
+              </p>
+            </form>
           </div>
         </div>
       </section>
