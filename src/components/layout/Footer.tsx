@@ -1,4 +1,4 @@
-import logo from "@/assets/logo-automatplanet.jpg";
+import logo from "@/assets/logo-automatplanet.png";
 
 const Footer = () => {
   return (
