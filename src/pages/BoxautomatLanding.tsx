@@ -20,6 +20,7 @@ import ProductImageGallery from "@/components/ProductImageGallery";
 import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
 
 const PRODUCT_SLUG = "boxautomat-premium";
+const SHOPIFY_HANDLE = "boxing-machine-with-banknote-acceptor";
 const VARIANTS = SHOPIFY_VARIANTS_BY_SLUG[PRODUCT_SLUG];
 
 const benefits = [
