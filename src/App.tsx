@@ -17,6 +17,7 @@ import Datenschutz from "./pages/Datenschutz";
 import Handbuch from "./pages/Handbuch";
 import HandbuchBoxautomat from "./pages/HandbuchBoxautomat";
 import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
+import BoxautomatLanding from "./pages/BoxautomatLanding";
 import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
