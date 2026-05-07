@@ -216,12 +216,10 @@ const BoxautomatLanding = () => {
                 <div className="text-sm font-semibold">Bereits 300+ zufriedene Kunden</div>
               </div>
             </div>
-
-            </div>
-
           </div>
         </div>
       </section>
+
 
       {/* BENEFITS */}
       <section className="py-20">
