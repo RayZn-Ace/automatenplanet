@@ -418,7 +418,7 @@ const BoxautomatLanding = () => {
                     ].map((src, i) => (
                       <div
                         key={`${dup}-${i}`}
-                        className="w-[280px] h-[180px] shrink-0 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden"
+                        className="w-[380px] h-[240px] md:w-[440px] md:h-[280px] shrink-0 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden"
                       >
                         <img
                           src={src}
