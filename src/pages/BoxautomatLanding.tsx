@@ -16,7 +16,10 @@ import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
 
-const PRODUCT_SLUG = "boxautomat-mit-geldscheinakzeptor";
+import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
+
+const PRODUCT_SLUG = "boxautomat-premium";
+const VARIANTS = SHOPIFY_VARIANTS_BY_SLUG[PRODUCT_SLUG];
 
 const benefits = [
   { icon: TrendingUp, title: "Bis zu 1.500€/Monat", desc: "Hohe Einnahmen pro Aufstellort durch Highscore-Effekt." },
@@ -45,13 +48,15 @@ const BoxautomatLanding = () => {
   const product = getProductBySlug(PRODUCT_SLUG)!;
   const addBySlug = useCartStore((s) => s.addBySlug);
   const cartLoading = useCartStore((s) => s.isLoading);
+  const [variantIdx, setVariantIdx] = useState(1); // default: Münz- & Geldschein
+  const selectedVariant = VARIANTS[variantIdx];
   const [coinPrice, setCoinPrice] = useState(2);
   const [playsPerDay, setPlaysPerDay] = useState(40);
   const roi = useMemo(() => {
     const monthly = coinPrice * playsPerDay * 30;
-    const months = Math.max(1, Math.ceil(product.price / monthly));
+    const months = Math.max(1, Math.ceil(selectedVariant.price / monthly));
     return { monthly, months };
-  }, [coinPrice, playsPerDay, product.price]);
+  }, [coinPrice, playsPerDay, selectedVariant.price]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
