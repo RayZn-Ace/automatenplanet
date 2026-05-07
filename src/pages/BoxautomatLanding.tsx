@@ -44,6 +44,7 @@ const faqs = [
 
 const BoxautomatLanding = () => {
   const product = getProductBySlug(PRODUCT_SLUG)!;
+  const { buyNow, loading: buyLoading } = useShopifyBuy();
   const [coinPrice, setCoinPrice] = useState(2);
   const [playsPerDay, setPlaysPerDay] = useState(40);
   const roi = useMemo(() => {
