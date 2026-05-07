@@ -1,20 +1,19 @@
 import { useState, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
 import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, Quote,
-  TrendingUp, Zap, Ruler, Award, MessageCircle, Phone, Send, Package, BadgeCheck,
+  TrendingUp, Zap, Ruler, Award, MessageCircle, Phone, Package, BadgeCheck,
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getProductBySlug } from "@/data/products";
 import ScrollFrameSequence from "@/components/ScrollFrameSequence";
-import { useShopifyBuy } from "@/hooks/useShopifyBuy";
+import { useCartStore } from "@/stores/cartStore";
+import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
+import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
 
 const PRODUCT_SLUG = "boxautomat-mit-geldscheinakzeptor";
@@ -44,7 +43,8 @@ const faqs = [
 
 const BoxautomatLanding = () => {
   const product = getProductBySlug(PRODUCT_SLUG)!;
-  const { buyNow, loading: buyLoading } = useShopifyBuy();
+  const addBySlug = useCartStore((s) => s.addBySlug);
+  const cartLoading = useCartStore((s) => s.isLoading);
   const [coinPrice, setCoinPrice] = useState(2);
   const [playsPerDay, setPlaysPerDay] = useState(40);
   const roi = useMemo(() => {
@@ -52,18 +52,6 @@ const BoxautomatLanding = () => {
     const months = Math.max(1, Math.ceil(product.price / monthly));
     return { monthly, months };
   }, [coinPrice, playsPerDay, product.price]);
-
-  const [form, setForm] = useState({ name: "", email: "", phone: "", quantity: "1", address: "" });
-
-  const handleOrder = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.email || !form.phone) {
-      toast.error("Bitte Name, E-Mail und Telefon ausfüllen.");
-      return;
-    }
-    toast.success("Bestellung eingegangen! Wir bestätigen innerhalb von 2 Stunden.");
-    setForm({ name: "", email: "", phone: "", quantity: "1", address: "" });
-  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
