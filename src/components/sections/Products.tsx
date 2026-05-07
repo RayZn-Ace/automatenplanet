@@ -43,7 +43,7 @@ const Products = () => {
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-                  <span className="absolute bottom-4 left-4 bg-primary/90 text-foreground text-sm font-bold px-3 py-1 rounded-full">
+                  <span className="absolute bottom-4 left-4 bg-primary/90 text-primary-foreground text-sm font-bold px-3 py-1 rounded-full">
                     {p.price.toLocaleString("de-DE")} € netto
                   </span>
                 </div>

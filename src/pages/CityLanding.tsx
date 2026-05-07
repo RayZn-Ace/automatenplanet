@@ -226,7 +226,7 @@ const CityLanding = () => {
               <Button size="lg" asChild className="bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon">
                 <Link to="/#kontakt">Kostenlose Beratung</Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-2 border-secondary text-secondary hover:bg-secondary hover:text-background" asChild>
+              <Button size="lg" variant="outline" className="border-2 border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground" asChild>
                 <a href="tel:+4915123456789">
                   <Phone className="mr-2 w-5 h-5" /> Anrufen
                 </a>

@@ -62,7 +62,7 @@ const Hero = () => {
               <ChevronRight className="ml-2 w-5 h-5" />
             </Button>
             
-            <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-secondary text-secondary hover:bg-secondary hover:text-background shadow-neon-blue h-14 px-8 text-lg rounded-xl backdrop-blur-sm">
+            <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground shadow-neon-blue h-14 px-8 text-lg rounded-xl backdrop-blur-sm">
               <MessageCircle className="mr-2 w-5 h-5" />
               Beratung anfragen
             </Button>

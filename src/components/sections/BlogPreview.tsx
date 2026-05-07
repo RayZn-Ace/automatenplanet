@@ -52,7 +52,7 @@ const BlogPreview = ({ limit = 3, showHeading = true }: BlogPreviewProps) => {
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-                  <span className="absolute top-4 left-4 bg-primary/90 text-foreground text-xs font-bold px-3 py-1 rounded-full">
+                  <span className="absolute top-4 left-4 bg-primary/90 text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
                     {article.category}
                   </span>
                 </div>
