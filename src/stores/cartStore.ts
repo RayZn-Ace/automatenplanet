@@ -87,7 +87,7 @@ export const useCartStore = create<CartStore>()(
               });
             } else {
               get().clearCart();
-              return get().addBySlug(slug, quantity);
+              return get().addBySlug(slug, quantity, overrides);
             }
           } else if (cartId) {
             const result = await shopifyAddToCart(cartId, variantId, quantity);
@@ -102,16 +102,16 @@ export const useCartStore = create<CartStore>()(
                     lineId: newLine?.lineId ?? null,
                     slug,
                     variantId,
-                    name: product.name,
+                    name: itemName,
                     image: product.image,
-                    price: product.price,
+                    price: itemPrice,
                     quantity,
                   },
                 ],
               });
             } else {
               get().clearCart();
-              return get().addBySlug(slug, quantity);
+              return get().addBySlug(slug, quantity, overrides);
             }
           } else {
             const result = await shopifyCreateCart(variantId, quantity);
@@ -124,15 +124,15 @@ export const useCartStore = create<CartStore>()(
                   lineId: newLine?.lineId ?? null,
                   slug,
                   variantId,
-                  name: product.name,
+                  name: itemName,
                   image: product.image,
-                  price: product.price,
+                  price: itemPrice,
                   quantity,
                 },
               ],
             });
           }
-          toast.success(`${product.name} wurde zum Warenkorb hinzugefügt.`, {
+          toast.success(`${itemName} wurde zum Warenkorb hinzugefügt.`, {
             position: "top-center",
             action: {
               label: "Anzeigen",
