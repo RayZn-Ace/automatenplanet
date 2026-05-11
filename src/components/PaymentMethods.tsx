@@ -18,7 +18,7 @@ const PaymentMethods = ({ className }: Props) => {
   return (
     <div className={className}>
       <div className="text-xs text-muted-foreground mb-3 text-center">Sichere Zahlung mit</div>
-      <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-2 max-w-2xl mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2 max-w-2xl mx-auto">
         {methods.map((m) => (
           <div
             key={m.name}
