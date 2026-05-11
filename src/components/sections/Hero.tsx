@@ -5,7 +5,7 @@ import arcadeHero from "@/assets/arcade-hero.jpg";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center pt-5 md:pt-20 overflow-hidden">
+    <section className="relative min-h-[40vh] md:min-h-screen flex items-center pt-5 pb-8 md:pt-20 md:pb-0 overflow-hidden">
       {/* Background with overlay */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/90 to-background z-10" />
