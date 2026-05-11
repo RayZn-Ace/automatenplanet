@@ -81,14 +81,14 @@ const BoxautomatLanding = () => {
       <section className="pt-32 pb-16 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 mb-6">
+            <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 mb-6 text-center">
               <Star className="w-4 h-4 fill-primary text-primary" />
               <span className="text-sm font-medium">Bestseller 2026 · 500+ verkauft</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 leading-tight break-words">
               Der günstigste Boxautomat Deutschlands, der sich <span className="text-primary">selbst bezahlt</span>.
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8">
+            <p className="max-w-3xl mx-auto text-base sm:text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
               Profi-Qualität – wahlweise mit oder ohne Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat – pro Standort.
               Versand in 24 Stunden, 2 Jahre Garantie.
             </p>
@@ -150,10 +150,10 @@ const BoxautomatLanding = () => {
               />
 
               {/* Product info */}
-              <div>
+              <div className="min-w-0">
                 <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">{product.category}</div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-3">{product.name}</h2>
-                <p className="text-muted-foreground mb-6">{product.description}</p>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 break-words">{product.name}</h2>
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-6 break-words">{product.description}</p>
 
                 <div className="space-y-2 mb-6 text-sm">
                   <div className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" /><span>Passive Einnahmen mit Laufkundschaft</span></div>
@@ -172,14 +172,14 @@ const BoxautomatLanding = () => {
                           key={v.variantId}
                           type="button"
                           onClick={() => setVariantIdx(idx)}
-                          className={`group rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                          className={`group inline-flex w-full min-w-0 items-center justify-between gap-2 rounded-2xl border px-4 py-2 text-left text-sm font-medium transition-all sm:w-auto sm:rounded-full ${
                             active
                               ? "border-primary bg-primary/15 text-foreground shadow-neon"
                               : "border-border bg-background hover:border-primary/50"
                           }`}
                         >
-                          <span className="font-semibold">{v.label}</span>
-                          <span className={`ml-2 text-xs ${active ? "text-primary" : "text-muted-foreground"}`}>
+                          <span className="min-w-0 font-semibold break-words">{v.label}</span>
+                          <span className={`shrink-0 text-xs ${active ? "text-primary" : "text-muted-foreground"}`}>
                             {v.price.toLocaleString("de-DE")}€
                           </span>
                         </button>
@@ -194,7 +194,7 @@ const BoxautomatLanding = () => {
                   </span>
                   <span className="text-muted-foreground">netto</span>
                 </div>
-                <p className="text-sm text-muted-foreground mb-6">
+                <p className="text-sm text-muted-foreground mb-6 break-words leading-relaxed">
                   {selectedVariant.label} · zzgl. MwSt. · inkl. Versand DACH
                 </p>
 
@@ -230,7 +230,7 @@ const BoxautomatLanding = () => {
             </div>
 
             {/* Trust elements */}
-            <div className="mt-10 grid md:grid-cols-3 gap-3">
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="flex items-center gap-3 rounded-xl bg-background/50 border border-border px-4 py-3">
                 <Package className="w-5 h-5 text-primary shrink-0" />
                 <span className="text-sm">Sicherer und schneller Versand aus Deutschland</span>
@@ -534,7 +534,7 @@ const BoxautomatLanding = () => {
       {/* ROI CALCULATOR */}
       <section className="py-20">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-4xl mx-auto rounded-3xl border border-border bg-gradient-to-br from-primary/5 to-secondary/5 p-8 md:p-12">
+          <div className="max-w-4xl mx-auto rounded-3xl border border-border bg-gradient-to-br from-primary/5 to-secondary/5 p-5 sm:p-8 md:p-12 overflow-hidden">
             <div className="text-center mb-8">
               <h2 className="text-3xl md:text-4xl font-bold mb-3">Wann hat sich der Automat von selbst bezahlt?</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -564,11 +564,11 @@ const BoxautomatLanding = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <div className="rounded-2xl bg-card border border-border p-6 text-center">
                 <div className="text-sm text-muted-foreground mb-2">Das verdienst du pro Monat</div>
-                <div className="text-4xl font-bold text-primary">{roi.monthly.toLocaleString("de-DE")}€</div>
+                <div className="text-3xl sm:text-4xl font-bold text-primary break-words">{roi.monthly.toLocaleString("de-DE")}€</div>
               </div>
               <div className="rounded-2xl bg-card border border-border p-6 text-center">
                 <div className="text-sm text-muted-foreground mb-2">Nach so vielen Monaten ist er bezahlt</div>
-                <div className="text-4xl font-bold text-secondary">{roi.months} Monate</div>
+                <div className="text-3xl sm:text-4xl font-bold text-secondary break-words">{roi.months} Monate</div>
               </div>
             </div>
           </div>
