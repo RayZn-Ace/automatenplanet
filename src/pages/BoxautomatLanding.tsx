@@ -189,7 +189,7 @@ const BoxautomatLanding = () => {
                 </div>
 
                 <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-1">
-                  <span className="text-4xl sm:text-5xl font-bold text-primary break-all">
+                  <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary break-words">
                     {selectedVariant.price.toLocaleString("de-DE")}€
                   </span>
                   <span className="text-muted-foreground">netto</span>
