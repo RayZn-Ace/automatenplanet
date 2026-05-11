@@ -91,6 +91,9 @@ All colors MUST be HSL.
     overflow-x: hidden;
     max-width: 100vw;
   }
+  #root {
+    overflow-x: clip;
+  }
   /* Prevent long words/URLs from breaking layout on mobile */
   h1, h2, h3, h4, p, a, span, li {
     overflow-wrap: anywhere;

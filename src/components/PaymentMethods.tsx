@@ -18,11 +18,11 @@ const PaymentMethods = ({ className }: Props) => {
   return (
     <div className={className}>
       <div className="text-xs text-muted-foreground mb-3 text-center">Sichere Zahlung mit</div>
-      <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-2 max-w-2xl mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2 max-w-2xl mx-auto">
         {methods.map((m) => (
           <div
             key={m.name}
-            className="h-10 px-2 rounded-md bg-white border border-border flex items-center justify-center"
+            className="min-w-0 h-10 px-2 rounded-md bg-white border border-border flex items-center justify-center overflow-hidden"
             title={m.name}
           >
             <img

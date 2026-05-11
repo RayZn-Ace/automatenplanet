@@ -94,7 +94,7 @@ const ProductHighlight = ({
                   </span>
                 </div>
               )}
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight break-words">
                 {title}
               </h2>
               <p className="text-base md:text-lg text-muted-foreground mb-6">{description}</p>
@@ -108,9 +108,9 @@ const ProductHighlight = ({
                 ))}
               </ul>
 
-              <div className="flex items-baseline gap-2 mb-6">
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 mb-6 min-w-0">
                 <span className="text-sm text-muted-foreground">ab</span>
-                <span className="text-4xl md:text-5xl font-bold text-primary">
+                <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary break-words">
                   {priceFrom.toLocaleString("de-DE")}€
                 </span>
                 <span className="text-muted-foreground">netto</span>
@@ -119,7 +119,7 @@ const ProductHighlight = ({
               <Button
                 asChild
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-neon h-13 px-7 text-base"
+                className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-neon h-auto min-h-13 px-7 py-3 text-base"
               >
                 <Link to={ctaHref}>
                   {ctaLabel}

@@ -157,13 +157,13 @@ const ProductPage = () => {
                 {product.category}
               </span>
 
-              <h1 className="text-3xl md:text-5xl font-extrabold mb-5 leading-tight">{product.name}</h1>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">{product.description}</p>
+              <h1 className="text-3xl md:text-5xl font-extrabold mb-5 leading-tight break-words">{product.name}</h1>
+              <p className="text-base sm:text-lg text-muted-foreground mb-8 leading-relaxed break-words">{product.description}</p>
 
               {/* Price Card */}
-              <div className="rounded-2xl border-2 border-primary/40 bg-gradient-to-br from-primary/10 to-primary/5 p-5 sm:p-6 mb-6">
+              <div className="rounded-2xl border-2 border-primary/40 bg-gradient-to-br from-primary/10 to-primary/5 p-4 sm:p-6 mb-6 overflow-hidden">
                 <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-2">
-                  <span className="text-4xl sm:text-5xl font-black text-primary text-glow tracking-tight break-all">
+                  <span className="text-3xl sm:text-4xl md:text-5xl font-black text-primary text-glow break-words">
                     {product.price.toLocaleString("de-DE")} €
                   </span>
                   <span className="text-muted-foreground text-sm font-medium">{t("product.net")}</span>
@@ -181,7 +181,7 @@ const ProductPage = () => {
               </div>
 
               {/* Specs Grid */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                 {product.dimensions && (
                   <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card/40">
                     <Ruler className="w-5 h-5 text-secondary shrink-0" />
@@ -203,7 +203,7 @@ const ProductPage = () => {
               </div>
 
               {/* Shipping */}
-              <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card/40 mb-6">
+              <div className="flex items-start gap-3 p-4 rounded-xl border border-border bg-card/40 mb-6">
                 <Truck className="w-5 h-5 text-secondary shrink-0" />
                 <div className="text-sm">
                   <p className="font-semibold">{t("product.shippingTitle")}</p>
