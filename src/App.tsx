@@ -36,6 +36,7 @@ const App = () => (
           <Toaster />
           <Sonner position="top-center" />
         <BrowserRouter>
+          <ScrollToTop />
           <CartSyncMount />
           <WhatsAppButton />
           <Routes>
