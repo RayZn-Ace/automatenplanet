@@ -135,7 +135,7 @@ const BoxautomatLanding = () => {
       {/* PRODUCT / DIRECT BUY */}
       <section id="bestellen" className="py-20 bg-card/30">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-6xl mx-auto rounded-3xl border border-border bg-card p-8 md:p-12">
+          <div className="max-w-6xl mx-auto rounded-3xl border border-border bg-card p-5 sm:p-8 md:p-12 overflow-hidden">
             <div className="grid md:grid-cols-2 gap-10 items-center">
               {/* Product image gallery */}
               <ProductImageGallery
