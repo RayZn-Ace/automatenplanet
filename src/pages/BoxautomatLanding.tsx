@@ -222,7 +222,7 @@ const BoxautomatLanding = () => {
                   )}
                 </Button>
 
-                <WhatsAppConsultButton productName={`${product.name} – ${selectedVariant.label}`} className="w-full h-14 text-base mt-3" />
+                <WhatsAppConsultButton productName={`${product.name} – ${selectedVariant.label}`} className="w-full text-base mt-3" />
 
 
                 <PaymentMethods className="mt-6" />
