@@ -18,9 +18,9 @@ const WhatsAppConsultButton = ({ productName, className, label }: Props) => {
     <Button
       asChild
       size="lg"
-      className={`bg-[hsl(142_70%_38%)] hover:bg-[hsl(142_70%_32%)] text-white border-0 w-full sm:w-auto max-w-full h-auto min-h-11 py-2.5 px-4 sm:px-6 text-sm sm:text-base leading-tight ${className ?? ""}`}
+      className={`bg-[hsl(142_70%_38%)] hover:bg-[hsl(142_70%_32%)] text-white border-0 w-full sm:w-auto max-w-full h-auto min-h-14 py-4 px-5 sm:px-7 text-base sm:text-base leading-snug rounded-xl ${className ?? ""}`}
     >
-      <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 text-center break-words">
+      <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-3 text-center break-words w-full">
         <MessageCircle className="w-5 h-5 shrink-0" />
         <span className="break-words">{label ?? "Jetzt auf WhatsApp beraten lassen"}</span>
       </a>
