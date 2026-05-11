@@ -161,9 +161,9 @@ const ProductPage = () => {
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">{product.description}</p>
 
               {/* Price Card */}
-              <div className="rounded-2xl border-2 border-primary/40 bg-gradient-to-br from-primary/10 to-primary/5 p-6 mb-6">
-                <div className="flex items-baseline gap-3 mb-2">
-                  <span className="text-5xl font-black text-primary text-glow tracking-tight">
+              <div className="rounded-2xl border-2 border-primary/40 bg-gradient-to-br from-primary/10 to-primary/5 p-5 sm:p-6 mb-6">
+                <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-2">
+                  <span className="text-4xl sm:text-5xl font-black text-primary text-glow tracking-tight break-all">
                     {product.price.toLocaleString("de-DE")} €
                   </span>
                   <span className="text-muted-foreground text-sm font-medium">{t("product.net")}</span>
