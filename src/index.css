@@ -17,8 +17,8 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 240 25% 12%;
 
-    /* Darker pink for AA contrast on white */
-    --primary: 330 85% 42%;
+    /* Logo red */
+    --primary: 358 78% 48%;
     --primary-foreground: 0 0% 100%;
 
     /* Darker teal for contrast */
@@ -36,18 +36,18 @@ All colors MUST be HSL.
 
     --border: 240 15% 88%;
     --input: 240 15% 88%;
-    --ring: 330 85% 42%;
+    --ring: 358 78% 48%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 25% 12%;
-    --sidebar-primary: 330 85% 42%;
+    --sidebar-primary: 358 78% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 20% 96%;
     --sidebar-accent-foreground: 240 25% 12%;
     --sidebar-border: 240 15% 88%;
-    --sidebar-ring: 330 85% 42%;
+    --sidebar-ring: 358 78% 48%;
   }
 
   .dark {
@@ -57,7 +57,7 @@ All colors MUST be HSL.
     --card-foreground: 240 25% 12%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 25% 12%;
-    --primary: 330 85% 42%;
+    --primary: 358 78% 48%;
     --primary-foreground: 0 0% 100%;
     --secondary: 183 90% 26%;
     --secondary-foreground: 0 0% 100%;
@@ -69,15 +69,15 @@ All colors MUST be HSL.
     --destructive-foreground: 0 0% 100%;
     --border: 240 15% 88%;
     --input: 240 15% 88%;
-    --ring: 330 85% 42%;
+    --ring: 358 78% 48%;
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 25% 12%;
-    --sidebar-primary: 330 85% 42%;
+    --sidebar-primary: 358 78% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 20% 96%;
     --sidebar-accent-foreground: 240 25% 12%;
     --sidebar-border: 240 15% 88%;
-    --sidebar-ring: 330 85% 42%;
+    --sidebar-ring: 358 78% 48%;
   }
 }
 
