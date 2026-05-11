@@ -39,7 +39,7 @@ const Contact = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-bold mb-6">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-6 break-words">
               Jetzt <span className="text-primary text-glow">anfragen</span>
             </h2>
             <p className="text-muted-foreground mb-8">
@@ -115,9 +115,9 @@ const Contact = () => {
             <div className="rounded-2xl border border-accent/30 bg-accent/5 p-6">
               <h3 className="text-xl font-bold mb-2">Newsletter</h3>
               <p className="text-sm text-muted-foreground mb-4">Neue Automaten, Angebote & Business-Tipps direkt in Ihr Postfach.</p>
-              <form onSubmit={handleNewsletter} className="flex gap-2">
+              <form onSubmit={handleNewsletter} className="flex flex-col sm:flex-row gap-2">
                 <Input type="email" placeholder="E-Mail Adresse" value={newsletter} onChange={(e) => setNewsletter(e.target.value)} className="bg-muted/50 border-border flex-1" required />
-                <Button type="submit" className="bg-accent hover:bg-accent/80 text-accent-foreground">
+                <Button type="submit" className="w-full sm:w-auto bg-accent hover:bg-accent/80 text-accent-foreground">
                   Anmelden
                 </Button>
               </form>
