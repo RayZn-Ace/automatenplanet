@@ -224,7 +224,7 @@ const ProductPage = () => {
                     : <><ShoppingCart className="mr-2 w-5 h-5" /> In den Warenkorb</>
                   }
                 </Button>
-                <WhatsAppConsultButton productName={product.name} className="w-full h-14 text-base" />
+                <WhatsAppConsultButton productName={product.name} className="w-full text-base" />
                 <Button size="lg" variant="outline" className="w-full border-border h-14 text-base">
                   <Download className="mr-2 w-5 h-5" /> {t("product.datasheet")}
                 </Button>
