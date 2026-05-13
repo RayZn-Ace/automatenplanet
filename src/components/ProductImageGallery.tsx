@@ -59,7 +59,7 @@ const ProductImageGallery = ({ handle, fallbackImage, alt, badge, imageClassName
           key={current.url}
           src={current.url}
           alt={current.altText || alt}
-          className="w-full h-full object-contain p-6 animate-fade-in"
+          className={`w-full h-full object-contain animate-fade-in ${imageClassName ?? "p-6"}`}
           loading="eager"
         />
 
