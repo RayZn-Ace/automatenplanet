@@ -10,6 +10,7 @@ import {
   shopifyFetchCart,
 } from "@/lib/shopify";
 import { products as ALL_PRODUCTS, type ProductData } from "@/data/products";
+import { trackMetaEvent } from "@/lib/metaPixel";
 
 export interface CartItem {
   lineId: string | null;
@@ -138,6 +139,15 @@ export const useCartStore = create<CartStore>()(
               label: "Anzeigen",
               onClick: () => set({ isOpen: true }),
             },
+          });
+          trackMetaEvent("AddToCart", {
+            value: itemPrice * quantity,
+            currency: "EUR",
+            content_ids: [slug],
+            content_name: itemName,
+            content_type: "product",
+            contents: [{ id: slug, quantity, item_price: itemPrice }],
+            num_items: quantity,
           });
         } catch (err) {
           console.error(err);

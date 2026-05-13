@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
+import { trackMetaEvent } from "@/lib/metaPixel";
 
 const CartDrawer = () => {
   const items = useCartStore((s) => s.items);
@@ -33,6 +34,14 @@ const CartDrawer = () => {
 
   const handleCheckout = () => {
     if (checkoutUrl) {
+      trackMetaEvent("InitiateCheckout", {
+        value: totalPrice,
+        currency: "EUR",
+        num_items: totalItems,
+        content_ids: items.map((i) => i.slug),
+        contents: items.map((i) => ({ id: i.slug, quantity: i.quantity, item_price: i.price })),
+        content_type: "product",
+      });
       window.open(checkoutUrl, "_blank");
       closeCart();
     }
