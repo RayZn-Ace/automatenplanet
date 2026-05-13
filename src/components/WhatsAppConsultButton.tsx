@@ -7,13 +7,13 @@ interface Props {
   label?: string;
 }
 
-const WHATSAPP_PHONE = "4905111228957";
+const WHATSAPP_PHONE = "4915510706035";
 
 const WhatsAppConsultButton = ({ productName, className, label }: Props) => {
   const text = productName
     ? `Hallo, ich hätte gerne eine Beratung zu: ${productName}`
-    : "Hallo, ich hätte gerne eine Beratung.";
-  const href = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`;
+    : "Ich komme von der Automatplanet Website";
+  const href = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(text)}`;
   return (
     <Button
       asChild
