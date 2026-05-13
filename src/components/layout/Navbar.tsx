@@ -113,7 +113,7 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex flex-col gap-3 mt-4">
-            <WhatsAppConsultButton />
+            <WhatsAppConsultButton label="WhatsApp Beratung" />
           </div>
         </div>
       )}
