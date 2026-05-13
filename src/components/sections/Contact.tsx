@@ -14,7 +14,7 @@ const Contact = () => {
 
   const [newsletter, setNewsletter] = useState("");
 
-  const whatsappUrl = `https://wa.me/4915123456789?text=${encodeURIComponent("Hallo AutomatPlanet, ich möchte gerne eine Beratung.")}`;
+  const whatsappUrl = `https://api.whatsapp.com/send?phone=4915510706035&text=${encodeURIComponent("Hallo AutomatPlanet, ich möchte gerne eine Beratung.")}`;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

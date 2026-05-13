@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { products } from "@/data/products";
 
 const Products = () => {
-  const whatsappUrl = `https://wa.me/4905111228957?text=${encodeURIComponent("Hallo, ich interessiere mich für Arcade-Automaten.")}`;
+  const whatsappUrl = `https://api.whatsapp.com/send?phone=4915510706035&text=${encodeURIComponent("Hallo, ich interessiere mich für Arcade-Automaten.")}`;
 
   return (
     <section id="produkte" className="py-24">

@@ -24,7 +24,7 @@ const CityLanding = () => {
   const { slug } = useParams<{ slug: string }>();
   const city = getCityBySlug(slug || "");
 
-  const whatsappUrl = `https://wa.me/4915123456789?text=${encodeURIComponent(`Hallo, ich interessiere mich für Arcade-Automaten in ${city?.name || "meiner Stadt"}.`)}`;
+  const whatsappUrl = `https://api.whatsapp.com/send?phone=4915510706035&text=${encodeURIComponent(`Hallo, ich interessiere mich für Arcade-Automaten in ${city?.name || "meiner Stadt"}.`)}`;
 
   if (!city) {
     return (

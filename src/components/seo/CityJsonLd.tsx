@@ -32,7 +32,7 @@ const CityJsonLd = ({ city }: CityJsonLdProps) => {
       closes: "18:00",
     },
     sameAs: [
-      "https://wa.me/4915123456789",
+      "https://api.whatsapp.com/send?phone=4915510706035",
     ],
     serviceArea: city.topLocations.map((loc) => ({
       "@type": "Place",
