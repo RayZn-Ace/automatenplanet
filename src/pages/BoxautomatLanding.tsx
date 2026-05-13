@@ -36,7 +36,7 @@ const VARIANTS = SHOPIFY_VARIANTS_BY_SLUG[PRODUCT_SLUG];
 const benefits = [
   { icon: TrendingUp, title: "Bis zu 1.500€/Monat", desc: "Hohe Einnahmen pro Aufstellort durch Highscore-Effekt." },
   { icon: Zap, title: "Sofort einsatzbereit", desc: "Plug & Play – einstecken, einschalten, verdienen." },
-  { icon: Shield, title: "2 Jahre Garantie", desc: "Robuste Industriequalität für jahrelangen Dauerbetrieb." },
+  { icon: Shield, title: "Robuste Industriequalität", desc: "Hochwertige Verarbeitung für jahrelangen Dauerbetrieb." },
   { icon: Truck, title: "Versand in 24h", desc: "Europaweite Lieferung direkt zu deinem Standort." },
   { icon: Award, title: "Bewährte Technik", desc: "Über 500 verkaufte Boxautomaten in DACH." },
   { icon: CheckCircle, title: "Geldscheinakzeptor", desc: "5€, 10€, 20€ Scheine – mehr Umsatz pro Spiel." },
@@ -49,7 +49,7 @@ const faqs = [
   { q: "Wie hoch ist der durchschnittliche Verdienst?", a: "Je nach Standort zwischen 400€ und 1.500€ pro Monat. Bars, Clubs und Einkaufszentren erzielen die höchsten Umsätze." },
   { q: "Wie lange dauert die Lieferung?", a: "Wir versenden innerhalb von 24h ab Bestellung. Lieferzeit DACH-Region: 2–4 Werktage." },
   { q: "Brauche ich eine spezielle Genehmigung?", a: "Nein. Boxautomaten sind reine Geschicklichkeitsspiele und benötigen keine Spielhallen-Erlaubnis." },
-  { q: "Welche Garantie gibt es?", a: "Du erhältst 2 Jahre Vollgarantie inkl. Ersatzteilversorgung und telefonischem Support." },
+  { q: "Welche Garantie gibt es?", a: "Du erhältst Gewährleistung gemäß gesetzlicher Vorgaben inkl. Ersatzteilversorgung und telefonischem Support." },
   { q: "Kann der Geldscheinakzeptor nachgerüstet werden?", a: "Ja, wir bieten den Akzeptor sowohl ab Werk als auch als Nachrüstkit an." },
 ];
 
@@ -90,7 +90,7 @@ const BoxautomatLanding = () => {
             </h1>
             <p className="max-w-3xl mx-auto text-base sm:text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
               Profi-Qualität – wahlweise mit oder ohne Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat – pro Standort.
-              Versand in 24 Stunden, 2 Jahre Garantie.
+              Versand in 24 Stunden.
             </p>
 
             <motion.div
@@ -125,7 +125,6 @@ const BoxautomatLanding = () => {
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Versand in 24h</div>
-              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> 2 Jahre Garantie</div>
               <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Rechnung möglich</div>
             </div>
           </motion.div>
