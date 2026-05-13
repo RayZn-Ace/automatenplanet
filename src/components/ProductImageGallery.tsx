@@ -7,9 +7,10 @@ interface Props {
   fallbackImage: string;
   alt: string;
   badge?: React.ReactNode;
+  imageClassName?: string;
 }
 
-const ProductImageGallery = ({ handle, fallbackImage, alt, badge }: Props) => {
+const ProductImageGallery = ({ handle, fallbackImage, alt, badge, imageClassName }: Props) => {
   const [images, setImages] = useState<ShopifyImage[]>([
     { url: fallbackImage, altText: alt },
   ]);
