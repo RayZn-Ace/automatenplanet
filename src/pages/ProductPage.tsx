@@ -12,6 +12,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useI18n } from "@/lib/i18n";
 import { useCartStore } from "@/stores/cartStore";
+import { trackMetaEvent } from "@/lib/metaPixel";
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
