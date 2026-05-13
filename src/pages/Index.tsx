@@ -46,7 +46,7 @@ const Index = () => {
           description="Der günstigste Boxautomat Deutschlands – wahlweise mit Münzfach oder Münz- & Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat und Standort."
           bullets={[
             "Bis zu 1.500€/Monat passive Einnahmen",
-            "Versand in 24h · 2 Jahre Garantie",
+            "Versand in 24h · Rechnung möglich",
             "Plug & Play – kein Internet, kein Personal nötig",
           ]}
           priceFrom={1799}
