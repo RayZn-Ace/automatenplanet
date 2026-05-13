@@ -69,7 +69,7 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex items-center gap-3">
-            <WhatsAppConsultButton className="!h-10 !w-auto !px-4 !text-sm" />
+            <WhatsAppConsultButton className="!h-10 !w-auto !px-4 !text-sm" label="WhatsApp Beratung" />
             <CartDrawer />
           </div>
         </div>
@@ -113,7 +113,7 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex flex-col gap-3 mt-4">
-            <WhatsAppConsultButton />
+            <WhatsAppConsultButton label="WhatsApp Beratung" />
           </div>
         </div>
       )}
