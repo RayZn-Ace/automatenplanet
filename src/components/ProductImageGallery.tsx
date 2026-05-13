@@ -7,9 +7,10 @@ interface Props {
   fallbackImage: string;
   alt: string;
   badge?: React.ReactNode;
+  imageClassName?: string;
 }
 
-const ProductImageGallery = ({ handle, fallbackImage, alt, badge }: Props) => {
+const ProductImageGallery = ({ handle, fallbackImage, alt, badge, imageClassName }: Props) => {
   const [images, setImages] = useState<ShopifyImage[]>([
     { url: fallbackImage, altText: alt },
   ]);
@@ -58,7 +59,7 @@ const ProductImageGallery = ({ handle, fallbackImage, alt, badge }: Props) => {
           key={current.url}
           src={current.url}
           alt={current.altText || alt}
-          className="w-full h-full object-contain p-6 animate-fade-in"
+          className={`w-full h-full object-contain animate-fade-in ${imageClassName ?? "p-6"}`}
           loading="eager"
         />
 
