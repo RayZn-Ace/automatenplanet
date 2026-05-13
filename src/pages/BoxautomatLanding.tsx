@@ -142,6 +142,7 @@ const BoxautomatLanding = () => {
                 handle={SHOPIFY_HANDLE}
                 fallbackImage={product.image}
                 alt={product.name}
+                imageClassName="p-0"
                 badge={
                   <div className="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1 text-xs font-semibold">
                     <Star className="w-3.5 h-3.5 fill-current" /> Bestseller
