@@ -90,7 +90,7 @@ const BoxautomatLanding = () => {
             </h1>
             <p className="max-w-3xl mx-auto text-base sm:text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
               Profi-Qualität – wahlweise mit oder ohne Geldscheinakzeptor. Bis zu 1.500€ Umsatz pro Monat – pro Standort.
-              Versand in 24 Stunden, 2 Jahre Garantie.
+              Versand in 24 Stunden.
             </p>
 
             <motion.div
