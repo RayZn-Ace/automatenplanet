@@ -112,20 +112,8 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
-          <button
-            onClick={() => setLang(lang === "de" ? "en" : "de")}
-            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground py-2"
-          >
-            <Globe className="w-4 h-4" />
-            {lang === "de" ? "English" : "Deutsch"}
-          </button>
           <div className="flex flex-col gap-3 mt-4">
-            <Button variant="outline" className="w-full border-primary text-primary border-2">
-              {t("nav.consultation")}
-            </Button>
-            <Button className="w-full bg-primary text-primary-foreground shadow-neon">
-              {t("nav.inquiry")}
-            </Button>
+            <WhatsAppConsultButton />
           </div>
         </div>
       )}
