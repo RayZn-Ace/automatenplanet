@@ -278,6 +278,54 @@ const BoxautomatLanding = () => {
       </section>
 
 
+      {/* LOCATIONS */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                Hier kannst du deinen Boxautomaten am besten aufstellen
+              </h2>
+            </div>
+
+            {/* Desktop: 4-col grid */}
+            <div className="hidden md:grid grid-cols-4 gap-4">
+              {[
+                { src: "/images/locations/kiosk.png", alt: "Boxautomat im Kiosk" },
+                { src: "/images/locations/clubs.png", alt: "Boxautomat in Clubs" },
+                { src: "/images/locations/gyms.png", alt: "Boxautomat im Gym" },
+                { src: "/images/locations/freizeiteinrichtungen.png", alt: "Boxautomat in Freizeiteinrichtungen" },
+              ].map((img) => (
+                <div key={img.src} className="rounded-2xl overflow-hidden border border-border bg-card/40">
+                  <img src={img.src} alt={img.alt} loading="lazy" className="w-full h-full object-cover aspect-[4/5]" />
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile: infinite auto-scroll slider */}
+            <div className="md:hidden relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+              <div className="flex gap-4 w-max animate-marquee-locations">
+                {[...Array(2)].flatMap((_, dup) =>
+                  [
+                    { src: "/images/locations/kiosk.png", alt: "Boxautomat im Kiosk" },
+                    { src: "/images/locations/clubs.png", alt: "Boxautomat in Clubs" },
+                    { src: "/images/locations/gyms.png", alt: "Boxautomat im Gym" },
+                    { src: "/images/locations/freizeiteinrichtungen.png", alt: "Boxautomat in Freizeiteinrichtungen" },
+                  ].map((img, i) => (
+                    <div
+                      key={`${dup}-${i}`}
+                      className="w-[70vw] max-w-[280px] shrink-0 rounded-2xl overflow-hidden border border-border bg-card/40"
+                    >
+                      <img src={img.src} alt={img.alt} loading="lazy" className="w-full h-full object-cover aspect-[4/5]" />
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* BENEFITS */}
       <section className="py-20">
         <div className="container mx-auto px-4 md:px-6">

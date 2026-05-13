@@ -89,11 +89,16 @@ export default {
           "0%": { transform: "translateX(-150%) skewX(-20deg)" },
           "20%, 100%": { transform: "translateX(450%) skewX(-20deg)" },
         },
+        "marquee-locations": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "button-shine": "button-shine 7s linear infinite",
+        "marquee-locations": "marquee-locations 25s linear infinite",
       },
     },
   },
