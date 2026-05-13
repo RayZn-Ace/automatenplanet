@@ -125,7 +125,6 @@ const BoxautomatLanding = () => {
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Versand in 24h</div>
-              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> 2 Jahre Garantie</div>
               <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Rechnung möglich</div>
             </div>
           </motion.div>
