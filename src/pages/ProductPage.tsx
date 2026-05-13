@@ -12,6 +12,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useI18n } from "@/lib/i18n";
 import { useCartStore } from "@/stores/cartStore";
+import { trackMetaEvent } from "@/lib/metaPixel";
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
@@ -32,6 +33,16 @@ const ProductPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (product) {
+      trackMetaEvent("ViewContent", {
+        value: product.price,
+        currency: "EUR",
+        content_ids: [product.slug],
+        content_name: product.name,
+        content_type: "product",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   const whatsappUrl = `https://api.whatsapp.com/send?phone=4915510706035&text=${encodeURIComponent(`Hallo, ich interessiere mich für: ${product?.name || "ein Produkt"}`)}`;

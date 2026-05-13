@@ -20,6 +20,7 @@ import HandbuchBoxautomat from "./pages/HandbuchBoxautomat";
 import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
 import BoxautomatLanding from "./pages/BoxautomatLanding";
 import WhatsAppButton from "./components/WhatsAppButton";
+import MetaPixelPageViews from "./components/MetaPixelPageViews";
 import { useCartSync } from "@/hooks/useCartSync";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
           <Sonner position="top-center" />
         <BrowserRouter>
           <ScrollToTop />
+          <MetaPixelPageViews />
           <CartSyncMount />
           <WhatsAppButton />
           <Routes>
