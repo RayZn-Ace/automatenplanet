@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 const whyAutomatplanet = [
-  { icon: Euro, title: "Günstigster Anbieter", desc: "Mit den Rollen einfach bewegt. Passt in jeden Kastenwagen. Gewicht: 125 kg." },
+  { icon: Euro, title: "Günstigster Anbieter", desc: "Günstigster Anbieter in Deutschland - garantiert." },
   { icon: Shield, title: "Langlebig & wartungsarm", desc: "Unsere Automaten halten lange und brauchen kaum Service." },
   { icon: Wrench, title: "Alles reparierbar", desc: "Sollte mal etwas sein, haben wir alle Ersatzteile da, geben Support oder schicken einen Techniker vorbei." },
   { icon: Move, title: "Einfacher Transport", desc: "Mit den Rollen einfach bewegt – passt in jeden Kastenwagen. Gewicht: 125 kg." },
