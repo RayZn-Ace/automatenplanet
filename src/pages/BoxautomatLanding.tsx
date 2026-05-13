@@ -497,15 +497,15 @@ const BoxautomatLanding = () => {
             </div>
 
             {/* Mobile: simple polaroid gallery */}
-            <div className="grid grid-cols-2 gap-4 lg:hidden">
+            <div className="grid grid-cols-2 gap-5 px-2 py-4 lg:hidden">
               {[
-                { src: "/why-slide-2.jpg", aspect: "aspect-[3/4]", span: "col-span-1 row-span-2", rot: "-rotate-2" },
-                { src: "/why-slide-1.jpg", aspect: "aspect-square", span: "", rot: "rotate-2" },
-                { src: "/why-slide-3.jpg", aspect: "aspect-square", span: "", rot: "-rotate-1" },
-                { src: "/why-slide-4.jpg", aspect: "aspect-[16/9]", span: "col-span-2", rot: "rotate-1" },
+                { src: "/why-slide-2.jpg", rot: "-rotate-2" },
+                { src: "/why-slide-1.jpg", rot: "rotate-2" },
+                { src: "/why-slide-3.jpg", rot: "rotate-1" },
+                { src: "/why-slide-4.jpg", rot: "-rotate-1" },
               ].map((p, i) => (
-                <div key={i} className={`bg-white p-2 pb-6 rounded-sm shadow-xl ring-1 ring-black/5 ${p.span} ${p.rot}`}>
-                  <div className={`${p.aspect} overflow-hidden bg-neutral-100`}>
+                <div key={i} className={`bg-white p-2 pb-6 rounded-sm shadow-xl ring-1 ring-black/5 ${p.rot}`}>
+                  <div className="aspect-square overflow-hidden bg-neutral-100">
                     <img src={p.src} alt="" loading="lazy" className="w-full h-full object-cover" />
                   </div>
                 </div>
