@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import {
@@ -26,6 +26,7 @@ import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
 import ProductImageGallery from "@/components/ProductImageGallery";
+import { trackMetaEvent } from "@/lib/metaPixel";
 
 import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
 
@@ -66,6 +67,17 @@ const BoxautomatLanding = () => {
     const months = Math.max(1, Math.ceil(selectedVariant.price / monthly));
     return { monthly, months };
   }, [coinPrice, playsPerDay, selectedVariant.price]);
+
+  useEffect(() => {
+    trackMetaEvent("ViewContent", {
+      value: selectedVariant.price,
+      currency: "EUR",
+      content_ids: [PRODUCT_SLUG],
+      content_name: product.name,
+      content_type: "product",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">

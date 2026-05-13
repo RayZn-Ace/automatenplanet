@@ -32,6 +32,16 @@ const ProductPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (product) {
+      trackMetaEvent("ViewContent", {
+        value: product.price,
+        currency: "EUR",
+        content_ids: [product.slug],
+        content_name: product.name,
+        content_type: "product",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   const whatsappUrl = `https://api.whatsapp.com/send?phone=4915510706035&text=${encodeURIComponent(`Hallo, ich interessiere mich für: ${product?.name || "ein Produkt"}`)}`;
