@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Globe } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import logo from "@/assets/logo-automatplanet.png";
 import CartDrawer from "@/components/CartDrawer";
+import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -69,20 +69,7 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setLang(lang === "de" ? "en" : "de")}
-              className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded border border-border"
-              aria-label="Switch language"
-            >
-              <Globe className="w-3.5 h-3.5" />
-              {lang.toUpperCase()}
-            </button>
-            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground border-2">
-              {t("nav.consultation")}
-            </Button>
-            <Button className="bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon">
-              {t("nav.inquiry")}
-            </Button>
+            <WhatsAppConsultButton className="!h-10 !w-auto !px-4 !text-sm" />
             <CartDrawer />
           </div>
         </div>
@@ -125,20 +112,8 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
-          <button
-            onClick={() => setLang(lang === "de" ? "en" : "de")}
-            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground py-2"
-          >
-            <Globe className="w-4 h-4" />
-            {lang === "de" ? "English" : "Deutsch"}
-          </button>
           <div className="flex flex-col gap-3 mt-4">
-            <Button variant="outline" className="w-full border-primary text-primary border-2">
-              {t("nav.consultation")}
-            </Button>
-            <Button className="w-full bg-primary text-primary-foreground shadow-neon">
-              {t("nav.inquiry")}
-            </Button>
+            <WhatsAppConsultButton />
           </div>
         </div>
       )}
