@@ -42,6 +42,11 @@ const CartDrawer = () => {
         contents: items.map((i) => ({ id: i.slug, quantity: i.quantity, item_price: i.price })),
         content_type: "product",
       });
+      track("checkout_started", {
+        answer_option: String(Math.round(totalPrice * 100)),
+        value_cents: Math.round(totalPrice * 100),
+        currency: "EUR",
+      });
       window.open(checkoutUrl, "_blank");
       closeCart();
     }
