@@ -135,9 +135,16 @@ const BoxautomatLanding = () => {
                 </a>
               </Button>
             </div>
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Versand in 24h</div>
-              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Rechnung möglich</div>
+              <div className="flex items-center gap-2">
+                <img
+                  src="https://cdn.klarna.com/1.0/shared/image/generic/badge/de_de/checkout/long-blue.svg"
+                  alt="Klarna Ratenzahlung"
+                  className="h-6 w-auto"
+                  loading="lazy"
+                />
+              </div>
             </div>
           </motion.div>
         </div>
