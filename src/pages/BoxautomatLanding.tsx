@@ -139,11 +139,12 @@ const BoxautomatLanding = () => {
               <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Versand in 24h</div>
               <div className="flex items-center gap-2">
                 <img
-                  src="https://cdn.klarna.com/1.0/shared/image/generic/badge/de_de/checkout/long-blue.svg"
+                  src="/klarna-badge.svg"
                   alt="Klarna Ratenzahlung"
-                  className="h-6 w-auto"
+                  className="h-8 w-auto bg-white rounded px-2 py-1"
                   loading="lazy"
                 />
+                <span>Ratenzahlung</span>
               </div>
             </div>
           </motion.div>
