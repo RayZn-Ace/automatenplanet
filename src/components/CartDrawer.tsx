@@ -12,6 +12,7 @@ import {
 import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { trackMetaEvent } from "@/lib/metaPixel";
+import { track } from "@/lib/analytics";
 
 const CartDrawer = () => {
   const items = useCartStore((s) => s.items);
