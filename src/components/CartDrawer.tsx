@@ -12,6 +12,7 @@ import {
 import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { trackMetaEvent } from "@/lib/metaPixel";
+import { track } from "@/lib/analytics";
 
 const CartDrawer = () => {
   const items = useCartStore((s) => s.items);
@@ -41,6 +42,11 @@ const CartDrawer = () => {
         content_ids: items.map((i) => i.slug),
         contents: items.map((i) => ({ id: i.slug, quantity: i.quantity, item_price: i.price })),
         content_type: "product",
+      });
+      track("checkout_started", {
+        answer_option: String(Math.round(totalPrice * 100)),
+        value_cents: Math.round(totalPrice * 100),
+        currency: "EUR",
       });
       window.open(checkoutUrl, "_blank");
       closeCart();
