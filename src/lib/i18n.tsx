@@ -72,7 +72,7 @@ const translations = {
     "product.dimensions": "Dimensions",
     "product.power": "Power",
     "product.shippingTitle": "Europe-wide shipping within 24h",
-    "product.shippingCost": "Germany: €150 net",
+    "product.shippingCost": "Germany: €150 net (plus, on top of product price)",
     "product.buyNow": "Buy Now",
     "product.datasheet": "Product Datasheet",
     "product.callUs": "Questions? Call us:",
