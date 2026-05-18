@@ -207,7 +207,7 @@ const BoxautomatLanding = () => {
                   <span className="text-muted-foreground">netto</span>
                 </div>
                 <p className="text-sm text-muted-foreground mb-6 break-words leading-relaxed">
-                  {selectedVariant.label} · zzgl. MwSt. · inkl. Versand DACH
+                  {selectedVariant.label} · zzgl. MwSt. · zzgl. Versand (DE 150€)
                 </p>
 
                 <Button
