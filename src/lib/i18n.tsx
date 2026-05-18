@@ -26,7 +26,7 @@ const translations = {
     "product.dimensions": "Maße",
     "product.power": "Leistung",
     "product.shippingTitle": "Europaweiter Versand in 24h",
-    "product.shippingCost": "Deutschland: 150€ netto",
+    "product.shippingCost": "Deutschland: 150€ netto (zzgl. zum Produktpreis)",
     "product.buyNow": "Jetzt kaufen",
     "product.datasheet": "Produktdatenblatt",
     "product.callUs": "Fragen? Rufen Sie uns an:",
