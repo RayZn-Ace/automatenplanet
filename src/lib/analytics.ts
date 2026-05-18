@@ -1,4 +1,5 @@
 const TRACK_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/track-event`;
+const ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 
 function getSessionId(): string {
   try {
@@ -37,17 +38,20 @@ export function track(eventType: string, payload: Record<string, unknown> = {}) 
       ...payload,
     });
 
-    if (navigator.sendBeacon) {
-      const blob = new Blob([body], { type: "application/json" });
-      navigator.sendBeacon(TRACK_URL, blob);
-    } else {
-      fetch(TRACK_URL, {
-        method: "POST",
-        body,
-        headers: { "Content-Type": "application/json" },
-        keepalive: true,
-      }).catch(() => {});
-    }
+    // sendBeacon can't set the apikey header that the Supabase gateway requires,
+    // so always use fetch with keepalive (survives page unload in modern browsers).
+    fetch(TRACK_URL, {
+      method: "POST",
+      body,
+      headers: {
+        "Content-Type": "application/json",
+        apikey: ANON_KEY,
+        Authorization: `Bearer ${ANON_KEY}`,
+      },
+      keepalive: true,
+      mode: "cors",
+      credentials: "omit",
+    }).catch(() => {});
   } catch {
     /* ignore */
   }
