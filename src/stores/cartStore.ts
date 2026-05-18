@@ -11,6 +11,7 @@ import {
 } from "@/lib/shopify";
 import { products as ALL_PRODUCTS, type ProductData } from "@/data/products";
 import { trackMetaEvent } from "@/lib/metaPixel";
+import { track } from "@/lib/analytics";
 
 export interface CartItem {
   lineId: string | null;
@@ -148,6 +149,13 @@ export const useCartStore = create<CartStore>()(
             content_type: "product",
             contents: [{ id: slug, quantity, item_price: itemPrice }],
             num_items: quantity,
+          });
+          track("add_to_cart", {
+            question_id: slug,
+            question_title: itemName,
+            answer_option: String(quantity),
+            value_cents: Math.round(itemPrice * quantity * 100),
+            currency: "EUR",
           });
         } catch (err) {
           console.error(err);

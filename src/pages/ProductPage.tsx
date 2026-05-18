@@ -13,6 +13,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useI18n } from "@/lib/i18n";
 import { useCartStore } from "@/stores/cartStore";
 import { trackMetaEvent } from "@/lib/metaPixel";
+import { track } from "@/lib/analytics";
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
@@ -40,6 +41,12 @@ const ProductPage = () => {
         content_ids: [product.slug],
         content_name: product.name,
         content_type: "product",
+      });
+      track("product_viewed", {
+        question_id: product.slug,
+        question_title: product.name,
+        value_cents: Math.round(product.price * 100),
+        currency: "EUR",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

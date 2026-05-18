@@ -19,8 +19,10 @@ import Handbuch from "./pages/Handbuch";
 import HandbuchBoxautomat from "./pages/HandbuchBoxautomat";
 import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
 import BoxautomatLanding from "./pages/BoxautomatLanding";
+import Metriken from "./pages/Metriken";
 import WhatsAppButton from "./components/WhatsAppButton";
 import MetaPixelPageViews from "./components/MetaPixelPageViews";
+import AnalyticsTracker from "./components/AnalyticsTracker";
 import { useCartSync } from "@/hooks/useCartSync";
 
 const queryClient = new QueryClient();
@@ -40,10 +42,12 @@ const App = () => (
         <BrowserRouter>
           <ScrollToTop />
           <MetaPixelPageViews />
+          <AnalyticsTracker />
           <CartSyncMount />
           <WhatsAppButton />
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/metriken" element={<Metriken />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/standorte" element={<Standorte />} />
