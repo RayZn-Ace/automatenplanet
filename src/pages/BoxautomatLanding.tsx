@@ -677,6 +677,17 @@ const BoxautomatLanding = () => {
         </div>
       </section>
 
+      <div className="container mx-auto px-4 md:px-6 py-6 text-center text-xs text-muted-foreground">
+        <a
+          href="/downloads/agb-boxautomaten.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-foreground"
+        >
+          AGB für Boxautomaten (PDF)
+        </a>
+      </div>
+
       <Footer />
     </div>
   );
