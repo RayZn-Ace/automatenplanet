@@ -8,7 +8,6 @@ import MoreProductsSlider from "@/components/sections/MoreProductsSlider";
 import HomeTestimonials from "@/components/sections/HomeTestimonials";
 import Team from "@/components/sections/Team";
 import BlogPreview from "@/components/sections/BlogPreview";
-import Contact from "@/components/sections/Contact";
 import SEOInfo from "@/components/sections/SEOInfo";
 import Footer from "@/components/layout/Footer";
 
@@ -79,7 +78,6 @@ const Index = () => {
         <HomeTestimonials />
         <Team />
         <BlogPreview limit={3} />
-        <Contact />
         <SEOInfo />
       </main>
       <Footer />
