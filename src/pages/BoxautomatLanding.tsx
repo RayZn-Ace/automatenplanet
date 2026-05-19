@@ -244,6 +244,18 @@ const BoxautomatLanding = () => {
 
                 <WhatsAppConsultButton productName={`${product.name} – ${selectedVariant.label}`} className="w-full text-base mt-3" />
 
+                <p className="mt-3 text-xs text-muted-foreground text-center">
+                  Es gelten unsere{" "}
+                  <a
+                    href="/downloads/agb-boxautomaten.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-foreground"
+                  >
+                    AGB für Boxautomaten
+                  </a>
+                  .
+                </p>
 
                 <PaymentMethods className="mt-6" />
               </div>
@@ -664,6 +676,17 @@ const BoxautomatLanding = () => {
           </div>
         </div>
       </section>
+
+      <div className="container mx-auto px-4 md:px-6 py-6 text-center text-xs text-muted-foreground">
+        <a
+          href="/downloads/agb-boxautomaten.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-foreground"
+        >
+          AGB für Boxautomaten (PDF)
+        </a>
+      </div>
 
       <Footer />
     </div>
