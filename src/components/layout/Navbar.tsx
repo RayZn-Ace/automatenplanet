@@ -28,7 +28,6 @@ const Navbar = () => {
     { name: t("nav.allMachines"), href: hashHref("#produkte"), type: "hash" as const },
     { name: t("nav.locations"), href: "/standorte", type: "route" as const },
     { name: t("nav.blog"), href: "/blog", type: "route" as const },
-    { name: t("nav.contact"), href: hashHref("#kontakt"), type: "hash" as const },
   ];
 
   return (

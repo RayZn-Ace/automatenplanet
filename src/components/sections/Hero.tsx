@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, MessageCircle } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import arcadeHero from "@/assets/arcade-hero.jpg";
 
 const Hero = () => {
@@ -62,11 +62,6 @@ const Hero = () => {
                 Automaten entdecken
                 <ChevronRight className="ml-2 w-5 h-5" />
               </a>
-            </Button>
-            
-            <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground shadow-neon-blue h-14 px-8 text-lg rounded-xl backdrop-blur-sm">
-              <MessageCircle className="mr-2 w-5 h-5" />
-              Beratung anfragen
             </Button>
           </motion.div>
         </div>

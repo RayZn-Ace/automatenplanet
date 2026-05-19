@@ -9,8 +9,14 @@ const Footer = () => {
             <div className="flex items-center gap-2 mb-4">
               <img src={logo} alt="AutomatPlanet" className="h-10 w-auto" />
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground mb-3">
               Europas führender Anbieter für Arcade-Automaten und Entertainment-Maschinen.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Fragen? Rufen Sie uns an:{" "}
+              <a href="tel:+4905111228957" className="font-bold text-primary hover:underline">
+                0511 12282957
+              </a>
             </p>
           </div>
 
