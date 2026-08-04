@@ -180,12 +180,18 @@ const ProductPage = () => {
 
               {/* Price Card */}
               <div className="rounded-2xl border-2 border-primary/40 bg-gradient-to-br from-primary/10 to-primary/5 p-4 sm:p-6 mb-6 overflow-hidden">
-                <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-2">
+                <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1">
                   <span className="text-3xl sm:text-4xl md:text-5xl font-black text-primary text-glow break-words">
-                    {product.price.toLocaleString("de-DE")} €
+                    {formatGross(product.price)}
                   </span>
-                  <span className="text-muted-foreground text-sm font-medium">{t("product.net")}</span>
+                  <span className="text-muted-foreground text-sm font-medium">
+                    {lang === "de" ? "inkl. 19% MwSt." : "incl. 19% VAT"}
+                  </span>
                 </div>
+                <p className="mt-1 text-sm text-muted-foreground break-words">
+                  {formatNet(product.price)} {t("product.net")} · {lang === "de" ? "zzgl. Versand" : "plus shipping"}
+                </p>
+
                 {seoContent?.roiMonths && (
                   <div className="flex items-center gap-2 mt-3 text-sm">
                     <TrendingUp className="w-4 h-4 text-accent" />
