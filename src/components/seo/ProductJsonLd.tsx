@@ -88,7 +88,6 @@ const ProductJsonLd = ({ product }: ProductJsonLdProps) => {
     },
     offers: offers.length > 1 ? offers : offers[0],
 
-    },
     ...(product.dimensions && {
       additionalProperty: [
         {
