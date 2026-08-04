@@ -535,7 +535,9 @@ const ProductPage = () => {
                   </div>
                   <div className="p-5">
                     <h3 className="font-bold mb-1">{p.name}</h3>
-                    <p className="text-primary font-bold text-lg">{p.price.toLocaleString("de-DE")} € <span className="text-sm font-normal text-muted-foreground">{t("product.net")}</span></p>
+                    <p className="text-primary font-bold text-lg">{formatGross(p.price)} <span className="text-xs font-normal text-muted-foreground">{lang === "de" ? "inkl. MwSt." : "incl. VAT"}</span></p>
+                    <p className="text-xs text-muted-foreground">{formatNet(p.price)} {t("product.net")}</p>
+
                   </div>
                 </Link>
               ))}
