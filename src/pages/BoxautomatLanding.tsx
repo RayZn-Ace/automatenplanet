@@ -200,7 +200,7 @@ const BoxautomatLanding = () => {
                         >
                           <span className="min-w-0 font-semibold break-words">{v.label}</span>
                           <span className={`shrink-0 text-xs ${active ? "text-primary" : "text-muted-foreground"}`}>
-                            {v.price.toLocaleString("de-DE")}€
+                            {formatGross(v.price)}
                           </span>
                         </button>
                       );
@@ -210,13 +210,14 @@ const BoxautomatLanding = () => {
 
                 <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-1">
                   <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary break-words">
-                    {selectedVariant.price.toLocaleString("de-DE")}€
+                    {formatGross(selectedVariant.price)}
                   </span>
-                  <span className="text-muted-foreground">netto</span>
+                  <span className="text-muted-foreground">inkl. 19% MwSt.</span>
                 </div>
                 <p className="text-sm text-muted-foreground mb-6 break-words leading-relaxed">
-                  {selectedVariant.label} · zzgl. MwSt. · zzgl. Versand (DE 150€)
+                  {formatNet(selectedVariant.price)} netto · {selectedVariant.label} · zzgl. Versand (DE 150€)
                 </p>
+
 
                 <Button
                   size="lg"
