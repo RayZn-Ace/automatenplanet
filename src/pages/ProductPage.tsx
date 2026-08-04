@@ -97,7 +97,7 @@ const ProductPage = () => {
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="AutomatPlanet" />
         <meta property="og:locale" content={lang === "de" ? "de_DE" : "en_US"} />
-        <meta property="product:price:amount" content={product.price.toString()} />
+        <meta property="product:price:amount" content={grossPriceValue(product.price)} />
         <meta property="product:price:currency" content="EUR" />
         
         {/* Twitter Card */}
