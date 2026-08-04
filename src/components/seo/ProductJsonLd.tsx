@@ -99,6 +99,14 @@ const ProductJsonLd = ({ product }: ProductJsonLdProps) => {
     }),
   };
 
+  if (jsonLdOnly) {
+    return (
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
+    );
+  }
+
   return (
     <Helmet>
       <title>{product.metaTitle}</title>
@@ -108,6 +116,7 @@ const ProductJsonLd = ({ product }: ProductJsonLdProps) => {
       <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
     </Helmet>
   );
+
 };
 
 export default ProductJsonLd;
