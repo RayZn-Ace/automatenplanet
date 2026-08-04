@@ -14,6 +14,8 @@ import { useI18n } from "@/lib/i18n";
 import { useCartStore } from "@/stores/cartStore";
 import { trackMetaEvent } from "@/lib/metaPixel";
 import { track } from "@/lib/analytics";
+import { formatGross, formatNet, grossPriceValue } from "@/lib/pricing";
+
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
