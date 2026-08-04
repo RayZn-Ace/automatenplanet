@@ -30,7 +30,7 @@ import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
 import ProductImageGallery from "@/components/ProductImageGallery";
-import { trackMetaEvent } from "@/lib/metaPixel";
+import { trackEvent } from "@/lib/tracking";
 
 import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
 
@@ -93,12 +93,12 @@ const BoxautomatLanding = () => {
   }, [coinPrice, playsPerDay, selectedVariant.price]);
 
   useEffect(() => {
-    trackMetaEvent("ViewContent", {
+    trackEvent("view_content", {
       value: selectedVariant.price,
       currency: "EUR",
-      content_ids: [PRODUCT_SLUG],
-      content_name: product.name,
-      content_type: "product",
+      contentName: product.name,
+      contentType: "product",
+      items: [{ id: PRODUCT_SLUG, name: product.name, price: selectedVariant.price, quantity: 1 }],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
