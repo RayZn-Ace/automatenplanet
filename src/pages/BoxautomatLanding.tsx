@@ -54,12 +54,32 @@ const faqs = [
   { q: "Kann der Geldscheinakzeptor nachgerüstet werden?", a: "Ja, wir bieten den Akzeptor sowohl ab Werk als auch als Nachrüstkit an." },
 ];
 
+const variantSlug = (label: string) =>
+  label.toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
+
 const BoxautomatLanding = () => {
   const product = getProductBySlug(PRODUCT_SLUG)!;
   const addBySlug = useCartStore((s) => s.addBySlug);
   const cartLoading = useCartStore((s) => s.isLoading);
-  const [variantIdx, setVariantIdx] = useState(1); // default: Münz- & Geldschein
+  const [searchParams, setSearchParams] = useSearchParams();
+  const variantParam = searchParams.get("variante");
+  const paramIdx = VARIANTS.findIndex((v) => variantSlug(v.label) === variantParam);
+  const [variantIdx, setVariantIdx] = useState(paramIdx >= 0 ? paramIdx : 1); // default: Münz- & Geldschein
   const selectedVariant = VARIANTS[variantIdx];
+
+  // Variante <-> URL synchron halten (eigene, teilbare & indexierbare URL pro Variante)
+  const selectVariant = (idx: number) => {
+    setVariantIdx(idx);
+    const next = new URLSearchParams(searchParams);
+    next.set("variante", variantSlug(VARIANTS[idx].label));
+    setSearchParams(next, { replace: true });
+  };
+
+  useEffect(() => {
+    if (paramIdx >= 0 && paramIdx !== variantIdx) setVariantIdx(paramIdx);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramIdx]);
+
   const [coinPrice, setCoinPrice] = useState(2);
   const [playsPerDay, setPlaysPerDay] = useState(40);
   const roi = useMemo(() => {
@@ -79,13 +99,21 @@ const BoxautomatLanding = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const canonicalUrl = `https://automatplanet.de/produkte/${PRODUCT_SLUG}`;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Boxautomat Premium kaufen – ab 1.799€ netto | AutomatPlanet</title>
-        <meta name="description" content="Boxautomat Premium in 2 Varianten: Münzfach (1.799€) oder Münz- & Geldscheinfach (1.949€). Bis zu 1.500€/Monat. Versand in 24h." />
-        <link rel="canonical" href="https://automatplanet.de/produkte/boxautomat-premium" />
+        <title>Boxautomat Premium kaufen – ab {formatGross(VARIANTS[0].price)} inkl. MwSt. | AutomatPlanet</title>
+        <meta name="description" content={`Boxautomat Premium in 2 Varianten: Münzfach (${formatGross(VARIANTS[0].price)}) oder Münz- & Geldscheinfach (${formatGross(VARIANTS[1].price)}) inkl. MwSt. Bis zu 1.500€/Monat. Versand in 24h.`} />
+        <link rel="canonical" href={variantParam && paramIdx >= 0 ? `${canonicalUrl}?variante=${variantSlug(selectedVariant.label)}` : canonicalUrl} />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="product:price:amount" content={grossPriceValue(selectedVariant.price)} />
+        <meta property="product:price:currency" content="EUR" />
       </Helmet>
+      <ProductJsonLd product={product} />
+
 
       <Navbar />
 
