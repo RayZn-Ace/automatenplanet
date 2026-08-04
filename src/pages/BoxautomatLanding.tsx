@@ -116,7 +116,7 @@ const BoxautomatLanding = () => {
         <meta property="product:price:amount" content={grossPriceValue(selectedVariant.price)} />
         <meta property="product:price:currency" content="EUR" />
       </Helmet>
-      <ProductJsonLd product={product} />
+      <ProductJsonLd product={product} jsonLdOnly />
 
 
       <Navbar />
@@ -223,7 +223,7 @@ const BoxautomatLanding = () => {
                         <button
                           key={v.variantId}
                           type="button"
-                          onClick={() => setVariantIdx(idx)}
+                          onClick={() => selectVariant(idx)}
                           className={`group inline-flex w-full min-w-0 items-center justify-between gap-2 rounded-2xl border px-4 py-2 text-left text-sm font-medium transition-all sm:w-auto sm:rounded-full ${
                             active
                               ? "border-primary bg-primary/15 text-foreground shadow-neon"
