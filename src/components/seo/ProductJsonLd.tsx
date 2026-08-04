@@ -5,12 +5,15 @@ import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
 
 interface ProductJsonLdProps {
   product: ProductData;
+  /** Nur das JSON-LD ausgeben (wenn die Seite Title/Description/Canonical selbst setzt). */
+  jsonLdOnly?: boolean;
 }
 
 const variantSlug = (label: string) =>
   label.toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
 
-const ProductJsonLd = ({ product }: ProductJsonLdProps) => {
+const ProductJsonLd = ({ product, jsonLdOnly = false }: ProductJsonLdProps) => {
+
   const url = `https://automatplanet.de/produkte/${product.slug}`;
   const variants = SHOPIFY_VARIANTS_BY_SLUG[product.slug];
 
