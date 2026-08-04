@@ -1,59 +1,93 @@
 import { Helmet } from "react-helmet-async";
 import { ProductData } from "@/data/products";
+import { grossPriceValue } from "@/lib/pricing";
+import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
 
 interface ProductJsonLdProps {
   product: ProductData;
 }
 
+const variantSlug = (label: string) =>
+  label.toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
+
 const ProductJsonLd = ({ product }: ProductJsonLdProps) => {
+  const url = `https://automatplanet.de/produkte/${product.slug}`;
+  const variants = SHOPIFY_VARIANTS_BY_SLUG[product.slug];
+
+  const shippingDetails = {
+    "@type": "OfferShippingDetails",
+    shippingRate: {
+      "@type": "MonetaryAmount",
+      value: "150",
+      currency: "EUR",
+    },
+    shippingDestination: {
+      "@type": "DefinedRegion",
+      addressCountry: "DE",
+    },
+    deliveryTime: {
+      "@type": "ShippingDeliveryTime",
+      handlingTime: {
+        "@type": "QuantitativeValue",
+        minValue: 0,
+        maxValue: 1,
+        unitCode: "DAY",
+      },
+      transitTime: {
+        "@type": "QuantitativeValue",
+        minValue: 1,
+        maxValue: 3,
+        unitCode: "DAY",
+      },
+    },
+  };
+
+  const baseOffer = {
+    "@type": "Offer",
+    priceCurrency: "EUR",
+    priceValidUntil: "2027-12-31",
+    valueAddedTaxIncluded: true,
+    availability: "https://schema.org/InStock",
+    itemCondition: "https://schema.org/NewCondition",
+    seller: {
+      "@type": "Organization",
+      name: "AutomatPlanet",
+    },
+    shippingDetails,
+  };
+
+  const offers = variants
+    ? variants.map((v) => ({
+        ...baseOffer,
+        name: `${product.name} – ${v.label}`,
+        sku: `${product.slug}--${variantSlug(v.label)}`,
+        url: `${url}?variante=${variantSlug(v.label)}`,
+        price: grossPriceValue(v.price),
+      }))
+    : [
+        {
+          ...baseOffer,
+          sku: product.slug,
+          url,
+          price: grossPriceValue(product.price),
+        },
+      ];
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     description: product.description,
     image: `https://automatplanet.de${product.image}`,
-    url: `https://automatplanet.de/produkte/${product.slug}`,
+    url,
+    sku: product.slug,
+    category: product.category,
     brand: {
       "@type": "Brand",
       name: "AutomatPlanet",
     },
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "EUR",
-      price: product.price.toString(),
-      priceValidUntil: "2027-12-31",
-      availability: "https://schema.org/InStock",
-      seller: {
-        "@type": "Organization",
-        name: "AutomatPlanet",
-      },
-      shippingDetails: {
-        "@type": "OfferShippingDetails",
-        shippingRate: {
-          "@type": "MonetaryAmount",
-          value: "150",
-          currency: "EUR",
-        },
-        shippingDestination: {
-          "@type": "DefinedRegion",
-          addressCountry: "DE",
-        },
-        deliveryTime: {
-          "@type": "ShippingDeliveryTime",
-          handlingTime: {
-            "@type": "QuantitativeValue",
-            minValue: 0,
-            maxValue: 1,
-            unitCode: "DAY",
-          },
-          transitTime: {
-            "@type": "QuantitativeValue",
-            minValue: 1,
-            maxValue: 3,
-            unitCode: "DAY",
-          },
-        },
-      },
+    offers: offers.length > 1 ? offers : offers[0],
+
     },
     ...(product.dimensions && {
       additionalProperty: [
