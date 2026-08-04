@@ -12,7 +12,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useI18n } from "@/lib/i18n";
 import { useCartStore } from "@/stores/cartStore";
-import { trackMetaEvent } from "@/lib/metaPixel";
+import { trackEvent } from "@/lib/tracking";
 import { track } from "@/lib/analytics";
 import { formatGross, formatNet, grossPriceValue } from "@/lib/pricing";
 
@@ -37,12 +37,12 @@ const ProductPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (product) {
-      trackMetaEvent("ViewContent", {
+      trackEvent("view_content", {
         value: product.price,
         currency: "EUR",
-        content_ids: [product.slug],
-        content_name: product.name,
-        content_type: "product",
+        contentName: product.name,
+        contentType: "product",
+        items: [{ id: product.slug, name: product.name, price: product.price, quantity: 1 }],
       });
       track("product_viewed", {
         question_id: product.slug,

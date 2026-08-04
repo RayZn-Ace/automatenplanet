@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
-import { trackMetaEvent } from "@/lib/metaPixel";
+import { trackEvent } from "@/lib/tracking";
 import { track } from "@/lib/analytics";
 
 const CartDrawer = () => {
@@ -35,13 +35,11 @@ const CartDrawer = () => {
 
   const handleCheckout = () => {
     if (checkoutUrl) {
-      trackMetaEvent("InitiateCheckout", {
+      trackEvent("begin_checkout", {
         value: totalPrice,
         currency: "EUR",
-        num_items: totalItems,
-        content_ids: items.map((i) => i.slug),
-        contents: items.map((i) => ({ id: i.slug, quantity: i.quantity, item_price: i.price })),
-        content_type: "product",
+        contentType: "product",
+        items: items.map((i) => ({ id: i.slug, name: i.name, quantity: i.quantity, price: i.price })),
       });
       track("checkout_started", {
         answer_option: String(Math.round(totalPrice * 100)),

@@ -21,7 +21,7 @@ import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
 import BoxautomatLanding from "./pages/BoxautomatLanding";
 import Metriken from "./pages/Metriken";
 import WhatsAppButton from "./components/WhatsAppButton";
-import MetaPixelPageViews from "./components/MetaPixelPageViews";
+import TrackingScripts from "./components/TrackingScripts";
 import AnalyticsTracker from "./components/AnalyticsTracker";
 import { useCartSync } from "@/hooks/useCartSync";
 
@@ -41,7 +41,7 @@ const App = () => (
           <Sonner position="top-center" />
         <BrowserRouter>
           <ScrollToTop />
-          <MetaPixelPageViews />
+          <TrackingScripts />
           <AnalyticsTracker />
           <CartSyncMount />
           <WhatsAppButton />

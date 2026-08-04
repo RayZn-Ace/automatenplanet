@@ -10,7 +10,7 @@ import {
   shopifyFetchCart,
 } from "@/lib/shopify";
 import { products as ALL_PRODUCTS, type ProductData } from "@/data/products";
-import { trackMetaEvent } from "@/lib/metaPixel";
+import { trackEvent } from "@/lib/tracking";
 import { track } from "@/lib/analytics";
 
 export interface CartItem {
@@ -141,14 +141,12 @@ export const useCartStore = create<CartStore>()(
               onClick: () => set({ isOpen: true }),
             },
           });
-          trackMetaEvent("AddToCart", {
+          trackEvent("add_to_cart", {
             value: itemPrice * quantity,
             currency: "EUR",
-            content_ids: [slug],
-            content_name: itemName,
-            content_type: "product",
-            contents: [{ id: slug, quantity, item_price: itemPrice }],
-            num_items: quantity,
+            contentName: itemName,
+            contentType: "product",
+            items: [{ id: slug, name: itemName, quantity, price: itemPrice }],
           });
           track("add_to_cart", {
             question_id: slug,
