@@ -14,6 +14,8 @@ import { useI18n } from "@/lib/i18n";
 import { useCartStore } from "@/stores/cartStore";
 import { trackMetaEvent } from "@/lib/metaPixel";
 import { track } from "@/lib/analytics";
+import { formatGross, formatNet, grossPriceValue } from "@/lib/pricing";
+
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
@@ -95,7 +97,7 @@ const ProductPage = () => {
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="AutomatPlanet" />
         <meta property="og:locale" content={lang === "de" ? "de_DE" : "en_US"} />
-        <meta property="product:price:amount" content={product.price.toString()} />
+        <meta property="product:price:amount" content={grossPriceValue(product.price)} />
         <meta property="product:price:currency" content="EUR" />
         
         {/* Twitter Card */}
@@ -180,12 +182,18 @@ const ProductPage = () => {
 
               {/* Price Card */}
               <div className="rounded-2xl border-2 border-primary/40 bg-gradient-to-br from-primary/10 to-primary/5 p-4 sm:p-6 mb-6 overflow-hidden">
-                <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-2">
+                <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1">
                   <span className="text-3xl sm:text-4xl md:text-5xl font-black text-primary text-glow break-words">
-                    {product.price.toLocaleString("de-DE")} €
+                    {formatGross(product.price)}
                   </span>
-                  <span className="text-muted-foreground text-sm font-medium">{t("product.net")}</span>
+                  <span className="text-muted-foreground text-sm font-medium">
+                    {lang === "de" ? "inkl. 19% MwSt." : "incl. 19% VAT"}
+                  </span>
                 </div>
+                <p className="mt-1 text-sm text-muted-foreground break-words">
+                  {formatNet(product.price)} {t("product.net")} · {lang === "de" ? "zzgl. Versand" : "plus shipping"}
+                </p>
+
                 {seoContent?.roiMonths && (
                   <div className="flex items-center gap-2 mt-3 text-sm">
                     <TrendingUp className="w-4 h-4 text-accent" />
@@ -527,7 +535,9 @@ const ProductPage = () => {
                   </div>
                   <div className="p-5">
                     <h3 className="font-bold mb-1">{p.name}</h3>
-                    <p className="text-primary font-bold text-lg">{p.price.toLocaleString("de-DE")} € <span className="text-sm font-normal text-muted-foreground">{t("product.net")}</span></p>
+                    <p className="text-primary font-bold text-lg">{formatGross(p.price)} <span className="text-xs font-normal text-muted-foreground">{lang === "de" ? "inkl. MwSt." : "incl. VAT"}</span></p>
+                    <p className="text-xs text-muted-foreground">{formatNet(p.price)} {t("product.net")}</p>
+
                   </div>
                 </Link>
               ))}

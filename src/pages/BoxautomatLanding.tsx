@@ -1,5 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router-dom";
+import ProductJsonLd from "@/components/seo/ProductJsonLd";
+import { formatGross, formatNet, grossPriceValue } from "@/lib/pricing";
+
 import { motion } from "framer-motion";
 import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, Quote,
@@ -54,12 +58,32 @@ const faqs = [
   { q: "Kann der Geldscheinakzeptor nachgerüstet werden?", a: "Ja, wir bieten den Akzeptor sowohl ab Werk als auch als Nachrüstkit an." },
 ];
 
+const variantSlug = (label: string) =>
+  label.toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
+
 const BoxautomatLanding = () => {
   const product = getProductBySlug(PRODUCT_SLUG)!;
   const addBySlug = useCartStore((s) => s.addBySlug);
   const cartLoading = useCartStore((s) => s.isLoading);
-  const [variantIdx, setVariantIdx] = useState(1); // default: Münz- & Geldschein
+  const [searchParams, setSearchParams] = useSearchParams();
+  const variantParam = searchParams.get("variante");
+  const paramIdx = VARIANTS.findIndex((v) => variantSlug(v.label) === variantParam);
+  const [variantIdx, setVariantIdx] = useState(paramIdx >= 0 ? paramIdx : 1); // default: Münz- & Geldschein
   const selectedVariant = VARIANTS[variantIdx];
+
+  // Variante <-> URL synchron halten (eigene, teilbare & indexierbare URL pro Variante)
+  const selectVariant = (idx: number) => {
+    setVariantIdx(idx);
+    const next = new URLSearchParams(searchParams);
+    next.set("variante", variantSlug(VARIANTS[idx].label));
+    setSearchParams(next, { replace: true });
+  };
+
+  useEffect(() => {
+    if (paramIdx >= 0 && paramIdx !== variantIdx) setVariantIdx(paramIdx);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramIdx]);
+
   const [coinPrice, setCoinPrice] = useState(2);
   const [playsPerDay, setPlaysPerDay] = useState(40);
   const roi = useMemo(() => {
@@ -79,13 +103,21 @@ const BoxautomatLanding = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const canonicalUrl = `https://automatplanet.de/produkte/${PRODUCT_SLUG}`;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Boxautomat Premium kaufen – ab 1.799€ netto | AutomatPlanet</title>
-        <meta name="description" content="Boxautomat Premium in 2 Varianten: Münzfach (1.799€) oder Münz- & Geldscheinfach (1.949€). Bis zu 1.500€/Monat. Versand in 24h." />
-        <link rel="canonical" href="https://automatplanet.de/produkte/boxautomat-premium" />
+        <title>Boxautomat Premium kaufen – ab {formatGross(VARIANTS[0].price)} inkl. MwSt. | AutomatPlanet</title>
+        <meta name="description" content={`Boxautomat Premium in 2 Varianten: Münzfach (${formatGross(VARIANTS[0].price)}) oder Münz- & Geldscheinfach (${formatGross(VARIANTS[1].price)}) inkl. MwSt. Bis zu 1.500€/Monat. Versand in 24h.`} />
+        <link rel="canonical" href={variantParam && paramIdx >= 0 ? `${canonicalUrl}?variante=${variantSlug(selectedVariant.label)}` : canonicalUrl} />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="product:price:amount" content={grossPriceValue(selectedVariant.price)} />
+        <meta property="product:price:currency" content="EUR" />
       </Helmet>
+      <ProductJsonLd product={product} jsonLdOnly />
+
 
       <Navbar />
 
@@ -191,7 +223,7 @@ const BoxautomatLanding = () => {
                         <button
                           key={v.variantId}
                           type="button"
-                          onClick={() => setVariantIdx(idx)}
+                          onClick={() => selectVariant(idx)}
                           className={`group inline-flex w-full min-w-0 items-center justify-between gap-2 rounded-2xl border px-4 py-2 text-left text-sm font-medium transition-all sm:w-auto sm:rounded-full ${
                             active
                               ? "border-primary bg-primary/15 text-foreground shadow-neon"
@@ -200,7 +232,7 @@ const BoxautomatLanding = () => {
                         >
                           <span className="min-w-0 font-semibold break-words">{v.label}</span>
                           <span className={`shrink-0 text-xs ${active ? "text-primary" : "text-muted-foreground"}`}>
-                            {v.price.toLocaleString("de-DE")}€
+                            {formatGross(v.price)}
                           </span>
                         </button>
                       );
@@ -210,13 +242,14 @@ const BoxautomatLanding = () => {
 
                 <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-1">
                   <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary break-words">
-                    {selectedVariant.price.toLocaleString("de-DE")}€
+                    {formatGross(selectedVariant.price)}
                   </span>
-                  <span className="text-muted-foreground">netto</span>
+                  <span className="text-muted-foreground">inkl. 19% MwSt.</span>
                 </div>
                 <p className="text-sm text-muted-foreground mb-6 break-words leading-relaxed">
-                  {selectedVariant.label} · zzgl. MwSt. · zzgl. Versand (DE 150€)
+                  {formatNet(selectedVariant.price)} netto · {selectedVariant.label} · zzgl. Versand (DE 150€)
                 </p>
+
 
                 <Button
                   size="lg"

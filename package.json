@@ -9,7 +9,7 @@
     "normalize:quotes": "node scripts/normalize-smart-quotes.mjs",
     "check:quotes": "node scripts/normalize-smart-quotes.mjs --check",
     "prebuild": "node scripts/normalize-smart-quotes.mjs && node scripts/normalize-smart-quotes.mjs --check && bun run scripts/generate-handbuch-pdf.ts",
-    "build": "vite build",
+    "build": "vite build && bun run scripts/prerender-products.ts",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "lint:smart-quotes": "eslint . --rule \"{ 'project-rules/no-smart-quotes': 'error' }\" --no-inline-config",
