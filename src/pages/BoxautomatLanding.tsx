@@ -1,5 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router-dom";
+import ProductJsonLd from "@/components/seo/ProductJsonLd";
+import { formatGross, formatNet, grossPriceValue } from "@/lib/pricing";
+
 import { motion } from "framer-motion";
 import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, Quote,
