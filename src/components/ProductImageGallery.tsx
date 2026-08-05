@@ -1,45 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { shopifyFetchProductImages, type ShopifyImage } from "@/lib/shopify";
 
 interface Props {
-  handle: string;
-  fallbackImage: string;
+  images: string[];
   alt: string;
   badge?: React.ReactNode;
   imageClassName?: string;
 }
 
-const ProductImageGallery = ({ handle, fallbackImage, alt, badge, imageClassName }: Props) => {
-  const [images, setImages] = useState<ShopifyImage[]>([
-    { url: fallbackImage, altText: alt },
-  ]);
+const ProductImageGallery = ({ images, alt, badge, imageClassName }: Props) => {
   const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const imgs = await shopifyFetchProductImages(handle);
-      if (cancelled) return;
-      if (imgs.length > 0) {
-        setImages(imgs);
-        setActive(0);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [handle]);
 
   const total = images.length;
   const current = images[active] ?? images[0];
-  const go = (delta: number) =>
-    setActive((i) => (i + delta + total) % total);
+  const go = (delta: number) => setActive((i) => (i + delta + total) % total);
 
   // Touch swipe
   const [touchStart, setTouchStart] = useState<number | null>(null);
-  const onTouchStart = (e: React.TouchEvent) =>
-    setTouchStart(e.touches[0].clientX);
+  const onTouchStart = (e: React.TouchEvent) => setTouchStart(e.touches[0].clientX);
   const onTouchEnd = (e: React.TouchEvent) => {
     if (touchStart === null) return;
     const dx = e.changedTouches[0].clientX - touchStart;
@@ -56,9 +34,9 @@ const ProductImageGallery = ({ handle, fallbackImage, alt, badge, imageClassName
         onTouchEnd={onTouchEnd}
       >
         <img
-          key={current.url}
-          src={current.url}
-          alt={current.altText || alt}
+          key={current}
+          src={current}
+          alt={alt}
           className={`w-full h-full object-contain animate-fade-in ${imageClassName ?? "p-6"}`}
           loading="eager"
         />
@@ -99,19 +77,17 @@ const ProductImageGallery = ({ handle, fallbackImage, alt, badge, imageClassName
             const isActive = i === active;
             return (
               <button
-                key={img.url + i}
+                key={img + i}
                 type="button"
                 onClick={() => setActive(i)}
                 aria-label={`Bild ${i + 1} ansehen`}
                 className={`shrink-0 snap-start h-16 w-16 md:h-20 md:w-20 rounded-lg border-2 overflow-hidden bg-background/50 transition-all ${
-                  isActive
-                    ? "border-primary shadow-neon"
-                    : "border-border hover:border-primary/50"
+                  isActive ? "border-primary shadow-neon" : "border-border hover:border-primary/50"
                 }`}
               >
                 <img
-                  src={img.url}
-                  alt={img.altText || `${alt} – Bild ${i + 1}`}
+                  src={img}
+                  alt={`${alt} – Bild ${i + 1}`}
                   className="w-full h-full object-contain p-1"
                   loading="lazy"
                 />

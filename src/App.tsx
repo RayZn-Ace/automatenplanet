@@ -20,17 +20,14 @@ import HandbuchBoxautomat from "./pages/HandbuchBoxautomat";
 import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
 import BoxautomatLanding from "./pages/BoxautomatLanding";
 import Metriken from "./pages/Metriken";
+import Checkout from "./pages/Checkout";
+import OrderStatus from "./pages/OrderStatus";
+import Bestellungen from "./pages/Bestellungen";
 import WhatsAppButton from "./components/WhatsAppButton";
 import TrackingScripts from "./components/TrackingScripts";
 import AnalyticsTracker from "./components/AnalyticsTracker";
-import { useCartSync } from "@/hooks/useCartSync";
 
 const queryClient = new QueryClient();
-
-const CartSyncMount = () => {
-  useCartSync();
-  return null;
-};
 
 const App = () => (
   <HelmetProvider>
@@ -43,11 +40,13 @@ const App = () => (
           <ScrollToTop />
           <TrackingScripts />
           <AnalyticsTracker />
-          <CartSyncMount />
           <WhatsAppButton />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/metriken" element={<Metriken />} />
+            <Route path="/bestellungen" element={<Bestellungen />} />
+            <Route path="/kasse" element={<Checkout />} />
+            <Route path="/bestellung" element={<OrderStatus />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/standorte" element={<Standorte />} />
