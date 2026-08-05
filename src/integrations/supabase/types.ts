@@ -80,6 +80,125 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          order_id: string
+          quantity: number
+          slug: string
+          unit_price_net_cents: number
+          variant_label: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          order_id: string
+          quantity?: number
+          slug: string
+          unit_price_net_cents: number
+          variant_label?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          order_id?: string
+          quantity?: number
+          slug?: string
+          unit_price_net_cents?: number
+          variant_label?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          city: string
+          company: string
+          country: string
+          created_at: string
+          currency: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          mollie_payment_id: string | null
+          note: string
+          order_number: string
+          paid_at: string | null
+          payment_method: string
+          phone: string
+          postal_code: string
+          shipping_net_cents: number
+          status: string
+          street: string
+          subtotal_net_cents: number
+          total_gross_cents: number
+          updated_at: string
+          vat_cents: number
+        }
+        Insert: {
+          city?: string
+          company?: string
+          country?: string
+          created_at?: string
+          currency?: string
+          email: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          mollie_payment_id?: string | null
+          note?: string
+          order_number: string
+          paid_at?: string | null
+          payment_method?: string
+          phone?: string
+          postal_code?: string
+          shipping_net_cents?: number
+          status?: string
+          street?: string
+          subtotal_net_cents?: number
+          total_gross_cents?: number
+          updated_at?: string
+          vat_cents?: number
+        }
+        Update: {
+          city?: string
+          company?: string
+          country?: string
+          created_at?: string
+          currency?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          mollie_payment_id?: string | null
+          note?: string
+          order_number?: string
+          paid_at?: string | null
+          payment_method?: string
+          phone?: string
+          postal_code?: string
+          shipping_net_cents?: number
+          status?: string
+          street?: string
+          subtotal_net_cents?: number
+          total_gross_cents?: number
+          updated_at?: string
+          vat_cents?: number
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
