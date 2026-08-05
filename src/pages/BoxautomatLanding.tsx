@@ -32,11 +32,15 @@ import { Loader2 } from "lucide-react";
 import ProductImageGallery from "@/components/ProductImageGallery";
 import { trackEvent } from "@/lib/tracking";
 
-import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
+import { VARIANTS_BY_SLUG } from "@/lib/variants";
 
 const PRODUCT_SLUG = "boxautomat-premium";
-const SHOPIFY_HANDLE = "boxing-machine-with-banknote-acceptor";
-const VARIANTS = SHOPIFY_VARIANTS_BY_SLUG[PRODUCT_SLUG];
+const GALLERY_IMAGES = [
+  "/images/products/boxing-machine-new.png",
+  "/images/products/boxing-machine.png",
+  "/images/products/combo-boxing-machine.png",
+];
+const VARIANTS = VARIANTS_BY_SLUG[PRODUCT_SLUG];
 
 const benefits = [
   { icon: TrendingUp, title: "Bis zu 1.500€/Monat", desc: "Hohe Einnahmen pro Aufstellort durch Highscore-Effekt." },
@@ -190,8 +194,7 @@ const BoxautomatLanding = () => {
             <div className="grid md:grid-cols-2 gap-10 items-center">
               {/* Product image gallery */}
               <ProductImageGallery
-                handle={SHOPIFY_HANDLE}
-                fallbackImage={product.image}
+                images={GALLERY_IMAGES}
                 alt={product.name}
                 imageClassName="p-0"
                 badge={

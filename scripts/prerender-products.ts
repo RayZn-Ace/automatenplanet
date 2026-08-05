@@ -6,7 +6,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 import { products } from "../src/data/products";
-import { SHOPIFY_VARIANTS_BY_SLUG } from "../src/lib/shopify";
+import { VARIANTS_BY_SLUG } from "../src/lib/variants";
 import { formatGross, formatNet, grossPriceValue } from "../src/lib/pricing";
 
 const BASE_URL = "https://automatplanet.de";
@@ -32,7 +32,7 @@ interface PrerenderPage {
 
 function buildPage(slug: string): PrerenderPage {
   const product = products.find((p) => p.slug === slug)!;
-  const variants = SHOPIFY_VARIANTS_BY_SLUG[slug];
+  const variants = VARIANTS_BY_SLUG[slug];
   const url = `${BASE_URL}/produkte/${slug}`;
 
   const offers = variants

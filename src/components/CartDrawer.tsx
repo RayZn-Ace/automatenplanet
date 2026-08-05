@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,47 +9,20 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Trash2, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
-import { trackEvent } from "@/lib/tracking";
-import { track } from "@/lib/analytics";
+import { formatGross, formatNet } from "@/lib/pricing";
 
 const CartDrawer = () => {
   const items = useCartStore((s) => s.items);
   const isOpen = useCartStore((s) => s.isOpen);
-  const isLoading = useCartStore((s) => s.isLoading);
-  const isSyncing = useCartStore((s) => s.isSyncing);
-  const checkoutUrl = useCartStore((s) => s.checkoutUrl);
   const openCart = useCartStore((s) => s.openCart);
   const closeCart = useCartStore((s) => s.closeCart);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
-  const syncCart = useCartStore((s) => s.syncCart);
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
-  const totalPrice = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-
-  useEffect(() => {
-    if (isOpen) syncCart();
-  }, [isOpen, syncCart]);
-
-  const handleCheckout = () => {
-    if (checkoutUrl) {
-      trackEvent("begin_checkout", {
-        value: totalPrice,
-        currency: "EUR",
-        contentType: "product",
-        items: items.map((i) => ({ id: i.slug, name: i.name, quantity: i.quantity, price: i.price })),
-      });
-      track("checkout_started", {
-        answer_option: String(Math.round(totalPrice * 100)),
-        value_cents: Math.round(totalPrice * 100),
-        currency: "EUR",
-      });
-      window.open(checkoutUrl, "_blank");
-      closeCart();
-    }
-  };
+  const totalNet = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   return (
     <Sheet open={isOpen} onOpenChange={(o) => (o ? openCart() : closeCart())}>
@@ -96,9 +69,12 @@ const CartDrawer = () => {
                         <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium truncate">{item.name}</h4>
+                        <h4 className="font-medium break-words">{item.name}</h4>
                         <p className="font-semibold text-primary">
-                          {(item.price * item.quantity).toLocaleString("de-DE")} € netto
+                          {formatGross(item.price * item.quantity)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatNet(item.price * item.quantity)} netto
                         </p>
                       </div>
                       <div className="flex flex-col items-end gap-2 flex-shrink-0">
@@ -107,7 +83,6 @@ const CartDrawer = () => {
                           size="icon"
                           className="h-6 w-6"
                           onClick={() => removeItem(item.variantId)}
-                          disabled={isLoading}
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
@@ -117,7 +92,6 @@ const CartDrawer = () => {
                             size="icon"
                             className="h-6 w-6"
                             onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
-                            disabled={isLoading}
                           >
                             <Minus className="h-3 w-3" />
                           </Button>
@@ -127,7 +101,6 @@ const CartDrawer = () => {
                             size="icon"
                             className="h-6 w-6"
                             onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                            disabled={isLoading}
                           >
                             <Plus className="h-3 w-3" />
                           </Button>
@@ -137,26 +110,18 @@ const CartDrawer = () => {
                   ))}
                 </div>
               </div>
-              <div className="flex-shrink-0 space-y-4 pt-4 border-t border-border bg-background">
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold">Gesamt (netto)</span>
-                  <span className="text-xl font-bold text-primary">
-                    {totalPrice.toLocaleString("de-DE")} €
-                  </span>
+              <div className="flex-shrink-0 space-y-3 pt-4 border-t border-border bg-background">
+                <div className="flex justify-between items-baseline gap-2">
+                  <span className="text-lg font-semibold">Zwischensumme</span>
+                  <span className="text-xl font-bold text-primary">{formatGross(totalNet)}</span>
                 </div>
-                <Button
-                  onClick={handleCheckout}
-                  className="w-full"
-                  size="lg"
-                  disabled={items.length === 0 || isLoading || isSyncing || !checkoutUrl}
-                >
-                  {isLoading || isSyncing ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <>
-                      <ExternalLink className="w-4 h-4 mr-2" /> Zur Kasse (Shopify)
-                    </>
-                  )}
+                <p className="text-xs text-muted-foreground">
+                  inkl. 19% MwSt. · {formatNet(totalNet)} netto · zzgl. Versand
+                </p>
+                <Button asChild className="w-full" size="lg">
+                  <Link to="/kasse" onClick={closeCart}>
+                    Zur Kasse <ArrowRight className="w-4 h-4 ml-2" />
+                  </Link>
                 </Button>
               </div>
             </>

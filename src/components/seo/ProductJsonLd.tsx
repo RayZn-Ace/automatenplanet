@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { ProductData } from "@/data/products";
 import { grossPriceValue } from "@/lib/pricing";
-import { SHOPIFY_VARIANTS_BY_SLUG } from "@/lib/shopify";
+import { VARIANTS_BY_SLUG } from "@/lib/variants";
 
 interface ProductJsonLdProps {
   product: ProductData;
@@ -15,7 +15,7 @@ const variantSlug = (label: string) =>
 const ProductJsonLd = ({ product, jsonLdOnly = false }: ProductJsonLdProps) => {
 
   const url = `https://automatplanet.de/produkte/${product.slug}`;
-  const variants = SHOPIFY_VARIANTS_BY_SLUG[product.slug];
+  const variants = VARIANTS_BY_SLUG[product.slug];
 
   const shippingDetails = {
     "@type": "OfferShippingDetails",
