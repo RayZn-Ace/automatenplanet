@@ -46,6 +46,11 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><a href="/impressum" className="hover:text-foreground transition-colors">Impressum</a></li>
               <li><a href="/datenschutz" className="hover:text-foreground transition-colors">Datenschutz</a></li>
+              <li>
+                <button type="button" onClick={openConsentSettings} className="hover:text-foreground transition-colors">
+                  Cookie-Einstellungen
+                </button>
+              </li>
               <li><a href="#" className="hover:text-foreground transition-colors">AGB</a></li>
             </ul>
           </div>
