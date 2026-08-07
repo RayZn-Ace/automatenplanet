@@ -1,3 +1,4 @@
+import { openConsentSettings } from "@/components/CookieBanner";
 import logo from "@/assets/logo-automatplanet.png";
 
 const Footer = () => {
