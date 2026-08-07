@@ -7,6 +7,7 @@
 //     -> Deduplizierung, Tracking auch bei Adblockern / iOS ITP
 
 import { supabase } from "@/integrations/supabase/client";
+import { hasMarketingConsent } from "@/lib/consent";
 import {
   EVENT_MAP,
   GA4_MEASUREMENT_ID,
@@ -145,6 +146,8 @@ function ga4ClientId(): string | undefined {
  * Fire-and-forget: Fehler eines Kanals beeinflussen die anderen nicht.
  */
 export function trackEvent(event: TrackedEvent, payload: TrackPayload = {}): void {
+  // Ohne Marketing-Einwilligung wird nichts an Meta/TikTok/Google gesendet.
+  if (!hasMarketingConsent()) return;
   const eventId = uuid();
   const names = EVENT_MAP[event];
   const url = typeof window !== "undefined" ? window.location.href : undefined;
@@ -242,6 +245,7 @@ export function trackEvent(event: TrackedEvent, payload: TrackPayload = {}): voi
 
 /** Seitenaufruf – Meta/TikTok Pageview + GA4 page_view. */
 export function trackPageView(path: string, title?: string): void {
+  if (!hasMarketingConsent()) return;
   if (isMetaEnabled()) {
     try {
       window.fbq?.("track", "PageView");
@@ -272,6 +276,7 @@ export function trackPageView(path: string, title?: string): void {
 
 /** Erst-Party-Identifikation (z.B. nach Newsletter/Login) für besseres Matching. */
 export function identifyUser(user: { email?: string; phone?: string }): void {
+  if (!hasMarketingConsent()) return;
   if (isTikTokEnabled() && (user.email || user.phone)) {
     try {
       window.ttq?.identify({

@@ -26,6 +26,7 @@ import Bestellungen from "./pages/Bestellungen";
 import WhatsAppButton from "./components/WhatsAppButton";
 import TrackingScripts from "./components/TrackingScripts";
 import AnalyticsTracker from "./components/AnalyticsTracker";
+import CookieBanner from "./components/CookieBanner";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
           <TrackingScripts />
           <AnalyticsTracker />
           <WhatsAppButton />
+          <CookieBanner />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/metriken" element={<Metriken />} />

@@ -2,9 +2,10 @@
 // und schickt bei jedem Routenwechsel einen Seitenaufruf an alle Kanäle.
 // Der Meta-Basiscode liegt bereits in index.html.
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { trackPageView } from "@/lib/tracking";
+import { applyConsentToVendors, hasMarketingConsent, onConsentChange } from "@/lib/consent";
 import {
   GA4_MEASUREMENT_ID,
   GOOGLE_ADS_ID,
@@ -88,17 +89,28 @@ function loadGoogleTag() {
 const TrackingScripts = () => {
   const location = useLocation();
   const initialized = useRef(false);
+  const [consented, setConsented] = useState(hasMarketingConsent());
 
+  // Skripte erst nach Marketing-Einwilligung laden (DSGVO / TDDDG).
   useEffect(() => {
-    if (initialized.current) return;
-    initialized.current = true;
-    if (isTikTokEnabled()) loadTikTokPixel();
-    loadGoogleTag();
+    const init = () => {
+      if (initialized.current || !hasMarketingConsent()) return;
+      initialized.current = true;
+      if (isTikTokEnabled()) loadTikTokPixel();
+      loadGoogleTag();
+      applyConsentToVendors(true);
+    };
+    init();
+    return onConsentChange((state) => {
+      setConsented(state?.marketing === true);
+      init();
+    });
   }, []);
 
   useEffect(() => {
+    if (!consented) return;
     trackPageView(location.pathname + location.search, document.title);
-  }, [location.pathname, location.search]);
+  }, [consented, location.pathname, location.search]);
 
   return null;
 };
