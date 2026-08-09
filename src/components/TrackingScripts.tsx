@@ -9,11 +9,25 @@ import { applyConsentToVendors, hasMarketingConsent, onConsentChange } from "@/l
 import {
   GA4_MEASUREMENT_ID,
   GOOGLE_ADS_ID,
+  GTM_CONTAINER_ID,
   isGa4Enabled,
   isGoogleAdsEnabled,
+  isGtmEnabled,
   isTikTokEnabled,
   TIKTOK_PIXEL_ID,
 } from "@/lib/trackingConfig";
+
+function loadGtm() {
+  if (typeof window === "undefined") return;
+  if (document.getElementById("gtm-script")) return;
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+  const script = document.createElement("script");
+  script.id = "gtm-script";
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_CONTAINER_ID}`;
+  document.head.appendChild(script);
+}
 
 function loadTikTokPixel() {
   if (typeof window === "undefined" || window.ttq) return;
