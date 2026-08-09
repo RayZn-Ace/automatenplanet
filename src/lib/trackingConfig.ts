@@ -57,3 +57,4 @@ export const isMetaEnabled = () => META_PIXEL_ID.length > 0;
 export const isTikTokEnabled = () => TIKTOK_PIXEL_ID.length > 0;
 export const isGa4Enabled = () => GA4_MEASUREMENT_ID.length > 0;
 export const isGoogleAdsEnabled = () => GOOGLE_ADS_ID.length > 0;
+export const isGtmEnabled = () => GTM_CONTAINER_ID.length > 0;
