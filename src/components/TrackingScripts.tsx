@@ -112,6 +112,7 @@ const TrackingScripts = () => {
       initialized.current = true;
       if (isTikTokEnabled()) loadTikTokPixel();
       loadGoogleTag();
+      if (isGtmEnabled()) loadGtm();
       applyConsentToVendors(true);
     };
     init();
