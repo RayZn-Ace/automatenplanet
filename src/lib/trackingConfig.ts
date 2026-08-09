@@ -11,7 +11,10 @@ export const META_PIXEL_ID = "1564946328324986";
 export const TIKTOK_PIXEL_ID = "";
 
 /** GA4 Measurement ID, Format G-XXXXXXXXXX */
-export const GA4_MEASUREMENT_ID = "";
+export const GA4_MEASUREMENT_ID = "G-6L3CWK7GWN";
+
+/** Google Tag Manager Container ID, Format GTM-XXXXXXX */
+export const GTM_CONTAINER_ID = "GTM-N9WLKBDF";
 
 /** Google Ads Conversion ID, Format AW-XXXXXXXXX */
 export const GOOGLE_ADS_ID = "";
@@ -54,3 +57,4 @@ export const isMetaEnabled = () => META_PIXEL_ID.length > 0;
 export const isTikTokEnabled = () => TIKTOK_PIXEL_ID.length > 0;
 export const isGa4Enabled = () => GA4_MEASUREMENT_ID.length > 0;
 export const isGoogleAdsEnabled = () => GOOGLE_ADS_ID.length > 0;
+export const isGtmEnabled = () => GTM_CONTAINER_ID.length > 0;
