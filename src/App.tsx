@@ -28,6 +28,7 @@ import AdminJourneys from "./pages/admin/AdminJourneys";
 import AdminRevenue from "./pages/admin/AdminRevenue";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminProducts from "./pages/admin/AdminProducts";
+import AdminMail from "./pages/admin/AdminMail";
 
 import WhatsAppButton from "./components/WhatsAppButton";
 import TrackingScripts from "./components/TrackingScripts";
