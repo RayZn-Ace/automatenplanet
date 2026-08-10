@@ -32,6 +32,7 @@ import {
   Eye,
   Pause,
   Play,
+  ListChecks,
 } from "lucide-react";
 
 const FEED_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/product-feed`;
