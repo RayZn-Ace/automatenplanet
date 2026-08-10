@@ -318,19 +318,119 @@ const AdminFeed = () => {
                 </ul>
               )}
 
-              <a
-                href={entry.link}
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs text-muted-foreground hover:text-primary inline-flex items-center gap-1 break-all"
-              >
-                <ExternalLink className="w-3 h-3 shrink-0" /> {entry.link}
-              </a>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => setPreview(entry)}>
+                  <Eye className="w-3.5 h-3.5 mr-1.5" /> Vorschau
+                </Button>
+                <a
+                  href={entry.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs text-muted-foreground hover:text-primary inline-flex items-center gap-1 break-all"
+                >
+                  <ExternalLink className="w-3 h-3 shrink-0" /> {entry.link}
+                </a>
+              </div>
             </Card>
           );
         })}
       </div>
+
+      {/* Google-Shopping-Vorschau */}
+      <Dialog open={!!preview} onOpenChange={(open) => !open && setPreview(null)}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Google-Shopping-Vorschau</DialogTitle>
+            <DialogDescription>
+              So werden die Angebote in Google Shopping ausgespielt. Klicke unten auf ein Angebot, um es
+              anzusehen.
+            </DialogDescription>
+          </DialogHeader>
+
+          {preview && (
+            <div className="space-y-5">
+              {/* Shopping-Karte */}
+              <div className="rounded-xl border border-border bg-background p-4 max-w-xs">
+                <div className="aspect-square rounded-lg bg-white flex items-center justify-center overflow-hidden">
+                  {preview.image ? (
+                    <img
+                      src={imageSrc(preview.image)}
+                      alt={preview.title}
+                      className="w-full h-full object-contain"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="text-xs text-muted-foreground">kein Bild</span>
+                  )}
+                </div>
+                <div className="mt-3 space-y-1">
+                  <div className="text-sm leading-snug line-clamp-2">{preview.title}</div>
+                  <div className="text-base font-semibold">{euroFmt(grossPrice(preview.priceNet))}</div>
+                  <div className="text-xs text-muted-foreground">
+                    AutomatPlanet · Versand ab 150,00 €
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {preview.isActive ? "Auf Lager" : "Nicht verfügbar"} · Neu
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-2 text-sm sm:grid-cols-2">
+                <div>
+                  <span className="text-muted-foreground">Feed-ID: </span>
+                  <span className="font-mono">{preview.id}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Produktgruppe: </span>
+                  <span className="font-mono">{preview.groupId}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Kennzeichnung: </span>
+                  {preview.identifierExists ? (
+                    <span>{preview.gtinStatus === "valid" ? `GTIN ${preview.gtin}` : `MPN ${preview.mpn}`}</span>
+                  ) : (
+                    <span>Marke + identifier_exists=no</span>
+                  )}
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Status: </span>
+                  {preview.issues.some((i) => i.level === "error") ? (
+                    <span className="text-destructive">wird abgelehnt</span>
+                  ) : (
+                    <span className="text-emerald-500">wird ausgespielt</span>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-xs text-muted-foreground mb-1.5">Feed-Daten (XML)</div>
+                <pre className="rounded-lg border border-border bg-muted/40 p-3 text-xs overflow-x-auto">
+                  {itemXml(preview)}
+                </pre>
+              </div>
+
+              <div>
+                <div className="text-xs text-muted-foreground mb-1.5">Alle {entries.length} Angebote</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {entries.map((e) => (
+                    <Button
+                      key={e.id}
+                      size="sm"
+                      variant={e.id === preview.id ? "default" : "outline"}
+                      className="h-7 text-xs"
+                      onClick={() => setPreview(e)}
+                    >
+                      {e.title}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
+
   );
 };
 
