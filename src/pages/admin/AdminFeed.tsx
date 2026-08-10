@@ -192,6 +192,10 @@ const AdminFeed = () => {
           <Button size="sm" variant="outline" onClick={() => { load(); checkLiveFeed(); }} disabled={loading}>
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} /> Neu prüfen
           </Button>
+          <Button size="sm" variant="secondary" onClick={runBatch} disabled={batchRunning || loading}>
+            <ListChecks className={`w-4 h-4 mr-2 ${batchRunning ? "animate-pulse" : ""}`} />
+            {batchRunning ? "Prüfe…" : `Batch-Check (${summary.total})`}
+          </Button>
           <Button size="sm" onClick={() => setPreview(visible[0] ?? entries[0] ?? null)} disabled={entries.length === 0}>
             <Eye className="w-4 h-4 mr-2" /> Google-Vorschau
           </Button>
