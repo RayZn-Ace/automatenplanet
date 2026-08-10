@@ -5,7 +5,23 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { adminApi, euro, nf, RANGE_PRESETS, rangeToIso, formatDuration } from "@/lib/adminApi";
-import { RefreshCw, ArrowLeft } from "lucide-react";
+import { RefreshCw, ArrowLeft, ArrowRight, Search } from "lucide-react";
+
+function cleanPath(raw: string) {
+  if (!raw) return "—";
+  const path = raw.split("?")[0].split("#")[0];
+  return path === "" ? "/" : path;
+}
+
+function sourceLabel(s: { utmSource: string; referrer: string }) {
+  if (s.utmSource) return s.utmSource;
+  if (!s.referrer) return "direkt";
+  try {
+    return new URL(s.referrer).hostname.replace(/^www\./, "");
+  } catch {
+    return s.referrer;
+  }
+}
 
 type SessionRow = {
   sessionId: string;
