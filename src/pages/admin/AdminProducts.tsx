@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { euro } from "@/lib/adminApi";
 import type { DbProductRow, DbVariantRow } from "@/lib/catalog";
-import { grossFromNet } from "@/lib/pricing";
+import { grossPrice } from "@/lib/pricing";
 import { RefreshCw, Plus, Trash2, Save, ChevronDown, ChevronRight } from "lucide-react";
 
 type ProductWithVariants = DbProductRow & { product_variants: DbVariantRow[] };
@@ -233,7 +233,7 @@ const AdminProducts = () => {
                   <span className="text-sm">
                     {euro(row.price_net_cents)} netto ·{" "}
                     <span className="text-primary font-medium">
-                      {euro(Math.round(grossFromNet(row.price_net_cents / 100) * 100))} brutto
+                      {euro(Math.round(grossPrice(row.price_net_cents / 100) * 100))} brutto
                     </span>
                   </span>
                   <label className="flex items-center gap-2 text-xs text-muted-foreground">
