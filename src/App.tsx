@@ -59,6 +59,8 @@ const App = () => (
               <Route path="umsatz" element={<AdminRevenue />} />
               <Route path="bestellungen" element={<AdminOrders />} />
               <Route path="produkte" element={<AdminProducts />} />
+              <Route path="postfach" element={<AdminMail />} />
+
             </Route>
             <Route path="/metriken" element={<Navigate to="/admin" replace />} />
             <Route path="/bestellungen" element={<Navigate to="/admin/bestellungen" replace />} />
