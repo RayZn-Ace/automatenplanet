@@ -76,6 +76,8 @@ const AdminFeed = () => {
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [live, setLive] = useState<LiveFeedState>({ status: "idle", items: 0, message: "", fetchedAt: "" });
+  const [preview, setPreview] = useState<FeedEntry | null>(null);
+
 
   const load = useCallback(async () => {
     setLoading(true);
