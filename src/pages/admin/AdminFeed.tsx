@@ -124,7 +124,7 @@ const AdminFeed = () => {
   // Batch-Check: lädt alles neu, validiert in einem Lauf und öffnet die Ergebnis-Tabelle.
   const runBatch = useCallback(async () => {
     setBatchRunning(true);
-    const [validated] = await Promise.all([load(), checkLiveFeedRef.current?.()]);
+    const validated = await load();
     setBatchResult({ entries: validated, finishedAt: new Date().toLocaleString("de-DE") });
     setBatchRunning(false);
     const errors = validated.filter((e) => e.issues.some((i) => i.level === "error")).length;
