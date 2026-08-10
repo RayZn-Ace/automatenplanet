@@ -4,11 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { grossPrice } from "@/lib/pricing";
+import { grossPrice, grossPriceValue } from "@/lib/pricing";
 import {
   summarize,
   validateFeed,
+  SITE,
   type FeedEntry,
   type ValidationInputProduct,
   type ValidationInputVariant,
@@ -21,6 +29,7 @@ import {
   Barcode,
   ExternalLink,
   Search,
+  Eye,
 } from "lucide-react";
 
 const FEED_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/product-feed`;
@@ -37,12 +46,38 @@ interface LiveFeedState {
 const euroFmt = (value: number) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(value);
 
+const imageSrc = (image: string) => (/^https?:\/\//i.test(image) ? image : `${SITE}${image}`);
+
+/** So sieht der XML-Block aus, den Google für dieses Angebot einliest. */
+const itemXml = (entry: FeedEntry) =>
+  [
+    "<item>",
+    `  <g:id>${entry.id}</g:id>`,
+    `  <g:item_group_id>${entry.groupId}</g:item_group_id>`,
+    `  <title>${entry.title}</title>`,
+    `  <link>${entry.link}</link>`,
+    `  <g:image_link>${imageSrc(entry.image)}</g:image_link>`,
+    `  <g:price>${grossPriceValue(entry.priceNet)} EUR</g:price>`,
+    `  <g:availability>${entry.isActive ? "in_stock" : "out_of_stock"}</g:availability>`,
+    `  <g:condition>new</g:condition>`,
+    `  <g:brand>AutomatPlanet</g:brand>`,
+    entry.gtinStatus === "valid" ? `  <g:gtin>${entry.gtin}</g:gtin>` : null,
+    entry.mpn ? `  <g:mpn>${entry.mpn}</g:mpn>` : null,
+    !entry.identifierExists ? "  <g:identifier_exists>no</g:identifier_exists>" : null,
+    "</item>",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+
 const AdminFeed = () => {
   const [entries, setEntries] = useState<FeedEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [live, setLive] = useState<LiveFeedState>({ status: "idle", items: 0, message: "", fetchedAt: "" });
+  const [preview, setPreview] = useState<FeedEntry | null>(null);
+
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -127,11 +162,15 @@ const AdminFeed = () => {
           <Button size="sm" variant="outline" onClick={() => { load(); checkLiveFeed(); }} disabled={loading}>
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} /> Neu prüfen
           </Button>
+          <Button size="sm" onClick={() => setPreview(visible[0] ?? entries[0] ?? null)} disabled={entries.length === 0}>
+            <Eye className="w-4 h-4 mr-2" /> Google-Vorschau
+          </Button>
           <Button size="sm" variant="outline" asChild>
             <a href={FEED_URL} target="_blank" rel="noreferrer">
               <ExternalLink className="w-4 h-4 mr-2" /> Feed öffnen
             </a>
           </Button>
+
         </div>
       </div>
 
@@ -279,19 +318,119 @@ const AdminFeed = () => {
                 </ul>
               )}
 
-              <a
-                href={entry.link}
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs text-muted-foreground hover:text-primary inline-flex items-center gap-1 break-all"
-              >
-                <ExternalLink className="w-3 h-3 shrink-0" /> {entry.link}
-              </a>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => setPreview(entry)}>
+                  <Eye className="w-3.5 h-3.5 mr-1.5" /> Vorschau
+                </Button>
+                <a
+                  href={entry.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs text-muted-foreground hover:text-primary inline-flex items-center gap-1 break-all"
+                >
+                  <ExternalLink className="w-3 h-3 shrink-0" /> {entry.link}
+                </a>
+              </div>
             </Card>
           );
         })}
       </div>
+
+      {/* Google-Shopping-Vorschau */}
+      <Dialog open={!!preview} onOpenChange={(open) => !open && setPreview(null)}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Google-Shopping-Vorschau</DialogTitle>
+            <DialogDescription>
+              So werden die Angebote in Google Shopping ausgespielt. Klicke unten auf ein Angebot, um es
+              anzusehen.
+            </DialogDescription>
+          </DialogHeader>
+
+          {preview && (
+            <div className="space-y-5">
+              {/* Shopping-Karte */}
+              <div className="rounded-xl border border-border bg-background p-4 max-w-xs">
+                <div className="aspect-square rounded-lg bg-white flex items-center justify-center overflow-hidden">
+                  {preview.image ? (
+                    <img
+                      src={imageSrc(preview.image)}
+                      alt={preview.title}
+                      className="w-full h-full object-contain"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="text-xs text-muted-foreground">kein Bild</span>
+                  )}
+                </div>
+                <div className="mt-3 space-y-1">
+                  <div className="text-sm leading-snug line-clamp-2">{preview.title}</div>
+                  <div className="text-base font-semibold">{euroFmt(grossPrice(preview.priceNet))}</div>
+                  <div className="text-xs text-muted-foreground">
+                    AutomatPlanet · Versand ab 150,00 €
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {preview.isActive ? "Auf Lager" : "Nicht verfügbar"} · Neu
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-2 text-sm sm:grid-cols-2">
+                <div>
+                  <span className="text-muted-foreground">Feed-ID: </span>
+                  <span className="font-mono">{preview.id}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Produktgruppe: </span>
+                  <span className="font-mono">{preview.groupId}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Kennzeichnung: </span>
+                  {preview.identifierExists ? (
+                    <span>{preview.gtinStatus === "valid" ? `GTIN ${preview.gtin}` : `MPN ${preview.mpn}`}</span>
+                  ) : (
+                    <span>Marke + identifier_exists=no</span>
+                  )}
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Status: </span>
+                  {preview.issues.some((i) => i.level === "error") ? (
+                    <span className="text-destructive">wird abgelehnt</span>
+                  ) : (
+                    <span className="text-emerald-500">wird ausgespielt</span>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-xs text-muted-foreground mb-1.5">Feed-Daten (XML)</div>
+                <pre className="rounded-lg border border-border bg-muted/40 p-3 text-xs overflow-x-auto">
+                  {itemXml(preview)}
+                </pre>
+              </div>
+
+              <div>
+                <div className="text-xs text-muted-foreground mb-1.5">Alle {entries.length} Angebote</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {entries.map((e) => (
+                    <Button
+                      key={e.id}
+                      size="sm"
+                      variant={e.id === preview.id ? "default" : "outline"}
+                      className="h-7 text-xs"
+                      onClick={() => setPreview(e)}
+                    >
+                      {e.title}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
+
   );
 };
 
