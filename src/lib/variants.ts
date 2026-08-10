@@ -10,7 +10,14 @@ export interface VariantOption {
 }
 
 export const variantSlug = (label: string) =>
-  label.toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
+  label
+    .toLowerCase()
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/gi, "-")
+    .replace(/^-|-$/g, "");
 
 export const VARIANTS_BY_SLUG: Record<string, VariantOption[]> = {
   "boxautomat-premium": [

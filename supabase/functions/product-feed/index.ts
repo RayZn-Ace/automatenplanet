@@ -29,7 +29,14 @@ function esc(value: string): string {
 
 /** Muss identisch zu src/lib/variants.ts variantSlug sein, damit der Link die Variante wirklich vorauswählt. */
 function variantSlug(label: string): string {
-  return label.toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
+  return label
+    .toLowerCase()
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/gi, "-")
+    .replace(/^-|-$/g, "");
 }
 
 function absolute(path: string): string {
