@@ -19,10 +19,16 @@ import Handbuch from "./pages/Handbuch";
 import HandbuchBoxautomat from "./pages/HandbuchBoxautomat";
 import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
 import BoxautomatLanding from "./pages/BoxautomatLanding";
-import Metriken from "./pages/Metriken";
 import Checkout from "./pages/Checkout";
 import OrderStatus from "./pages/OrderStatus";
-import Bestellungen from "./pages/Bestellungen";
+import AdminLayout from "./components/layout/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminLive from "./pages/admin/AdminLive";
+import AdminJourneys from "./pages/admin/AdminJourneys";
+import AdminRevenue from "./pages/admin/AdminRevenue";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminProducts from "./pages/admin/AdminProducts";
+
 import WhatsAppButton from "./components/WhatsAppButton";
 import TrackingScripts from "./components/TrackingScripts";
 import AnalyticsTracker from "./components/AnalyticsTracker";
@@ -45,8 +51,17 @@ const App = () => (
           <CookieBanner />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/metriken" element={<Metriken />} />
-            <Route path="/bestellungen" element={<Bestellungen />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="live" element={<AdminLive />} />
+              <Route path="journeys" element={<AdminJourneys />} />
+              <Route path="umsatz" element={<AdminRevenue />} />
+              <Route path="bestellungen" element={<AdminOrders />} />
+              <Route path="produkte" element={<AdminProducts />} />
+            </Route>
+            <Route path="/metriken" element={<Navigate to="/admin" replace />} />
+            <Route path="/bestellungen" element={<Navigate to="/admin/bestellungen" replace />} />
+
             <Route path="/kasse" element={<Checkout />} />
             <Route path="/bestellung" element={<OrderStatus />} />
             <Route path="/blog" element={<Blog />} />

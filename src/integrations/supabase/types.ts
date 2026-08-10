@@ -199,6 +199,113 @@ export type Database = {
         }
         Relationships: []
       }
+      product_variants: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
+          label: string
+          price_net_cents: number
+          product_id: string
+          sort_order: number
+          updated_at: string
+          variant_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          price_net_cents?: number
+          product_id: string
+          sort_order?: number
+          updated_at?: string
+          variant_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          price_net_cents?: number
+          product_id?: string
+          sort_order?: number
+          updated_at?: string
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          dimensions: string
+          gallery: Json
+          id: string
+          image: string
+          is_active: boolean
+          keywords: string[]
+          meta_description: string
+          meta_title: string
+          name: string
+          power: string
+          price_net_cents: number
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string
+          dimensions?: string
+          gallery?: Json
+          id?: string
+          image?: string
+          is_active?: boolean
+          keywords?: string[]
+          meta_description?: string
+          meta_title?: string
+          name: string
+          power?: string
+          price_net_cents?: number
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          dimensions?: string
+          gallery?: Json
+          id?: string
+          image?: string
+          is_active?: boolean
+          keywords?: string[]
+          meta_description?: string
+          meta_title?: string
+          name?: string
+          power?: string
+          price_net_cents?: number
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
