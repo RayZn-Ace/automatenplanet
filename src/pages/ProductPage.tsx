@@ -42,6 +42,7 @@ const ProductPage = () => {
         currency: "EUR",
         contentName: product.name,
         contentType: "product",
+        category: product.category,
         items: [{ id: product.slug, name: product.name, price: product.price, quantity: 1 }],
       });
       track("product_viewed", {
