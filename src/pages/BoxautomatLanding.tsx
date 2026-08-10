@@ -166,7 +166,7 @@ const BoxautomatLanding = () => {
                 </a>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <a href="tel:051112282957">
+                <a href="tel:+4951112282957">
                   <Phone className="mr-2" /> 0511 12282957
                 </a>
               </Button>

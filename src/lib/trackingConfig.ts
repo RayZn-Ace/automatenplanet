@@ -11,7 +11,9 @@ export const META_PIXEL_ID = "1564946328324986";
 export const TIKTOK_PIXEL_ID = "";
 
 /** GA4 Measurement ID, Format G-XXXXXXXXXX */
-export const GA4_MEASUREMENT_ID = "G-6L3CWK7GWN";
+// GA4 läuft über den GTM-Container (Tag im Container), NICHT über ein zweites
+// hartcodiertes gtag-Snippet – sonst würde jede Conversion doppelt gezählt.
+export const GA4_MEASUREMENT_ID = "";
 
 /** Google Tag Manager Container ID, Format GTM-XXXXXXX */
 export const GTM_CONTAINER_ID = "GTM-N9WLKBDF";

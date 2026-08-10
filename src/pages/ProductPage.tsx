@@ -262,7 +262,7 @@ const ProductPage = () => {
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4 text-primary" />
                 {t("product.callUs")}
-                <a href="tel:+4905111228957" className="text-primary font-bold hover:underline">
+                <a href="tel:+4951112282957" className="text-primary font-bold hover:underline">
                   0511 12282957
                 </a>
               </div>
@@ -509,7 +509,7 @@ const ProductPage = () => {
                 </a>
               </Button>
               <Button size="lg" variant="outline" className="border-border h-14 text-base px-8" asChild>
-                <a href="tel:+4905111228957">
+                <a href="tel:+4951112282957">
                   <Phone className="mr-2 w-5 h-5" /> 0511 12282957
                 </a>
               </Button>
