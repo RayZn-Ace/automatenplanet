@@ -27,6 +27,11 @@ function esc(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
+/** Muss identisch zu src/lib/variants.ts variantSlug sein, damit der Link die Variante wirklich vorauswählt. */
+function variantSlug(label: string): string {
+  return label.toLowerCase().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
+}
+
 function absolute(path: string): string {
   if (!path) return "";
   if (/^https?:\/\//i.test(path)) return path;
@@ -77,8 +82,8 @@ interface FeedItem {
 function renderItem(item: FeedItem): string {
   const extra = item.additionalImages
     .slice(0, 10)
-    .map((img) => `      <g:additional_image_link>${esc(img)}</g:additional_image_link>`)
-    .join("\n");
+    .map((img) => `\n      <g:additional_image_link>${esc(img)}</g:additional_image_link>`)
+    .join("");
 
   return `    <item>
       <g:id>${esc(item.id)}</g:id>
@@ -86,8 +91,7 @@ function renderItem(item: FeedItem): string {
       <title>${esc(item.title)}</title>
       <description>${esc(item.description)}</description>
       <link>${esc(item.link)}</link>
-      <g:image_link>${esc(item.image)}</g:image_link>
-${extra}
+      <g:image_link>${esc(item.image)}</g:image_link>${extra}
       <g:availability>in_stock</g:availability>
       <g:condition>new</g:condition>
       <g:price>${gross(item.priceNet)} ${CURRENCY}</g:price>
@@ -170,12 +174,13 @@ Deno.serve(async () => {
     }
 
     for (const v of productVariants) {
+      const vSlug = v.label ? variantSlug(v.label) : v.variant_id;
       items.push({
-        id: `${p.slug}-${v.variant_id}`,
+        id: v.variant_id,
         groupId: p.slug,
         title: v.label ? `${p.name} – ${v.label}` : p.name,
         description: [baseDescription, v.description].filter(Boolean).join(" "),
-        link: `${link}?variante=${encodeURIComponent(v.variant_id)}`,
+        link: `${link}?variante=${encodeURIComponent(vSlug)}`,
         image: images[0] ?? "",
         additionalImages: images.slice(1),
         priceNet: v.price_net_cents / 100,
