@@ -109,15 +109,29 @@ const AdminFeed = () => {
     setLoading(false);
     if (pErr || vErr) {
       toast.error(pErr?.message ?? vErr?.message ?? "Fehler beim Laden.");
-      return;
+      return [] as FeedEntry[];
     }
-    setEntries(
-      validateFeed(
-        (products ?? []) as ValidationInputProduct[],
-        (variants ?? []) as ValidationInputVariant[],
-      ),
+    const validated = validateFeed(
+      (products ?? []) as ValidationInputProduct[],
+      (variants ?? []) as ValidationInputVariant[],
     );
+    setEntries(validated);
+    return validated;
   }, []);
+
+  // Batch-Check: lädt alles neu, validiert in einem Lauf und öffnet die Ergebnis-Tabelle.
+  const runBatch = useCallback(async () => {
+    setBatchRunning(true);
+    const [validated] = await Promise.all([load(), checkLiveFeedRef.current?.()]);
+    setBatchResult({ entries: validated, finishedAt: new Date().toLocaleString("de-DE") });
+    setBatchRunning(false);
+    const errors = validated.filter((e) => e.issues.some((i) => i.level === "error")).length;
+    toast[errors ? "error" : "success"](
+      errors
+        ? `${validated.length} Angebote geprüft · ${errors} mit Fehlern`
+        : `${validated.length} Angebote geprüft · keine Fehler`,
+    );
+  }, [load]);
 
   const checkLiveFeed = useCallback(async () => {
     setLive({ status: "loading", items: 0, message: "", fetchedAt: "" });
