@@ -81,6 +81,8 @@ const AdminFeed = () => {
   const [preview, setPreview] = useState<FeedEntry | null>(null);
   const [previewView, setPreviewView] = useState<"card" | "xml">("card");
   const [autoSwitch, setAutoSwitch] = useState(true);
+  const [batchRunning, setBatchRunning] = useState(false);
+  const [batchResult, setBatchResult] = useState<{ entries: FeedEntry[]; finishedAt: string } | null>(null);
 
   // Blendet die Vorschau automatisch zwischen Shopping-Karte und Feed-XML um.
   useEffect(() => {
