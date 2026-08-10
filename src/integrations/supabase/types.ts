@@ -296,9 +296,11 @@ export type Database = {
         Row: {
           created_at: string
           description: string
+          gtin: string
           id: string
           is_active: boolean
           label: string
+          mpn: string
           price_net_cents: number
           product_id: string
           sort_order: number
@@ -308,9 +310,11 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string
+          gtin?: string
           id?: string
           is_active?: boolean
           label?: string
+          mpn?: string
           price_net_cents?: number
           product_id: string
           sort_order?: number
@@ -320,9 +324,11 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string
+          gtin?: string
           id?: string
           is_active?: boolean
           label?: string
+          mpn?: string
           price_net_cents?: number
           product_id?: string
           sort_order?: number
@@ -346,12 +352,14 @@ export type Database = {
           description: string
           dimensions: string
           gallery: Json
+          gtin: string
           id: string
           image: string
           is_active: boolean
           keywords: string[]
           meta_description: string
           meta_title: string
+          mpn: string
           name: string
           power: string
           price_net_cents: number
@@ -365,12 +373,14 @@ export type Database = {
           description?: string
           dimensions?: string
           gallery?: Json
+          gtin?: string
           id?: string
           image?: string
           is_active?: boolean
           keywords?: string[]
           meta_description?: string
           meta_title?: string
+          mpn?: string
           name: string
           power?: string
           price_net_cents?: number
@@ -384,12 +394,14 @@ export type Database = {
           description?: string
           dimensions?: string
           gallery?: Json
+          gtin?: string
           id?: string
           image?: string
           is_active?: boolean
           keywords?: string[]
           meta_description?: string
           meta_title?: string
+          mpn?: string
           name?: string
           power?: string
           price_net_cents?: number

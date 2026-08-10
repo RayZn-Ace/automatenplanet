@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "generate:feed": "bun run scripts/generate-product-feed.ts",
     "generate:handbuch-pdf": "bun run scripts/generate-handbuch-pdf.ts",
     "normalize:quotes": "node scripts/normalize-smart-quotes.mjs",
     "check:quotes": "node scripts/normalize-smart-quotes.mjs --check",
     "prebuild": "node scripts/normalize-smart-quotes.mjs && node scripts/normalize-smart-quotes.mjs --check && bun run scripts/generate-handbuch-pdf.ts",
-    "build": "vite build && bun run scripts/prerender-products.ts",
+    "build": "vite build && bun run scripts/prerender-products.ts && bun run scripts/generate-product-feed.ts",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "lint:smart-quotes": "eslint . --rule \"{ 'project-rules/no-smart-quotes': 'error' }\" --no-inline-config",

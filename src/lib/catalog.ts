@@ -14,6 +14,8 @@ export type DbProductRow = {
   keywords: string[];
   meta_title: string;
   meta_description: string;
+  gtin: string;
+  mpn: string;
   is_active: boolean;
   sort_order: number;
 };
@@ -27,6 +29,8 @@ export type DbVariantRow = {
   price_net_cents: number;
   is_active: boolean;
   sort_order: number;
+  gtin: string;
+  mpn: string;
 };
 
 export function mapDbProduct(row: DbProductRow): ProductData {

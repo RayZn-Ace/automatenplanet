@@ -282,6 +282,22 @@ const AdminProducts = () => {
                         onChange={(e) => patch(row.id, "sort_order", Number(e.target.value))}
                       />
                     </div>
+                    <div className="space-y-1.5">
+                      <Label>GTIN / EAN (Google Feed)</Label>
+                      <Input
+                        value={d.gtin ?? ""}
+                        onChange={(e) => patch(row.id, "gtin", e.target.value)}
+                        placeholder="z. B. 4012345678901"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label>MPN / Artikelnummer</Label>
+                      <Input
+                        value={d.mpn ?? ""}
+                        onChange={(e) => patch(row.id, "mpn", e.target.value)}
+                        placeholder="Hersteller-Artikelnummer"
+                      />
+                    </div>
                     <div className="space-y-1.5 sm:col-span-2">
                       <Label>Keywords (Komma-getrennt)</Label>
                       <Input
@@ -360,10 +376,11 @@ function VariantRow({
 }) {
   const [label, setLabel] = useState(variant.label);
   const [price, setPrice] = useState(variant.price_net_cents / 100);
+  const [gtin, setGtin] = useState(variant.gtin ?? "");
   const [active, setActive] = useState(variant.is_active);
 
   return (
-    <div className="grid gap-2 sm:grid-cols-[1fr_140px_auto_auto] items-end border border-border rounded-md p-3">
+    <div className="grid gap-2 sm:grid-cols-[1fr_140px_160px_auto_auto] items-end border border-border rounded-md p-3">
       <div className="space-y-1.5">
         <Label className="text-xs font-mono text-muted-foreground">{variant.variant_id}</Label>
         <Input value={label} onChange={(e) => setLabel(e.target.value)} />
@@ -371,6 +388,10 @@ function VariantRow({
       <div className="space-y-1.5">
         <Label className="text-xs">Netto (€)</Label>
         <Input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
+      </div>
+      <div className="space-y-1.5">
+        <Label className="text-xs">GTIN / EAN</Label>
+        <Input value={gtin} onChange={(e) => setGtin(e.target.value)} placeholder="optional" />
       </div>
       <label className="flex items-center gap-2 text-xs text-muted-foreground pb-2">
         <Switch checked={active} onCheckedChange={setActive} />
@@ -380,7 +401,12 @@ function VariantRow({
         size="sm"
         variant="outline"
         onClick={() =>
-          onSave(variant, { label, price_net_cents: Math.round(price * 100), is_active: active })
+          onSave(variant, {
+            label,
+            price_net_cents: Math.round(price * 100),
+            is_active: active,
+            gtin: gtin.trim(),
+          })
         }
       >
         <Save className="w-4 h-4" />
