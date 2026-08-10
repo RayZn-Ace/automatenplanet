@@ -282,6 +282,22 @@ const AdminProducts = () => {
                         onChange={(e) => patch(row.id, "sort_order", Number(e.target.value))}
                       />
                     </div>
+                    <div className="space-y-1.5">
+                      <Label>GTIN / EAN (Google Feed)</Label>
+                      <Input
+                        value={d.gtin ?? ""}
+                        onChange={(e) => patch(row.id, "gtin", e.target.value)}
+                        placeholder="z. B. 4012345678901"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label>MPN / Artikelnummer</Label>
+                      <Input
+                        value={d.mpn ?? ""}
+                        onChange={(e) => patch(row.id, "mpn", e.target.value)}
+                        placeholder="Hersteller-Artikelnummer"
+                      />
+                    </div>
                     <div className="space-y-1.5 sm:col-span-2">
                       <Label>Keywords (Komma-getrennt)</Label>
                       <Input
