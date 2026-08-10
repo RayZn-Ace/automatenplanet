@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { products } from "@/data/products";
+import { useCatalog } from "@/hooks/useCatalog";
 import {
   Carousel,
   CarouselContent,
@@ -12,6 +12,7 @@ import {
 const EXCLUDED_SLUGS = new Set(["boxautomat-premium", "greifautomat"]);
 
 const MoreProductsSlider = () => {
+  const { products } = useCatalog();
   const items = products.filter((p) => !EXCLUDED_SLUGS.has(p.slug));
 
   return (

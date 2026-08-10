@@ -2,9 +2,10 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Ruler, Euro, MessageCircle, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
-import { products } from "@/data/products";
+import { useCatalog } from "@/hooks/useCatalog";
 
 const Products = () => {
+  const { products } = useCatalog();
   const whatsappUrl = `https://api.whatsapp.com/send?phone=4915510706035&text=${encodeURIComponent("Hallo, ich interessiere mich für Arcade-Automaten.")}`;
 
   return (
