@@ -11,6 +11,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { toast } from "sonner";
 import { grossPrice, grossPriceValue } from "@/lib/pricing";
 import {
@@ -32,6 +40,7 @@ import {
   Eye,
   Pause,
   Play,
+  ListChecks,
 } from "lucide-react";
 
 const FEED_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/product-feed`;
@@ -81,6 +90,8 @@ const AdminFeed = () => {
   const [preview, setPreview] = useState<FeedEntry | null>(null);
   const [previewView, setPreviewView] = useState<"card" | "xml">("card");
   const [autoSwitch, setAutoSwitch] = useState(true);
+  const [batchRunning, setBatchRunning] = useState(false);
+  const [batchResult, setBatchResult] = useState<{ entries: FeedEntry[]; finishedAt: string } | null>(null);
 
   // Blendet die Vorschau automatisch zwischen Shopping-Karte und Feed-XML um.
   useEffect(() => {
@@ -109,15 +120,29 @@ const AdminFeed = () => {
     setLoading(false);
     if (pErr || vErr) {
       toast.error(pErr?.message ?? vErr?.message ?? "Fehler beim Laden.");
-      return;
+      return [] as FeedEntry[];
     }
-    setEntries(
-      validateFeed(
-        (products ?? []) as ValidationInputProduct[],
-        (variants ?? []) as ValidationInputVariant[],
-      ),
+    const validated = validateFeed(
+      (products ?? []) as ValidationInputProduct[],
+      (variants ?? []) as ValidationInputVariant[],
     );
+    setEntries(validated);
+    return validated;
   }, []);
+
+  // Batch-Check: lädt alles neu, validiert in einem Lauf und öffnet die Ergebnis-Tabelle.
+  const runBatch = useCallback(async () => {
+    setBatchRunning(true);
+    const validated = await load();
+    setBatchResult({ entries: validated, finishedAt: new Date().toLocaleString("de-DE") });
+    setBatchRunning(false);
+    const errors = validated.filter((e) => e.issues.some((i) => i.level === "error")).length;
+    toast[errors ? "error" : "success"](
+      errors
+        ? `${validated.length} Angebote geprüft · ${errors} mit Fehlern`
+        : `${validated.length} Angebote geprüft · keine Fehler`,
+    );
+  }, [load]);
 
   const checkLiveFeed = useCallback(async () => {
     setLive({ status: "loading", items: 0, message: "", fetchedAt: "" });
@@ -175,6 +200,10 @@ const AdminFeed = () => {
         <div className="flex flex-wrap gap-2">
           <Button size="sm" variant="outline" onClick={() => { load(); checkLiveFeed(); }} disabled={loading}>
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} /> Neu prüfen
+          </Button>
+          <Button size="sm" variant="secondary" onClick={runBatch} disabled={batchRunning || loading}>
+            <ListChecks className={`w-4 h-4 mr-2 ${batchRunning ? "animate-pulse" : ""}`} />
+            {batchRunning ? "Prüfe…" : `Batch-Check (${summary.total})`}
           </Button>
           <Button size="sm" onClick={() => setPreview(visible[0] ?? entries[0] ?? null)} disabled={entries.length === 0}>
             <Eye className="w-4 h-4 mr-2" /> Google-Vorschau
@@ -349,6 +378,109 @@ const AdminFeed = () => {
           );
         })}
       </div>
+
+      {/* Batch-Check: kompakte Ergebnis-Tabelle über alle Angebote */}
+      <Dialog open={!!batchResult} onOpenChange={(open) => !open && setBatchResult(null)}>
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Batch-Check · Ergebnis</DialogTitle>
+            <DialogDescription>
+              {batchResult
+                ? `${batchResult.entries.length} Angebote in einem Lauf validiert · ${batchResult.finishedAt}`
+                : ""}
+            </DialogDescription>
+          </DialogHeader>
+
+          {batchResult && (
+            <>
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                {[
+                  {
+                    label: "Fehlerfrei",
+                    value: batchResult.entries.filter((e) => e.issues.length === 0).length,
+                  },
+                  {
+                    label: "Mit Fehlern",
+                    value: batchResult.entries.filter((e) =>
+                      e.issues.some((i) => i.level === "error"),
+                    ).length,
+                  },
+                  {
+                    label: "Nur Warnungen",
+                    value: batchResult.entries.filter(
+                      (e) =>
+                        e.issues.length > 0 && !e.issues.some((i) => i.level === "error"),
+                    ).length,
+                  },
+                ].map((kpi) => (
+                  <Card key={kpi.label} className="p-3">
+                    <div className="text-xs text-muted-foreground">{kpi.label}</div>
+                    <div className="text-2xl font-semibold">{kpi.value}</div>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="rounded-md border overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Angebot</TableHead>
+                      <TableHead className="w-24">ID</TableHead>
+                      <TableHead className="w-20 text-center">Fehler</TableHead>
+                      <TableHead className="w-24 text-center">Warnungen</TableHead>
+                      <TableHead>Befunde</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {batchResult.entries.map((entry) => {
+                      const errors = entry.issues.filter((i) => i.level === "error");
+                      const warnings = entry.issues.filter((i) => i.level !== "error");
+                      return (
+                        <TableRow key={entry.id}>
+                          <TableCell className="font-medium">
+                            <button
+                              type="button"
+                              className="text-left hover:underline"
+                              onClick={() => {
+                                setBatchResult(null);
+                                setPreview(entry);
+                              }}
+                            >
+                              {entry.title}
+                            </button>
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground break-all">
+                            {entry.id}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {errors.length ? (
+                              <Badge variant="destructive">{errors.length}</Badge>
+                            ) : (
+                              <CheckCircle2 className="w-4 h-4 mx-auto text-muted-foreground" />
+                            )}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {warnings.length ? (
+                              <Badge variant="secondary">{warnings.length}</Badge>
+                            ) : (
+                              <span className="text-muted-foreground">–</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground">
+                            {entry.issues.length === 0
+                              ? "Keine Beanstandungen"
+                              : entry.issues.map((i) => i.message).join(" · ")}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Google-Shopping-Vorschau */}
       <Dialog open={!!preview} onOpenChange={(open) => !open && setPreview(null)}>
