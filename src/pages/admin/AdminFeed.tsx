@@ -162,11 +162,15 @@ const AdminFeed = () => {
           <Button size="sm" variant="outline" onClick={() => { load(); checkLiveFeed(); }} disabled={loading}>
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} /> Neu prüfen
           </Button>
+          <Button size="sm" onClick={() => setPreview(visible[0] ?? entries[0] ?? null)} disabled={entries.length === 0}>
+            <Eye className="w-4 h-4 mr-2" /> Google-Vorschau
+          </Button>
           <Button size="sm" variant="outline" asChild>
             <a href={FEED_URL} target="_blank" rel="noreferrer">
               <ExternalLink className="w-4 h-4 mr-2" /> Feed öffnen
             </a>
           </Button>
+
         </div>
       </div>
 
