@@ -80,6 +80,99 @@ export type Database = {
         }
         Relationships: []
       }
+      mail_identities: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string
+          id: string
+          is_default: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email: string
+          id?: string
+          is_default?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string
+          id?: string
+          is_default?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mail_messages: {
+        Row: {
+          cc_email: string[]
+          created_at: string
+          direction: string
+          error_message: string | null
+          from_email: string
+          from_name: string | null
+          html_body: string | null
+          id: string
+          in_reply_to: string | null
+          is_read: boolean
+          message_id: string | null
+          provider_id: string | null
+          raw: Json | null
+          snippet: string | null
+          status: string
+          subject: string | null
+          text_body: string | null
+          to_email: string[]
+          updated_at: string
+        }
+        Insert: {
+          cc_email?: string[]
+          created_at?: string
+          direction: string
+          error_message?: string | null
+          from_email: string
+          from_name?: string | null
+          html_body?: string | null
+          id?: string
+          in_reply_to?: string | null
+          is_read?: boolean
+          message_id?: string | null
+          provider_id?: string | null
+          raw?: Json | null
+          snippet?: string | null
+          status?: string
+          subject?: string | null
+          text_body?: string | null
+          to_email?: string[]
+          updated_at?: string
+        }
+        Update: {
+          cc_email?: string[]
+          created_at?: string
+          direction?: string
+          error_message?: string | null
+          from_email?: string
+          from_name?: string | null
+          html_body?: string | null
+          id?: string
+          in_reply_to?: string | null
+          is_read?: boolean
+          message_id?: string | null
+          provider_id?: string | null
+          raw?: Json | null
+          snippet?: string | null
+          status?: string
+          subject?: string | null
+          text_body?: string | null
+          to_email?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string

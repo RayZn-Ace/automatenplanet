@@ -28,6 +28,7 @@ import AdminJourneys from "./pages/admin/AdminJourneys";
 import AdminRevenue from "./pages/admin/AdminRevenue";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminProducts from "./pages/admin/AdminProducts";
+import AdminMail from "./pages/admin/AdminMail";
 
 import WhatsAppButton from "./components/WhatsAppButton";
 import TrackingScripts from "./components/TrackingScripts";
@@ -58,6 +59,8 @@ const App = () => (
               <Route path="umsatz" element={<AdminRevenue />} />
               <Route path="bestellungen" element={<AdminOrders />} />
               <Route path="produkte" element={<AdminProducts />} />
+              <Route path="postfach" element={<AdminMail />} />
+
             </Route>
             <Route path="/metriken" element={<Navigate to="/admin" replace />} />
             <Route path="/bestellungen" element={<Navigate to="/admin/bestellungen" replace />} />
