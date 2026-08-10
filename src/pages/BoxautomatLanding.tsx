@@ -102,6 +102,7 @@ const BoxautomatLanding = () => {
       currency: "EUR",
       contentName: product.name,
       contentType: "product",
+      category: product.category,
       items: [{ id: PRODUCT_SLUG, name: product.name, price: selectedVariant.price, quantity: 1 }],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
