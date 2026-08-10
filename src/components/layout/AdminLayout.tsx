@@ -16,6 +16,7 @@ import {
   Package,
   Boxes,
   Mail,
+  ShieldCheck,
   LogOut,
   Menu,
   X,
@@ -28,6 +29,7 @@ const NAV = [
   { to: "/admin/umsatz", label: "Umsätze", icon: Euro },
   { to: "/admin/bestellungen", label: "Bestellungen", icon: Package },
   { to: "/admin/produkte", label: "Produkte", icon: Boxes },
+  { to: "/admin/feed", label: "Feed-Check", icon: ShieldCheck },
   { to: "/admin/postfach", label: "Postfach", icon: Mail },
 ];
 
