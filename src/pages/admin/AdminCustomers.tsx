@@ -134,7 +134,7 @@ const AdminCustomers = () => {
       if (filter === "customers" && c.paidOrders === 0) return false;
       if (filter === "leads" && c.paidOrders > 0) return false;
       if (!q) return true;
-      return [c.email, c.name, c.company, c.city, c.phone]
+      return [c.email, c.name, c.company, c.address, c.phone]
         .join(" ")
         .toLowerCase()
         .includes(q);
