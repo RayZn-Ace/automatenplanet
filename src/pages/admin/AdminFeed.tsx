@@ -4,11 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { grossPrice } from "@/lib/pricing";
+import { grossPrice, grossPriceValue } from "@/lib/pricing";
 import {
   summarize,
   validateFeed,
+  SITE,
   type FeedEntry,
   type ValidationInputProduct,
   type ValidationInputVariant,
@@ -21,6 +29,7 @@ import {
   Barcode,
   ExternalLink,
   Search,
+  Eye,
 } from "lucide-react";
 
 const FEED_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/product-feed`;
@@ -36,6 +45,30 @@ interface LiveFeedState {
 
 const euroFmt = (value: number) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(value);
+
+const imageSrc = (image: string) => (/^https?:\/\//i.test(image) ? image : `${SITE}${image}`);
+
+/** So sieht der XML-Block aus, den Google für dieses Angebot einliest. */
+const itemXml = (entry: FeedEntry) =>
+  [
+    "<item>",
+    `  <g:id>${entry.id}</g:id>`,
+    `  <g:item_group_id>${entry.groupId}</g:item_group_id>`,
+    `  <title>${entry.title}</title>`,
+    `  <link>${entry.link}</link>`,
+    `  <g:image_link>${imageSrc(entry.image)}</g:image_link>`,
+    `  <g:price>${grossPriceValue(entry.priceNet)} EUR</g:price>`,
+    `  <g:availability>${entry.isActive ? "in_stock" : "out_of_stock"}</g:availability>`,
+    `  <g:condition>new</g:condition>`,
+    `  <g:brand>AutomatPlanet</g:brand>`,
+    entry.gtinStatus === "valid" ? `  <g:gtin>${entry.gtin}</g:gtin>` : null,
+    entry.mpn ? `  <g:mpn>${entry.mpn}</g:mpn>` : null,
+    !entry.identifierExists ? "  <g:identifier_exists>no</g:identifier_exists>" : null,
+    "</item>",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
 
 const AdminFeed = () => {
   const [entries, setEntries] = useState<FeedEntry[]>([]);
