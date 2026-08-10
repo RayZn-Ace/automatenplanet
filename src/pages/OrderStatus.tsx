@@ -42,9 +42,23 @@ const OrderStatus = () => {
         setStatus("paid");
         clearCart();
         trackEvent("purchase", {
-          value: data.order.total_gross_cents / 100,
-          currency: "EUR",
+          // value = Warenwert netto, ohne Versand (identisch zum Merchant Center)
+          value: (data.order.subtotal_net_cents ?? 0) / 100,
+          currency: data.order.currency ?? "EUR",
           transactionId: data.order.order_number,
+          tax: (data.order.vat_cents ?? 0) / 100,
+          shipping: (data.order.shipping_net_cents ?? 0) / 100,
+          items: (data.order.items ?? []).map((item: {
+            slug: string;
+            name: string;
+            quantity: number;
+            unit_price_net_cents: number;
+          }) => ({
+            id: item.slug,
+            name: item.name,
+            quantity: item.quantity,
+            price: item.unit_price_net_cents / 100,
+          })),
         });
         track("purchase", {
           question_id: data.order.order_number,

@@ -8,6 +8,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { hasMarketingConsent } from "@/lib/consent";
+import { DataLayerEcommerceEvent, pushEcommerce } from "@/lib/dataLayer";
 import {
   EVENT_MAP,
   GA4_MEASUREMENT_ID,
@@ -49,6 +50,12 @@ export interface TrackPayload {
   contentType?: "product" | "product_group";
   items?: TrackItem[];
   transactionId?: string;
+  /** Steuerbetrag (nur purchase). */
+  tax?: number;
+  /** Versandkosten (nur purchase). */
+  shipping?: number;
+  /** GA4 item_category */
+  category?: string;
   searchTerm?: string;
   /** Wird gehasht und nur serverseitig verwendet. */
   email?: string;
@@ -125,6 +132,7 @@ function ga4Data(payload: TrackPayload) {
           items: payload.items.map((i) => ({
             item_id: i.id,
             item_name: i.name,
+            ...(payload.category ? { item_category: payload.category } : {}),
             price: i.price,
             quantity: i.quantity ?? 1,
           })),
@@ -145,6 +153,34 @@ function ga4ClientId(): string | undefined {
  * Sendet ein Event an alle aktiven Kanäle (Browser + Server).
  * Fire-and-forget: Fehler eines Kanals beeinflussen die anderen nicht.
  */
+/** Kanonisches Event -> GA4/GTM-Ecommerce-Event (nur diese vier werden gepusht). */
+const DATA_LAYER_EVENTS: Partial<Record<TrackedEvent, DataLayerEcommerceEvent>> = {
+  view_content: "view_item",
+  add_to_cart: "add_to_cart",
+  begin_checkout: "begin_checkout",
+  purchase: "purchase",
+};
+
+/** Ecommerce-Event an den GTM-dataLayer (GA4 + Google Ads laufen im Container). */
+function pushToDataLayer(event: TrackedEvent, payload: TrackPayload): void {
+  const dlEvent = DATA_LAYER_EVENTS[event];
+  if (!dlEvent) return;
+  pushEcommerce(dlEvent, {
+    currency: payload.currency ?? "EUR",
+    value: payload.value,
+    transaction_id: payload.transactionId,
+    tax: payload.tax,
+    shipping: payload.shipping,
+    items: (payload.items ?? []).map((i) => ({
+      item_id: i.id,
+      item_name: i.name,
+      item_category: payload.category,
+      price: i.price,
+      quantity: i.quantity ?? 1,
+    })),
+  });
+}
+
 export function trackEvent(event: TrackedEvent, payload: TrackPayload = {}): void {
   // Ohne Marketing-Einwilligung wird nichts an Meta/TikTok/Google gesendet.
   if (!hasMarketingConsent()) return;
@@ -152,6 +188,9 @@ export function trackEvent(event: TrackedEvent, payload: TrackPayload = {}): voi
   const names = EVENT_MAP[event];
   const url = typeof window !== "undefined" ? window.location.href : undefined;
   const { email, phone, ...publicPayload } = payload;
+
+  // ---------- Google Tag Manager (GA4 + Google Ads Conversions im Container) ----------
+  pushToDataLayer(event, publicPayload);
 
   // ---------- Meta ----------
   if (isMetaEnabled()) {

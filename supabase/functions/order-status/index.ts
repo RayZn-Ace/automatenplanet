@@ -23,7 +23,9 @@ Deno.serve(async (req) => {
 
   const { data, error } = await supabase
     .from("orders")
-    .select("order_number, status, total_gross_cents, email")
+    .select(
+      "order_number, status, subtotal_net_cents, shipping_net_cents, vat_cents, total_gross_cents, currency, email",
+    )
     .eq("id", parsed.data.orderId)
     .single();
 
@@ -64,7 +66,13 @@ Deno.serve(async (req) => {
     }
   }
 
-  return new Response(JSON.stringify({ order: data }), {
+  // Positionen für das GA4/GTM purchase-Event
+  const { data: items } = await supabase
+    .from("order_items")
+    .select("slug, name, variant_label, quantity, unit_price_net_cents")
+    .eq("order_id", parsed.data.orderId);
+
+  return new Response(JSON.stringify({ order: { ...data, items: items ?? [] } }), {
     status: 200,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
