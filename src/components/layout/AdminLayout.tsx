@@ -15,6 +15,7 @@ import {
   Euro,
   Package,
   Boxes,
+  Mail,
   LogOut,
   Menu,
   X,
@@ -27,6 +28,7 @@ const NAV = [
   { to: "/admin/umsatz", label: "Umsätze", icon: Euro },
   { to: "/admin/bestellungen", label: "Bestellungen", icon: Package },
   { to: "/admin/produkte", label: "Produkte", icon: Boxes },
+  { to: "/admin/postfach", label: "Postfach", icon: Mail },
 ];
 
 function AuthForm() {
