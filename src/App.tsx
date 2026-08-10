@@ -19,10 +19,16 @@ import Handbuch from "./pages/Handbuch";
 import HandbuchBoxautomat from "./pages/HandbuchBoxautomat";
 import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
 import BoxautomatLanding from "./pages/BoxautomatLanding";
-import Metriken from "./pages/Metriken";
 import Checkout from "./pages/Checkout";
 import OrderStatus from "./pages/OrderStatus";
-import Bestellungen from "./pages/Bestellungen";
+import AdminLayout from "./components/layout/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminLive from "./pages/admin/AdminLive";
+import AdminJourneys from "./pages/admin/AdminJourneys";
+import AdminRevenue from "./pages/admin/AdminRevenue";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminProducts from "./pages/admin/AdminProducts";
+
 import WhatsAppButton from "./components/WhatsAppButton";
 import TrackingScripts from "./components/TrackingScripts";
 import AnalyticsTracker from "./components/AnalyticsTracker";
