@@ -73,9 +73,8 @@ const AdminFeed = () => {
   const checkLiveFeed = useCallback(async () => {
     setLive({ status: "loading", items: 0, message: "", fetchedAt: "" });
     try {
-      const res = await fetch(FEED_URL, {
-        headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string },
-      });
+      // Ohne Zusatz-Header: so bleibt es ein einfacher GET ohne CORS-Preflight.
+      const res = await fetch(FEED_URL);
       const xml = await res.text();
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       if (!xml.includes("<rss")) throw new Error("Antwort ist kein RSS-Feed.");
