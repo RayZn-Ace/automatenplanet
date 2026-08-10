@@ -30,6 +30,8 @@ import {
   ExternalLink,
   Search,
   Eye,
+  Pause,
+  Play,
 } from "lucide-react";
 
 const FEED_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/product-feed`;
@@ -77,6 +79,18 @@ const AdminFeed = () => {
   const [query, setQuery] = useState("");
   const [live, setLive] = useState<LiveFeedState>({ status: "idle", items: 0, message: "", fetchedAt: "" });
   const [preview, setPreview] = useState<FeedEntry | null>(null);
+  const [previewView, setPreviewView] = useState<"card" | "xml">("card");
+  const [autoSwitch, setAutoSwitch] = useState(true);
+
+  // Blendet die Vorschau automatisch zwischen Shopping-Karte und Feed-XML um.
+  useEffect(() => {
+    if (!preview || !autoSwitch) return;
+    const timer = window.setInterval(
+      () => setPreviewView((v) => (v === "card" ? "xml" : "card")),
+      4000,
+    );
+    return () => window.clearInterval(timer);
+  }, [preview, autoSwitch]);
 
 
   const load = useCallback(async () => {
@@ -349,8 +363,41 @@ const AdminFeed = () => {
 
           {preview && (
             <div className="space-y-5">
+              {/* Umschalter: Karte ↔ Feed-XML */}
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  size="sm"
+                  variant={previewView === "card" ? "default" : "outline"}
+                  className="h-7 text-xs"
+                  onClick={() => { setAutoSwitch(false); setPreviewView("card"); }}
+                >
+                  Bild, Titel, Preis
+                </Button>
+                <Button
+                  size="sm"
+                  variant={previewView === "xml" ? "default" : "outline"}
+                  className="h-7 text-xs"
+                  onClick={() => { setAutoSwitch(false); setPreviewView("xml"); }}
+                >
+                  Feed-XML
+                </Button>
+                <Button
+                  size="sm"
+                  variant={autoSwitch ? "secondary" : "ghost"}
+                  className="h-7 text-xs ml-auto"
+                  onClick={() => setAutoSwitch((v) => !v)}
+                >
+                  {autoSwitch ? (
+                    <><Pause className="w-3.5 h-3.5 mr-1.5" /> Auto-Wechsel an</>
+                  ) : (
+                    <><Play className="w-3.5 h-3.5 mr-1.5" /> Auto-Wechsel aus</>
+                  )}
+                </Button>
+              </div>
+
               {/* Shopping-Karte */}
-              <div className="rounded-xl border border-border bg-background p-4 max-w-xs">
+              {previewView === "card" && (
+              <div className="rounded-xl border border-border bg-background p-4 max-w-xs animate-in fade-in duration-300">
                 <div className="aspect-square rounded-lg bg-white flex items-center justify-center overflow-hidden">
                   {preview.image ? (
                     <img
@@ -374,6 +421,7 @@ const AdminFeed = () => {
                   </div>
                 </div>
               </div>
+              )}
 
               <div className="grid gap-2 text-sm sm:grid-cols-2">
                 <div>
@@ -402,12 +450,14 @@ const AdminFeed = () => {
                 </div>
               </div>
 
-              <div>
+              {previewView === "xml" && (
+              <div className="animate-in fade-in duration-300">
                 <div className="text-xs text-muted-foreground mb-1.5">Feed-Daten (XML)</div>
                 <pre className="rounded-lg border border-border bg-muted/40 p-3 text-xs overflow-x-auto">
                   {itemXml(preview)}
                 </pre>
               </div>
+              )}
 
               <div>
                 <div className="text-xs text-muted-foreground mb-1.5">Alle {entries.length} Angebote</div>
