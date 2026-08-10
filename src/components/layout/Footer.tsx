@@ -15,7 +15,7 @@ const Footer = () => {
             </p>
             <p className="text-sm text-muted-foreground">
               Fragen? Rufen Sie uns an:{" "}
-              <a href="tel:+4905111228957" className="font-bold text-primary hover:underline">
+              <a href="tel:+4951112282957" className="font-bold text-primary hover:underline">
                 0511 12282957
               </a>
             </p>

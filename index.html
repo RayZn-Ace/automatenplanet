@@ -21,18 +21,24 @@
   <meta property="og:description" content="Greifautomaten, Boxautomaten, Basketball-Automaten &amp; Arcade-Games kaufen. Der führende Anbieter für Entertainment-Automaten in Deutschland.">
   <meta name="twitter:description" content="Greifautomaten, Boxautomaten, Basketball-Automaten &amp; Arcade-Games kaufen. Der führende Anbieter für Entertainment-Automaten in Deutschland.">
 
-  <!-- Google Consent Mode v2: Standard = denied, Update nach Einwilligung -->
+  <!-- Google Consent Mode v2: Standard = denied (synchron, VOR GTM), Update nach Einwilligung -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('consent', 'default', {
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-      analytics_storage: 'denied',
-      wait_for_update: 500
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'analytics_storage': 'denied',
+      'functionality_storage': 'denied',
+      'personalization_storage': 'denied',
+      'security_storage': 'granted',
+      'wait_for_update': 500
     });
+    gtag('set', 'ads_data_redaction', true);
+    gtag('set', 'url_passthrough', true);
   </script>
+
 
   <!-- Meta Pixel Code -->
   <script>

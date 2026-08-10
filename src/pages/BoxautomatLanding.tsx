@@ -102,6 +102,7 @@ const BoxautomatLanding = () => {
       currency: "EUR",
       contentName: product.name,
       contentType: "product",
+      category: product.category,
       items: [{ id: PRODUCT_SLUG, name: product.name, price: selectedVariant.price, quantity: 1 }],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -166,7 +167,7 @@ const BoxautomatLanding = () => {
                 </a>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <a href="tel:051112282957">
+                <a href="tel:+4951112282957">
                   <Phone className="mr-2" /> 0511 12282957
                 </a>
               </Button>

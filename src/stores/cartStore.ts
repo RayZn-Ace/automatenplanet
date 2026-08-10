@@ -91,6 +91,7 @@ export const useCartStore = create<CartStore>()(
           currency: "EUR",
           contentName: itemName,
           contentType: "product",
+          category: product.category,
           items: [{ id: slug, name: itemName, quantity, price: itemPrice }],
         });
         track("add_to_cart", {

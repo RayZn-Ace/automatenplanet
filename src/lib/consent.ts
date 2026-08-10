@@ -73,6 +73,9 @@ export function applyConsentToVendors(marketing: boolean): void {
       ad_user_data: granted,
       ad_personalization: granted,
       analytics_storage: granted,
+      functionality_storage: granted,
+      personalization_storage: granted,
+      security_storage: "granted",
     });
   } catch {
     /* ignore */
