@@ -63,6 +63,8 @@ type ProductRow = {
   dimensions: string;
   power: string;
   category: string;
+  gtin: string;
+  mpn: string;
 };
 
 type VariantRow = {
@@ -72,6 +74,8 @@ type VariantRow = {
   description: string;
   price_net_cents: number;
   sort_order: number;
+  gtin: string;
+  mpn: string;
 };
 
 interface FeedItem {
@@ -84,6 +88,8 @@ interface FeedItem {
   additionalImages: string[];
   priceNet: number;
   category: string;
+  gtin: string;
+  mpn: string;
 }
 
 function renderItem(item: FeedItem): string {
@@ -91,6 +97,14 @@ function renderItem(item: FeedItem): string {
     .slice(0, 10)
     .map((img) => `\n      <g:additional_image_link>${esc(img)}</g:additional_image_link>`)
     .join("");
+
+  // GTIN/EAN und MPN nur ausgeben, wenn vorhanden. Google verlangt sonst
+  // explizit identifier_exists=no, sonst wird das Angebot abgelehnt.
+  const gtin = item.gtin.replace(/[^0-9]/g, "");
+  const mpn = item.mpn.trim();
+  const identifiers = gtin || mpn
+    ? `${gtin ? `\n      <g:gtin>${esc(gtin)}</g:gtin>` : ""}${mpn ? `\n      <g:mpn>${esc(mpn)}</g:mpn>` : ""}`
+    : "\n      <g:identifier_exists>no</g:identifier_exists>";
 
   return `    <item>
       <g:id>${esc(item.id)}</g:id>
@@ -102,8 +116,7 @@ function renderItem(item: FeedItem): string {
       <g:availability>in_stock</g:availability>
       <g:condition>new</g:condition>
       <g:price>${gross(item.priceNet)} ${CURRENCY}</g:price>
-      <g:brand>${esc(BRAND)}</g:brand>
-      <g:identifier_exists>no</g:identifier_exists>
+      <g:brand>${esc(BRAND)}</g:brand>${identifiers}
       <g:google_product_category>${googleCategory(item.category)}</g:google_product_category>
       <g:product_type>${esc(item.category)}</g:product_type>
       <g:shipping>
@@ -126,13 +139,13 @@ Deno.serve(async () => {
       supabase
         .from("products")
         .select(
-          "id, slug, name, description, price_net_cents, image, gallery, dimensions, power, category",
+          "id, slug, name, description, price_net_cents, image, gallery, dimensions, power, category, gtin, mpn",
         )
         .eq("is_active", true)
         .order("sort_order", { ascending: true }),
       supabase
         .from("product_variants")
-        .select("product_id, variant_id, label, description, price_net_cents, sort_order")
+        .select("product_id, variant_id, label, description, price_net_cents, sort_order, gtin, mpn")
         .eq("is_active", true)
         .order("sort_order", { ascending: true }),
     ]);
@@ -176,6 +189,8 @@ Deno.serve(async () => {
         additionalImages: images.slice(1),
         priceNet: p.price_net_cents / 100,
         category: p.category,
+        gtin: p.gtin ?? "",
+        mpn: p.mpn ?? "",
       });
       continue;
     }
@@ -192,6 +207,8 @@ Deno.serve(async () => {
         additionalImages: images.slice(1),
         priceNet: v.price_net_cents / 100,
         category: p.category,
+        gtin: v.gtin || p.gtin || "",
+        mpn: v.mpn || p.mpn || "",
       });
     }
   }
