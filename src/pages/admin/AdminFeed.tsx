@@ -77,6 +77,18 @@ const AdminFeed = () => {
   const [query, setQuery] = useState("");
   const [live, setLive] = useState<LiveFeedState>({ status: "idle", items: 0, message: "", fetchedAt: "" });
   const [preview, setPreview] = useState<FeedEntry | null>(null);
+  const [previewView, setPreviewView] = useState<"card" | "xml">("card");
+  const [autoSwitch, setAutoSwitch] = useState(true);
+
+  // Blendet die Vorschau automatisch zwischen Shopping-Karte und Feed-XML um.
+  useEffect(() => {
+    if (!preview || !autoSwitch) return;
+    const timer = window.setInterval(
+      () => setPreviewView((v) => (v === "card" ? "xml" : "card")),
+      4000,
+    );
+    return () => window.clearInterval(timer);
+  }, [preview, autoSwitch]);
 
 
   const load = useCallback(async () => {
