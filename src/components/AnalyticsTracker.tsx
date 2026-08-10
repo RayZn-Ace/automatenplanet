@@ -9,7 +9,7 @@ import { trackPageview } from "@/lib/analytics";
 const AnalyticsTracker = () => {
   const loc = useLocation();
   useEffect(() => {
-    if (loc.pathname.startsWith("/metriken")) return;
+    if (loc.pathname.startsWith("/admin") || loc.pathname.startsWith("/metriken") || loc.pathname.startsWith("/bestellungen")) return;
     trackPageview(loc.pathname + loc.search);
   }, [loc.pathname, loc.search]);
   return null;
