@@ -65,6 +65,7 @@ type ProductRow = {
   category: string;
   gtin: string;
   mpn: string;
+  availability: string;
 };
 
 type VariantRow = {
@@ -76,6 +77,7 @@ type VariantRow = {
   sort_order: number;
   gtin: string;
   mpn: string;
+  availability: string;
 };
 
 interface FeedItem {
@@ -90,6 +92,21 @@ interface FeedItem {
   category: string;
   gtin: string;
   mpn: string;
+  availability: string;
+}
+
+/** DB-Verfuegbarkeit -> Google-Merchant-Wert. */
+function feedAvailability(value: string): string {
+  switch (value) {
+    case "out_of_stock":
+      return "out_of_stock";
+    case "preorder":
+      return "preorder";
+    case "backorder":
+      return "backorder";
+    default:
+      return "in_stock";
+  }
 }
 
 function renderItem(item: FeedItem): string {
@@ -113,7 +130,7 @@ function renderItem(item: FeedItem): string {
       <description>${esc(item.description)}</description>
       <link>${esc(item.link)}</link>
       <g:image_link>${esc(item.image)}</g:image_link>${extra}
-      <g:availability>in_stock</g:availability>
+      <g:availability>${esc(item.availability)}</g:availability>
       <g:condition>new</g:condition>
       <g:price>${gross(item.priceNet)} ${CURRENCY}</g:price>
       <g:brand>${esc(BRAND)}</g:brand>${identifiers}
@@ -149,13 +166,13 @@ Deno.serve(async (req) => {
       supabase
         .from("products")
         .select(
-          "id, slug, name, description, price_net_cents, image, gallery, dimensions, power, category, gtin, mpn",
+          "id, slug, name, description, price_net_cents, image, gallery, dimensions, power, category, gtin, mpn, availability",
         )
         .eq("is_active", true)
         .order("sort_order", { ascending: true }),
       supabase
         .from("product_variants")
-        .select("product_id, variant_id, label, description, price_net_cents, sort_order, gtin, mpn")
+        .select("product_id, variant_id, label, description, price_net_cents, sort_order, gtin, mpn, availability")
         .eq("is_active", true)
         .order("sort_order", { ascending: true }),
     ]);
@@ -190,7 +207,7 @@ Deno.serve(async (req) => {
 
     if (productVariants.length === 0) {
       items.push({
-        id: p.slug,
+        id: (p.mpn ?? "").trim() || p.slug,
         groupId: p.slug,
         title: p.name,
         description: baseDescription,
@@ -201,6 +218,7 @@ Deno.serve(async (req) => {
         category: p.category,
         gtin: p.gtin ?? "",
         mpn: p.mpn ?? "",
+        availability: feedAvailability(p.availability ?? "in_stock"),
       });
       continue;
     }
@@ -208,7 +226,7 @@ Deno.serve(async (req) => {
     for (const v of productVariants) {
       const vSlug = v.label ? variantSlug(v.label) : v.variant_id;
       items.push({
-        id: v.variant_id,
+        id: (v.mpn ?? "").trim() || v.variant_id,
         groupId: p.slug,
         title: v.label ? `${p.name} – ${v.label}` : p.name,
         description: [baseDescription, v.description].filter(Boolean).join(" "),
@@ -219,6 +237,7 @@ Deno.serve(async (req) => {
         category: p.category,
         gtin: v.gtin || p.gtin || "",
         mpn: v.mpn || p.mpn || "",
+        availability: feedAvailability(v.availability ?? p.availability ?? "in_stock"),
       });
     }
   }
