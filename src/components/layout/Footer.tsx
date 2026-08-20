@@ -1,5 +1,27 @@
+import { Link } from "react-router-dom";
 import { openConsentSettings } from "@/components/CookieBanner";
 import logo from "@/assets/logo-automatplanet.png";
+
+const productLinks = [
+  { label: "Greifautomaten", to: "/produkte/greifautomat" },
+  { label: "Boxautomaten", to: "/produkte/boxautomat-premium" },
+  { label: "Basketball Automaten", to: "/produkte/basketball-machine" },
+  { label: "Arcade Automaten", to: "/produkte/arcade-machine" },
+  { label: "Prize Maschinen", to: "/produkte/lucky-7-machine" },
+];
+
+const legalLinks = [
+  { label: "Impressum", to: "/impressum" },
+  { label: "Datenschutz", to: "/datenschutz" },
+  { label: "AGB", to: "/agb" },
+  { label: "Rückgabe und Gewährleistung", to: "/rueckgabe" },
+  { label: "Versand und Lieferung", to: "/versand" },
+];
+
+const companyLinks = [
+  { label: "Blog", to: "/blog" },
+  { label: "Kontakt", to: "/#kontakt" },
+];
 
 const Footer = () => {
   return (
@@ -24,37 +46,51 @@ const Footer = () => {
           <div>
             <h4 className="font-bold mb-4 text-sm uppercase tracking-wider">Automaten</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Greifautomaten</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Boxautomaten</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Basketball Automaten</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Arcade Automaten</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Prize Maschinen</a></li>
+              {productLinks.map((item) => (
+                <li key={item.to}>
+                  <Link to={item.to} className="hover:text-foreground transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
             <h4 className="font-bold mb-4 text-sm uppercase tracking-wider">Unternehmen</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Über uns</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Blog</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Kontakt</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Karriere</a></li>
+              {companyLinks.map((item) => (
+                <li key={item.to}>
+                  <Link to={item.to} className="hover:text-foreground transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
             <h4 className="font-bold mb-4 text-sm uppercase tracking-wider">Rechtliches</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="/impressum" className="hover:text-foreground transition-colors">Impressum</a></li>
-              <li><a href="/datenschutz" className="hover:text-foreground transition-colors">Datenschutz</a></li>
+              {legalLinks.map((item) => (
+                <li key={item.to}>
+                  <Link to={item.to} className="hover:text-foreground transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
               <li>
                 <button type="button" onClick={openConsentSettings} className="hover:text-foreground transition-colors">
                   Cookie-Einstellungen
                 </button>
               </li>
-              <li><a href="#" className="hover:text-foreground transition-colors">AGB</a></li>
             </ul>
           </div>
+        </div>
+
+        <div className="rounded-xl border border-border bg-card/50 p-4 mb-8 text-sm text-foreground font-medium text-center">
+          Verkauf ausschließlich an Unternehmer im Sinne des § 14 BGB. Alle Preise zzgl. gesetzlicher Mehrwertsteuer
+          und Versandkosten.
         </div>
 
         <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">

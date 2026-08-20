@@ -10,6 +10,8 @@ export interface ProductData {
   keywords: string[];
   metaTitle: string;
   metaDescription: string;
+  /** Verfuegbarkeit aus der Datenbank (Standard: in_stock). */
+  availability?: "in_stock" | "out_of_stock" | "preorder" | "backorder";
 }
 
 export const products: ProductData[] = [

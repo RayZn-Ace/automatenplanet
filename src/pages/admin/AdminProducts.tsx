@@ -28,8 +28,19 @@ const emptyProduct = (): Partial<DbProductRow> => ({
   meta_title: "",
   meta_description: "",
   is_active: true,
+  availability: "in_stock",
   sort_order: 999,
 });
+
+const AVAILABILITY_OPTIONS = [
+  { value: "in_stock", label: "Auf Lager" },
+  { value: "out_of_stock", label: "Nicht auf Lager" },
+  { value: "preorder", label: "Vorbestellung" },
+  { value: "backorder", label: "Nachbestellung" },
+];
+
+const selectClass =
+  "h-10 w-full rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring";
 
 const AdminProducts = () => {
   const [rows, setRows] = useState<ProductWithVariants[]>([]);
@@ -298,6 +309,20 @@ const AdminProducts = () => {
                         placeholder="Hersteller-Artikelnummer"
                       />
                     </div>
+                    <div className="space-y-1.5">
+                      <Label>Verfügbarkeit</Label>
+                      <select
+                        className={selectClass}
+                        value={d.availability ?? "in_stock"}
+                        onChange={(e) => patch(row.id, "availability", e.target.value)}
+                      >
+                        {AVAILABILITY_OPTIONS.map((o) => (
+                          <option key={o.value} value={o.value}>
+                            {o.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     <div className="space-y-1.5 sm:col-span-2">
                       <Label>Keywords (Komma-getrennt)</Label>
                       <Input
@@ -377,10 +402,12 @@ function VariantRow({
   const [label, setLabel] = useState(variant.label);
   const [price, setPrice] = useState(variant.price_net_cents / 100);
   const [gtin, setGtin] = useState(variant.gtin ?? "");
+  const [mpn, setMpn] = useState(variant.mpn ?? "");
+  const [availability, setAvailability] = useState(variant.availability ?? "in_stock");
   const [active, setActive] = useState(variant.is_active);
 
   return (
-    <div className="grid gap-2 sm:grid-cols-[1fr_140px_160px_auto_auto] items-end border border-border rounded-md p-3">
+    <div className="grid gap-2 sm:grid-cols-[1fr_120px_150px_150px_150px_auto_auto] items-end border border-border rounded-md p-3">
       <div className="space-y-1.5">
         <Label className="text-xs font-mono text-muted-foreground">{variant.variant_id}</Label>
         <Input value={label} onChange={(e) => setLabel(e.target.value)} />
@@ -392,6 +419,20 @@ function VariantRow({
       <div className="space-y-1.5">
         <Label className="text-xs">GTIN / EAN</Label>
         <Input value={gtin} onChange={(e) => setGtin(e.target.value)} placeholder="optional" />
+      </div>
+      <div className="space-y-1.5">
+        <Label className="text-xs">MPN / Artikelnummer</Label>
+        <Input value={mpn} onChange={(e) => setMpn(e.target.value)} placeholder="z. B. AP-BOX-001-M" />
+      </div>
+      <div className="space-y-1.5">
+        <Label className="text-xs">Verfügbarkeit</Label>
+        <select className={selectClass} value={availability} onChange={(e) => setAvailability(e.target.value)}>
+          {AVAILABILITY_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
       </div>
       <label className="flex items-center gap-2 text-xs text-muted-foreground pb-2">
         <Switch checked={active} onCheckedChange={setActive} />
@@ -406,6 +447,8 @@ function VariantRow({
             price_net_cents: Math.round(price * 100),
             is_active: active,
             gtin: gtin.trim(),
+            mpn: mpn.trim(),
+            availability,
           })
         }
       >

@@ -239,6 +239,7 @@ export type Database = {
           total_gross_cents: number
           updated_at: string
           vat_cents: number
+          vat_id: string
         }
         Insert: {
           city?: string
@@ -264,6 +265,7 @@ export type Database = {
           total_gross_cents?: number
           updated_at?: string
           vat_cents?: number
+          vat_id?: string
         }
         Update: {
           city?: string
@@ -289,11 +291,13 @@ export type Database = {
           total_gross_cents?: number
           updated_at?: string
           vat_cents?: number
+          vat_id?: string
         }
         Relationships: []
       }
       product_variants: {
         Row: {
+          availability: string
           created_at: string
           description: string
           gtin: string
@@ -308,6 +312,7 @@ export type Database = {
           variant_id: string
         }
         Insert: {
+          availability?: string
           created_at?: string
           description?: string
           gtin?: string
@@ -322,6 +327,7 @@ export type Database = {
           variant_id: string
         }
         Update: {
+          availability?: string
           created_at?: string
           description?: string
           gtin?: string
@@ -347,6 +353,7 @@ export type Database = {
       }
       products: {
         Row: {
+          availability: string
           category: string
           created_at: string
           description: string
@@ -368,6 +375,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          availability?: string
           category?: string
           created_at?: string
           description?: string
@@ -389,6 +397,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          availability?: string
           category?: string
           created_at?: string
           description?: string

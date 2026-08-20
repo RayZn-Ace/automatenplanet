@@ -22,11 +22,13 @@ const Checkout = () => {
   const items = useCartStore((s) => s.items);
   const [loading, setLoading] = useState(false);
   const [agb, setAgb] = useState(false);
+  const [isBusiness, setIsBusiness] = useState(false);
   const [form, setForm] = useState({
     email: "",
     firstName: "",
     lastName: "",
     company: "",
+    vatId: "",
     phone: "",
     street: "",
     postalCode: "",
@@ -48,6 +50,14 @@ const Checkout = () => {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (items.length === 0) return;
+    if (!form.company.trim()) {
+      toast.error("Bitte Firma angeben - wir verkaufen ausschliesslich an Unternehmer.");
+      return;
+    }
+    if (!isBusiness) {
+      toast.error("Bitte bestaetigen, dass Sie als Unternehmer bestellen.");
+      return;
+    }
     if (!agb) {
       toast.error("Bitte AGB und Datenschutz akzeptieren.");
       return;
@@ -69,7 +79,7 @@ const Checkout = () => {
       const { data, error } = await supabase.functions.invoke("create-order", {
         body: {
           items: items.map((i) => ({ variantId: i.variantId, quantity: i.quantity })),
-          customer: form,
+          customer: { ...form, isBusiness },
           origin: window.location.origin,
         },
       });
@@ -119,8 +129,12 @@ const Checkout = () => {
                   <Input id="lastName" value={form.lastName} onChange={set("lastName")} required />
                 </div>
                 <div className="space-y-1.5 sm:col-span-2">
-                  <Label htmlFor="company">Firma (optional)</Label>
-                  <Input id="company" value={form.company} onChange={set("company")} />
+                  <Label htmlFor="company">Firma *</Label>
+                  <Input id="company" value={form.company} onChange={set("company")} required />
+                </div>
+                <div className="space-y-1.5 sm:col-span-2">
+                  <Label htmlFor="vatId">USt-IdNr. (optional)</Label>
+                  <Input id="vatId" value={form.vatId} onChange={set("vatId")} placeholder="z. B. DE123456789" />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="email">E-Mail *</Label>
@@ -192,10 +206,19 @@ const Checkout = () => {
               </div>
 
               <label className="flex items-start gap-3 text-xs text-muted-foreground leading-relaxed">
+                <Checkbox checked={isBusiness} onCheckedChange={(v) => setIsBusiness(v === true)} className="mt-0.5" />
+                <span>
+                  Ich bestaetige, dass ich als Unternehmer im Sinne des § 14 BGB bestelle. Ein Vertragsschluss mit
+                  Verbrauchern ist ausgeschlossen.
+                </span>
+              </label>
+
+              <label className="flex items-start gap-3 text-xs text-muted-foreground leading-relaxed">
                 <Checkbox checked={agb} onCheckedChange={(v) => setAgb(v === true)} className="mt-0.5" />
                 <span>
                   Ich akzeptiere die{" "}
-                  <a href="/downloads/agb-boxautomaten.pdf" target="_blank" rel="noreferrer" className="text-primary underline">AGB</a>{" "}
+                  <Link to="/agb" className="text-primary underline">AGB</Link>, die{" "}
+                  <Link to="/rueckgabe" className="text-primary underline">Rückgabe- und Gewährleistungsregeln</Link>{" "}
                   und die{" "}
                   <Link to="/datenschutz" className="text-primary underline">Datenschutzerklärung</Link>.
                 </span>

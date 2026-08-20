@@ -15,6 +15,9 @@ import ProductPage from "./pages/ProductPage";
 import NotFound from "./pages/NotFound";
 import Impressum from "./pages/Impressum";
 import Datenschutz from "./pages/Datenschutz";
+import AGB from "./pages/AGB";
+import Rueckgabe from "./pages/Rueckgabe";
+import Versand from "./pages/Versand";
 import Handbuch from "./pages/Handbuch";
 import HandbuchBoxautomat from "./pages/HandbuchBoxautomat";
 import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
@@ -93,6 +96,9 @@ const App = () => (
             <Route path="/produkte/:slug" element={<ProductPage />} />
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
+            <Route path="/agb" element={<AGB />} />
+            <Route path="/rueckgabe" element={<Rueckgabe />} />
+            <Route path="/versand" element={<Versand />} />
             <Route path="/handbuch" element={<Handbuch />} />
             <Route path="/handbuch/boxautomat" element={<HandbuchBoxautomat />} />
             <Route
