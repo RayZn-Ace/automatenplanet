@@ -15,6 +15,7 @@ import { useCartStore } from "@/stores/cartStore";
 import { trackEvent } from "@/lib/tracking";
 import { track } from "@/lib/analytics";
 import { formatGross, formatNet, grossPriceValue } from "@/lib/pricing";
+import { useCatalog } from "@/hooks/useCatalog";
 
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import PaymentMethods from "@/components/PaymentMethods";
@@ -27,7 +28,9 @@ import {
 
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const product = getProductBySlug(slug || "");
+  const { products: catalog } = useCatalog();
+  const dbProduct = catalog.find((p) => p.slug === (slug || ""));
+  const product = dbProduct ?? getProductBySlug(slug || "");
   const seoContent = getSeoContent(slug || "");
   const [imageOpen, setImageOpen] = useState(false);
   const { lang, t } = useI18n();
@@ -71,6 +74,17 @@ const ProductPage = () => {
       </div>
     );
   }
+
+  const availability = product.availability ?? "in_stock";
+  const isOutOfStock = availability === "out_of_stock";
+  const availabilityLabel =
+    availability === "out_of_stock"
+      ? lang === "de" ? "Derzeit nicht verfügbar" : "Currently unavailable"
+      : availability === "preorder"
+        ? lang === "de" ? "Vorbestellbar" : "Available for preorder"
+        : availability === "backorder"
+          ? lang === "de" ? "Nachbestellt" : "On backorder"
+          : lang === "de" ? "Auf Lager" : "In stock";
 
   const relatedProducts = products.filter((p) => p.slug !== product.slug && p.category === product.category).slice(0, 4);
   const txt = (item: { de: string; en: string }) => item[lang];
@@ -192,8 +206,21 @@ const ProductPage = () => {
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground break-words">
-                  {formatNet(product.price)} {t("product.net")} · {lang === "de" ? "zzgl. Versand" : "plus shipping"}
+                  {formatNet(product.price)} {t("product.net")} ·{" "}
+                  <Link to="/versand" className="underline hover:text-primary">
+                    {lang === "de" ? "zzgl. Versand" : "plus shipping"}
+                  </Link>
                 </p>
+                <div className="mt-3">
+                  <span
+                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold ${
+                      isOutOfStock ? "bg-destructive/15 text-destructive" : "bg-accent/15 text-accent"
+                    }`}
+                  >
+                    <Package className="w-3.5 h-3.5" />
+                    {availabilityLabel}
+                  </span>
+                </div>
 
                 {seoContent?.roiMonths && (
                   <div className="flex items-center gap-2 mt-3 text-sm">
@@ -244,11 +271,13 @@ const ProductPage = () => {
                   size="lg"
                   className="w-full bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon text-base h-14"
                   onClick={() => addBySlug(product.slug)}
-                  disabled={cartLoading}
+                  disabled={cartLoading || isOutOfStock}
                 >
-                  {cartLoading
-                    ? <><Loader2 className="mr-2 w-5 h-5 animate-spin" /> In den Warenkorb</>
-                    : <><ShoppingCart className="mr-2 w-5 h-5" /> In den Warenkorb</>
+                  {isOutOfStock
+                    ? <>{availabilityLabel}</>
+                    : cartLoading
+                      ? <><Loader2 className="mr-2 w-5 h-5 animate-spin" /> In den Warenkorb</>
+                      : <><ShoppingCart className="mr-2 w-5 h-5" /> In den Warenkorb</>
                   }
                 </Button>
                 <WhatsAppConsultButton productName={product.name} className="w-full text-base" />

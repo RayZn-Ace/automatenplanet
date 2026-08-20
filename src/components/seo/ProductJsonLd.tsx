@@ -45,18 +45,36 @@ const ProductJsonLd = ({ product, jsonLdOnly = false }: ProductJsonLdProps) => {
     },
   };
 
+  const merchantReturnPolicy = {
+    "@type": "MerchantReturnPolicy",
+    applicableCountry: "DE",
+    returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+    merchantReturnLink: "https://automatplanet.de/rueckgabe",
+  };
+
+  const availability =
+    product.availability === "out_of_stock"
+      ? "https://schema.org/OutOfStock"
+      : product.availability === "preorder"
+        ? "https://schema.org/PreOrder"
+        : product.availability === "backorder"
+          ? "https://schema.org/BackOrder"
+          : "https://schema.org/InStock";
+
   const baseOffer = {
     "@type": "Offer",
     priceCurrency: "EUR",
     priceValidUntil: "2027-12-31",
     valueAddedTaxIncluded: true,
-    availability: "https://schema.org/InStock",
+    availability,
+    eligibleCustomerType: "https://schema.org/Business",
     itemCondition: "https://schema.org/NewCondition",
     seller: {
       "@type": "Organization",
       name: "AutomatPlanet",
     },
     shippingDetails,
+    hasMerchantReturnPolicy: merchantReturnPolicy,
   };
 
   const offers = variants
