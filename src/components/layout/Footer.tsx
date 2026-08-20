@@ -89,8 +89,8 @@ const Footer = () => {
         </div>
 
         <div className="rounded-xl border border-border bg-card/50 p-4 mb-8 text-sm text-foreground font-medium text-center">
-          Verkauf ausschliesslich an Unternehmer im Sinne des Paragraf 14 BGB. Alle Preise zzgl. gesetzlicher
-          Mehrwertsteuer und Versandkosten.
+          Verkauf ausschließlich an Unternehmer im Sinne des § 14 BGB. Alle Preise zzgl. gesetzlicher Mehrwertsteuer
+          und Versandkosten.
         </div>
 
         <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
