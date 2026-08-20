@@ -16,6 +16,7 @@ export type DbProductRow = {
   meta_description: string;
   gtin: string;
   mpn: string;
+  availability: string;
   is_active: boolean;
   sort_order: number;
 };
@@ -31,6 +32,7 @@ export type DbVariantRow = {
   sort_order: number;
   gtin: string;
   mpn: string;
+  availability: string;
 };
 
 export function mapDbProduct(row: DbProductRow): ProductData {
@@ -46,6 +48,7 @@ export function mapDbProduct(row: DbProductRow): ProductData {
     keywords: row.keywords ?? [],
     metaTitle: row.meta_title,
     metaDescription: row.meta_description,
+    availability: (row.availability as ProductData["availability"]) ?? "in_stock",
   };
 }
 
@@ -57,7 +60,7 @@ export async function fetchCatalog(): Promise<ProductData[]> {
   const { data, error } = await supabase
     .from("products")
     .select(
-      "id, slug, name, description, price_net_cents, image, dimensions, power, category, keywords, meta_title, meta_description, is_active, sort_order",
+      "id, slug, name, description, price_net_cents, image, dimensions, power, category, keywords, meta_title, meta_description, availability, is_active, sort_order",
     )
     .eq("is_active", true)
     .order("sort_order", { ascending: true });
