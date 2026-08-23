@@ -27,6 +27,7 @@ import { getProductBySlug } from "@/data/products";
 import ScrollFrameSequence from "@/components/ScrollFrameSequence";
 import { useCartStore } from "@/stores/cartStore";
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
+import QuoteRequestDialog from "@/components/QuoteRequestDialog";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
 import ProductImageGallery from "@/components/ProductImageGallery";
