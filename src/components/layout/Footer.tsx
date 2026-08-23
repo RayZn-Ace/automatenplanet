@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { openConsentSettings } from "@/components/CookieBanner";
 import logo from "@/assets/logo-automatplanet.png";
+import { trackContactClick } from "@/lib/contactTracking";
 
 const productLinks = [
   { label: "Greifautomaten", to: "/produkte/greifautomat" },
@@ -37,7 +38,11 @@ const Footer = () => {
             </p>
             <p className="text-sm text-muted-foreground">
               Fragen? Rufen Sie uns an:{" "}
-              <a href="tel:+4951112282957" className="font-bold text-primary hover:underline">
+              <a
+                href="tel:+4951112282957"
+                onClick={() => trackContactClick("phone", { label: "0511 12282957", placement: "footer" })}
+                className="font-bold text-primary hover:underline"
+              >
                 0511 12282957
               </a>
             </p>

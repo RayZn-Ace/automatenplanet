@@ -21,6 +21,7 @@ import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import QuoteRequestDialog from "@/components/QuoteRequestDialog";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
+import { trackContactClick } from "@/lib/contactTracking";
 import {
   ArrowLeft, Ruler, Zap, ShoppingCart, Download, Truck, Phone,
   ZoomIn, CheckCircle, MapPin, Star, Package, TrendingUp, MessageCircle,
@@ -299,7 +300,11 @@ const ProductPage = () => {
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4 text-primary" />
                 {t("product.callUs")}
-                <a href="tel:+4951112282957" className="text-primary font-bold hover:underline">
+                <a
+                  href="tel:+4951112282957"
+                  onClick={() => trackContactClick("phone", { label: "0511 12282957", productName: product?.name, placement: "product_buybox" })}
+                  className="text-primary font-bold hover:underline"
+                >
                   0511 12282957
                 </a>
               </div>
@@ -541,12 +546,20 @@ const ProductPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon h-14 text-base px-8" asChild>
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackContactClick("whatsapp", { label: "WhatsApp", productName: product?.name, placement: "product_cta" })}
+                >
                   <MessageCircle className="mr-2 w-5 h-5" /> WhatsApp
                 </a>
               </Button>
               <Button size="lg" variant="outline" className="border-border h-14 text-base px-8" asChild>
-                <a href="tel:+4951112282957">
+                <a
+                  href="tel:+4951112282957"
+                  onClick={() => trackContactClick("phone", { label: "0511 12282957", productName: product?.name, placement: "product_cta" })}
+                >
                   <Phone className="mr-2 w-5 h-5" /> 0511 12282957
                 </a>
               </Button>

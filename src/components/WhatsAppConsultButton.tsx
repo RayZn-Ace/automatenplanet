@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
+import { trackContactClick } from "@/lib/contactTracking";
 
 interface Props {
   productName?: string;
@@ -20,7 +21,17 @@ const WhatsAppConsultButton = ({ productName, className, label }: Props) => {
       size="lg"
       className={`bg-[hsl(142_70%_38%)] hover:bg-[hsl(142_70%_32%)] text-white border-0 w-full sm:w-auto h-14 px-3 sm:px-6 text-sm sm:text-base rounded-xl ${className ?? ""}`}
     >
-      <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 text-center whitespace-nowrap w-full">
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() =>
+          trackContactClick("whatsapp", {
+            label: label ?? "Jetzt auf WhatsApp beraten lassen",
+            productName,
+            placement: "consult_button",
+          })
+        } className="inline-flex items-center justify-center gap-2 text-center whitespace-nowrap w-full">
         <MessageCircle className="hidden sm:inline-block w-5 h-5 shrink-0" />
         <span className="truncate">{label ?? "Jetzt auf WhatsApp beraten lassen"}</span>
       </a>

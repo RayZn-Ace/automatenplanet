@@ -53,6 +53,7 @@ const benefits = [
 ];
 
 import { testimonials } from "@/data/testimonials";
+import { trackContactClick } from "@/lib/contactTracking";
 
 
 const faqs = [
@@ -168,7 +169,10 @@ const BoxautomatLanding = () => {
                 </a>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <a href="tel:+4951112282957">
+                <a
+                  href="tel:+4951112282957"
+                  onClick={() => trackContactClick("phone", { label: "0511 12282957", productName: "Boxautomat Premium", placement: "landing_hero" })}
+                >
                   <Phone className="mr-2" /> 0511 12282957
                 </a>
               </Button>

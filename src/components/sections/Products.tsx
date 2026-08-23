@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Ruler, Euro, MessageCircle, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCatalog } from "@/hooks/useCatalog";
+import { trackContactClick } from "@/lib/contactTracking";
 
 const Products = () => {
   const { products } = useCatalog();
@@ -79,7 +80,13 @@ const Products = () => {
                     className="border-green-500 text-green-500 hover:bg-green-500 hover:text-foreground"
                     asChild
                   >
-                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="WhatsApp"
+                      onClick={() => trackContactClick("whatsapp", { label: "WhatsApp", placement: "product_grid" })}
+                    >
                       <MessageCircle className="w-4 h-4" />
                     </a>
                   </Button>
