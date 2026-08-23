@@ -18,6 +18,7 @@ import { formatGross, formatNet, grossPriceValue } from "@/lib/pricing";
 import { useCatalog } from "@/hooks/useCatalog";
 
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
+import QuoteRequestDialog from "@/components/QuoteRequestDialog";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
 import {
