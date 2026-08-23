@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
 
   const parsed = BodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return json({ error: parsed.error.flatten().fieldErrors }, 400);
-  const { items, customer, origin } = parsed.data;
+  const { items, customer, couponCode, origin } = parsed.data;
 
   // Preise serverseitig auflösen
   const lines = items.map((i) => {
@@ -56,19 +56,34 @@ Deno.serve(async (req) => {
     return { ...entry, variantId: i.variantId, quantity: i.quantity };
   });
 
-  const subtotalNet = lines.reduce((s, l) => s + l.priceNetCents * l.quantity, 0);
-  const shippingNet = shippingNetCents(customer.country);
-  const net = subtotalNet + shippingNet;
-  const gross = Math.round(net * (1 + VAT_RATE));
-  const vat = gross - net;
-
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     { auth: { persistSession: false } },
   );
 
-  const orderNumber = `AP-${Date.now().toString(36).toUpperCase()}`;
+  const subtotalNet = lines.reduce((s, l) => s + l.priceNetCents * l.quantity, 0);
+  let shippingNet = shippingNetCents(customer.country);
+  let discountNet = 0;
+  let isTest = false;
+  let appliedCode = "";
+
+  if (couponCode) {
+    const { coupon, error: couponError } = await loadCoupon(supabase, couponCode);
+    if (!coupon) return json({ error: couponError ?? "Ungueltiger Gutscheincode" }, 400);
+    const applied = applyCoupon(coupon, subtotalNet, shippingNet);
+    if (applied.error) return json({ error: applied.error }, 400);
+    discountNet = applied.discountNetCents;
+    shippingNet = applied.shippingNetCents;
+    isTest = coupon.is_test;
+    appliedCode = coupon.code;
+  }
+
+  const net = Math.max(subtotalNet - discountNet + shippingNet, 0);
+  const gross = isTest ? TEST_ORDER_GROSS_CENTS : Math.round(net * (1 + VAT_RATE));
+  const vat = isTest ? 0 : gross - net;
+
+  const orderNumber = `${isTest ? "TEST" : "AP"}-${Date.now().toString(36).toUpperCase()}`;
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
@@ -92,6 +107,9 @@ Deno.serve(async (req) => {
       total_gross_cents: gross,
       currency: "EUR",
       payment_method: "mollie",
+      coupon_code: appliedCode,
+      discount_net_cents: discountNet,
+      is_test: isTest,
     })
     .select("id, order_number")
     .single();
