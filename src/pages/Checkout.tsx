@@ -122,22 +122,26 @@ const Checkout = () => {
     }
     setLoading(true);
     try {
-      trackEvent("begin_checkout", {
-        value: totals.subtotalNet,
-        currency: "EUR",
-        contentType: "product",
-        items: items.map((i) => ({ id: i.slug, name: i.name, quantity: i.quantity, price: i.price })),
-      });
-      track("checkout_started", {
-        answer_option: String(Math.round(totals.gross * 100)),
-        value_cents: Math.round(totals.gross * 100),
-        currency: "EUR",
-      });
+      // Testbestellungen werden nicht als Conversion getrackt.
+      if (!coupon?.isTest) {
+        trackEvent("begin_checkout", {
+          value: totals.subtotalNet,
+          currency: "EUR",
+          contentType: "product",
+          items: items.map((i) => ({ id: i.slug, name: i.name, quantity: i.quantity, price: i.price })),
+        });
+        track("checkout_started", {
+          answer_option: String(Math.round(totals.gross * 100)),
+          value_cents: Math.round(totals.gross * 100),
+          currency: "EUR",
+        });
+      }
 
       const { data, error } = await supabase.functions.invoke("create-order", {
         body: {
           items: items.map((i) => ({ variantId: i.variantId, quantity: i.quantity })),
           customer: { ...form, isBusiness },
+          couponCode: coupon?.code ?? "",
           origin: window.location.origin,
         },
       });
