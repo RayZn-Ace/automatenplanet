@@ -18,6 +18,7 @@ import {
   Mail,
   Users,
   ShieldCheck,
+  FileText,
   LogOut,
   Menu,
   X,
