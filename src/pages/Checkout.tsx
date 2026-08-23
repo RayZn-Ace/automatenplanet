@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import PaymentMethods from "@/components/PaymentMethods";
 import { useCartStore } from "@/stores/cartStore";
-import { formatGross, formatNet, grossPrice, VAT_RATE } from "@/lib/pricing";
+import { formatNet, grossPrice, VAT_RATE } from "@/lib/pricing";
 import { SHIPPING_COUNTRIES, shippingNet } from "@/lib/shipping";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/tracking";
