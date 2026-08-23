@@ -248,6 +248,7 @@ Deno.serve(async (req) => {
         .select(
           "id, order_number, status, created_at, paid_at, total_gross_cents, subtotal_net_cents, shipping_net_cents, vat_cents, country, email, order_items(name, variant_label, quantity, unit_price_net_cents)",
         )
+        .eq("is_test", false)
         .gte("created_at", from)
         .lte("created_at", to)
         .order("created_at", { ascending: true })
