@@ -37,6 +37,9 @@ type Order = {
   payment_method: string;
   paid_at: string | null;
   created_at: string;
+  coupon_code?: string | null;
+  discount_net_cents?: number | null;
+  is_test?: boolean | null;
   order_items: OrderItem[];
 };
 
