@@ -2,6 +2,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
 import { CATALOG, shippingNetCents, VAT_RATE } from "../_shared/catalog.ts";
+import { applyCoupon, loadCoupon, TEST_ORDER_GROSS_CENTS } from "../_shared/coupons.ts";
 
 const BodySchema = z.object({
   items: z
@@ -27,6 +28,7 @@ const BodySchema = z.object({
     country: z.string().length(2),
     note: z.string().max(1000).optional().default(""),
   }),
+  couponCode: z.string().trim().max(60).optional().default(""),
   origin: z.string().url().max(300),
 });
 
