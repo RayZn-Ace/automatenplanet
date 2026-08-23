@@ -145,6 +145,12 @@ const AdminOrders = () => {
                     <Badge variant={o.status === "paid" || o.status === "shipped" ? "default" : "secondary"}>
                       {STATUS_LABEL[o.status] ?? o.status}
                     </Badge>
+                    {o.is_test && (
+                      <Badge variant="outline" className="border-amber-500 text-amber-500">Testbestellung</Badge>
+                    )}
+                    {o.coupon_code && (
+                      <Badge variant="outline">Code: {o.coupon_code.toUpperCase()}</Badge>
+                    )}
                   </div>
                   <p className="text-sm text-muted-foreground">
                     {new Date(o.created_at).toLocaleString("de-DE")} · {o.payment_method}
