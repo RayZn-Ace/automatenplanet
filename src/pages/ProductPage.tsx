@@ -21,8 +21,8 @@ import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import QuoteRequestDialog from "@/components/QuoteRequestDialog";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
-import {
 import { trackContactClick } from "@/lib/contactTracking";
+import {
   ArrowLeft, Ruler, Zap, ShoppingCart, Download, Truck, Phone,
   ZoomIn, CheckCircle, MapPin, Star, Package, TrendingUp, MessageCircle,
   Shield, Clock, Award, ChevronRight
