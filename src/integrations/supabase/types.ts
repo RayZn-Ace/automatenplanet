@@ -80,6 +80,60 @@ export type Database = {
         }
         Relationships: []
       }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          description: string
+          discount_type: string
+          discount_value: number
+          expires_at: string | null
+          free_shipping: boolean
+          id: string
+          is_active: boolean
+          is_test: boolean
+          max_redemptions: number | null
+          min_subtotal_net_cents: number
+          redemptions: number
+          starts_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          free_shipping?: boolean
+          id?: string
+          is_active?: boolean
+          is_test?: boolean
+          max_redemptions?: number | null
+          min_subtotal_net_cents?: number
+          redemptions?: number
+          starts_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          free_shipping?: boolean
+          id?: string
+          is_active?: boolean
+          is_test?: boolean
+          max_redemptions?: number | null
+          min_subtotal_net_cents?: number
+          redemptions?: number
+          starts_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           admin_note: string
@@ -288,11 +342,14 @@ export type Database = {
           city: string
           company: string
           country: string
+          coupon_code: string
           created_at: string
           currency: string
+          discount_net_cents: number
           email: string
           first_name: string
           id: string
+          is_test: boolean
           last_name: string
           mollie_payment_id: string | null
           note: string
@@ -314,11 +371,14 @@ export type Database = {
           city?: string
           company?: string
           country?: string
+          coupon_code?: string
           created_at?: string
           currency?: string
+          discount_net_cents?: number
           email: string
           first_name?: string
           id?: string
+          is_test?: boolean
           last_name?: string
           mollie_payment_id?: string | null
           note?: string
@@ -340,11 +400,14 @@ export type Database = {
           city?: string
           company?: string
           country?: string
+          coupon_code?: string
           created_at?: string
           currency?: string
+          discount_net_cents?: number
           email?: string
           first_name?: string
           id?: string
+          is_test?: boolean
           last_name?: string
           mollie_payment_id?: string | null
           note?: string
