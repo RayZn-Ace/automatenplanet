@@ -80,6 +80,75 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          admin_note: string
+          company: string
+          created_at: string
+          email: string
+          fbclid: string
+          gclid: string
+          id: string
+          message: string
+          name: string
+          page_path: string
+          phone: string
+          product_name: string
+          product_slug: string
+          quantity: number
+          referrer: string
+          status: string
+          updated_at: string
+          utm_campaign: string
+          utm_medium: string
+          utm_source: string
+        }
+        Insert: {
+          admin_note?: string
+          company?: string
+          created_at?: string
+          email: string
+          fbclid?: string
+          gclid?: string
+          id?: string
+          message?: string
+          name: string
+          page_path?: string
+          phone?: string
+          product_name?: string
+          product_slug?: string
+          quantity?: number
+          referrer?: string
+          status?: string
+          updated_at?: string
+          utm_campaign?: string
+          utm_medium?: string
+          utm_source?: string
+        }
+        Update: {
+          admin_note?: string
+          company?: string
+          created_at?: string
+          email?: string
+          fbclid?: string
+          gclid?: string
+          id?: string
+          message?: string
+          name?: string
+          page_path?: string
+          phone?: string
+          product_name?: string
+          product_slug?: string
+          quantity?: number
+          referrer?: string
+          status?: string
+          updated_at?: string
+          utm_campaign?: string
+          utm_medium?: string
+          utm_source?: string
+        }
+        Relationships: []
+      }
       mail_identities: {
         Row: {
           created_at: string

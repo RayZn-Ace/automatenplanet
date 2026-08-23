@@ -18,6 +18,7 @@ import { formatGross, formatNet, grossPriceValue } from "@/lib/pricing";
 import { useCatalog } from "@/hooks/useCatalog";
 
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
+import QuoteRequestDialog from "@/components/QuoteRequestDialog";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
 import {
@@ -280,6 +281,12 @@ const ProductPage = () => {
                       : <><ShoppingCart className="mr-2 w-5 h-5" /> In den Warenkorb</>
                   }
                 </Button>
+                <QuoteRequestDialog
+                  productSlug={product.slug}
+                  productName={product.name}
+                  value={product.price}
+                  className="border-border"
+                />
                 <WhatsAppConsultButton productName={product.name} className="w-full text-base" />
                 <Button size="lg" variant="outline" className="w-full border-border h-14 text-base">
                   <Download className="mr-2 w-5 h-5" /> {t("product.datasheet")}

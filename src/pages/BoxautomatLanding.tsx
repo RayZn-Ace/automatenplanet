@@ -27,6 +27,7 @@ import { getProductBySlug } from "@/data/products";
 import ScrollFrameSequence from "@/components/ScrollFrameSequence";
 import { useCartStore } from "@/stores/cartStore";
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
+import QuoteRequestDialog from "@/components/QuoteRequestDialog";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Loader2 } from "lucide-react";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -278,6 +279,14 @@ const BoxautomatLanding = () => {
                     />
                   )}
                 </Button>
+
+                <div className="mt-3">
+                  <QuoteRequestDialog
+                    productSlug={PRODUCT_SLUG}
+                    productName={`${product.name} - ${selectedVariant.label}`}
+                    value={selectedVariant.price}
+                  />
+                </div>
 
                 <WhatsAppConsultButton productName={`${product.name} – ${selectedVariant.label}`} className="w-full text-base mt-3" />
 

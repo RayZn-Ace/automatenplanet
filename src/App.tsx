@@ -30,6 +30,7 @@ import AdminLive from "./pages/admin/AdminLive";
 import AdminJourneys from "./pages/admin/AdminJourneys";
 import AdminRevenue from "./pages/admin/AdminRevenue";
 import AdminOrders from "./pages/admin/AdminOrders";
+import AdminLeads from "./pages/admin/AdminLeads";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminMail from "./pages/admin/AdminMail";
 import AdminFeed from "./pages/admin/AdminFeed";
@@ -63,6 +64,7 @@ const App = () => (
               <Route path="journeys" element={<AdminJourneys />} />
               <Route path="umsatz" element={<AdminRevenue />} />
               <Route path="bestellungen" element={<AdminOrders />} />
+              <Route path="anfragen" element={<AdminLeads />} />
               <Route path="produkte" element={<AdminProducts />} />
               <Route path="kunden" element={<AdminCustomers />} />
               <Route path="feed" element={<AdminFeed />} />
