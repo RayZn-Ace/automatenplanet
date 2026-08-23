@@ -12,6 +12,7 @@ import clawMachine from "@/assets/claw-machine.jpg";
 import boxingMachine from "@/assets/boxing-machine.jpg";
 import basketballMachine from "@/assets/basketball-machine.jpg";
 import miniClaw from "@/assets/mini-claw.jpg";
+import { trackContactClick } from "@/lib/contactTracking";
 
 const products = [
   { name: "Greifautomat", image: clawMachine, price: "Ab 1.290€" },
@@ -111,7 +112,12 @@ const CityLanding = () => {
                 <Phone className="mr-2 w-5 h-5" /> Jetzt beraten lassen
               </Button>
               <Button size="lg" variant="outline" className="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-foreground" asChild>
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackContactClick("whatsapp", { label: "WhatsApp", placement: "city_hero" })}
+                >
                   <MessageCircle className="mr-2 w-5 h-5" /> WhatsApp
                 </a>
               </Button>
