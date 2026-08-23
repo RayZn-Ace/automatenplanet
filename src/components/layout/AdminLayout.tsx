@@ -29,6 +29,7 @@ const NAV = [
   { to: "/admin/journeys", label: "Customer Journeys", icon: RouteIcon },
   { to: "/admin/umsatz", label: "Umsätze", icon: Euro },
   { to: "/admin/bestellungen", label: "Bestellungen", icon: Package },
+  { to: "/admin/anfragen", label: "Anfragen", icon: FileText },
   { to: "/admin/produkte", label: "Produkte", icon: Boxes },
   { to: "/admin/kunden", label: "Kunden & Newsletter", icon: Users },
   { to: "/admin/feed", label: "Feed-Check", icon: ShieldCheck },
