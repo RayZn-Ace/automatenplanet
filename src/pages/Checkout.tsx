@@ -18,11 +18,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/tracking";
 import { track } from "@/lib/analytics";
 
+interface AppliedCoupon {
+  code: string;
+  label: string;
+  isTest: boolean;
+  freeShipping: boolean;
+  discountNetCents: number;
+  shippingNetCents: number;
+  totalGrossCents: number;
+}
+
 const Checkout = () => {
   const items = useCartStore((s) => s.items);
   const [loading, setLoading] = useState(false);
   const [agb, setAgb] = useState(false);
   const [isBusiness, setIsBusiness] = useState(false);
+  const [couponInput, setCouponInput] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [coupon, setCoupon] = useState<AppliedCoupon | null>(null);
   const [form, setForm] = useState({
     email: "",
     firstName: "",
@@ -42,10 +55,55 @@ const Checkout = () => {
 
   const totals = useMemo(() => {
     const subtotalNet = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const shipping = shippingNet(form.country);
-    const net = subtotalNet + shipping;
-    return { subtotalNet, shipping, net, vat: grossPrice(net) - net, gross: grossPrice(net) };
-  }, [items, form.country]);
+    const discount = coupon ? coupon.discountNetCents / 100 : 0;
+    const shipping = coupon ? coupon.shippingNetCents / 100 : shippingNet(form.country);
+    const net = Math.max(subtotalNet - discount + shipping, 0);
+    const gross = coupon?.isTest ? coupon.totalGrossCents / 100 : grossPrice(net);
+    return { subtotalNet, discount, shipping, net, vat: gross - net, gross };
+  }, [items, form.country, coupon]);
+
+  const subtotalNetCents = useMemo(
+    () => Math.round(items.reduce((sum, i) => sum + i.price * i.quantity, 0) * 100),
+    [items]
+  );
+
+  const applyCouponCode = async () => {
+    const code = couponInput.trim();
+    if (!code) return;
+    setCouponLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("validate-coupon", {
+        body: { code, subtotalNetCents, country: form.country },
+      });
+      if (error) throw error;
+      const res = data as (AppliedCoupon & { valid: boolean; error?: string }) | null;
+      if (!res?.valid) {
+        setCoupon(null);
+        toast.error(res?.error ?? "Dieser Gutscheincode ist ungültig.");
+        return;
+      }
+      setCoupon({
+        code: res.code,
+        label: res.label,
+        isTest: res.isTest,
+        freeShipping: res.freeShipping,
+        discountNetCents: res.discountNetCents,
+        shippingNetCents: res.shippingNetCents,
+        totalGrossCents: res.totalGrossCents,
+      });
+      toast.success(res.isTest ? "Testmodus aktiv: Zahlbetrag 0,01 €." : `Gutschein aktiv: ${res.label}`);
+    } catch (err) {
+      console.error("validate-coupon failed", err);
+      toast.error("Gutschein konnte nicht geprüft werden.");
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setCoupon(null);
+    setCouponInput("");
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
