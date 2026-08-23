@@ -2,6 +2,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
 import { CATALOG, shippingNetCents, VAT_RATE } from "../_shared/catalog.ts";
+import { applyCoupon, loadCoupon, TEST_ORDER_GROSS_CENTS } from "../_shared/coupons.ts";
 
 const BodySchema = z.object({
   items: z
@@ -27,6 +28,7 @@ const BodySchema = z.object({
     country: z.string().length(2),
     note: z.string().max(1000).optional().default(""),
   }),
+  couponCode: z.string().trim().max(60).optional().default(""),
   origin: z.string().url().max(300),
 });
 
@@ -45,7 +47,7 @@ Deno.serve(async (req) => {
 
   const parsed = BodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return json({ error: parsed.error.flatten().fieldErrors }, 400);
-  const { items, customer, origin } = parsed.data;
+  const { items, customer, couponCode, origin } = parsed.data;
 
   // Preise serverseitig auflösen
   const lines = items.map((i) => {
@@ -54,19 +56,34 @@ Deno.serve(async (req) => {
     return { ...entry, variantId: i.variantId, quantity: i.quantity };
   });
 
-  const subtotalNet = lines.reduce((s, l) => s + l.priceNetCents * l.quantity, 0);
-  const shippingNet = shippingNetCents(customer.country);
-  const net = subtotalNet + shippingNet;
-  const gross = Math.round(net * (1 + VAT_RATE));
-  const vat = gross - net;
-
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     { auth: { persistSession: false } },
   );
 
-  const orderNumber = `AP-${Date.now().toString(36).toUpperCase()}`;
+  const subtotalNet = lines.reduce((s, l) => s + l.priceNetCents * l.quantity, 0);
+  let shippingNet = shippingNetCents(customer.country);
+  let discountNet = 0;
+  let isTest = false;
+  let appliedCode = "";
+
+  if (couponCode) {
+    const { coupon, error: couponError } = await loadCoupon(supabase, couponCode);
+    if (!coupon) return json({ error: couponError ?? "Ungueltiger Gutscheincode" }, 400);
+    const applied = applyCoupon(coupon, subtotalNet, shippingNet);
+    if (applied.error) return json({ error: applied.error }, 400);
+    discountNet = applied.discountNetCents;
+    shippingNet = applied.shippingNetCents;
+    isTest = coupon.is_test;
+    appliedCode = coupon.code;
+  }
+
+  const net = Math.max(subtotalNet - discountNet + shippingNet, 0);
+  const gross = isTest ? TEST_ORDER_GROSS_CENTS : Math.round(net * (1 + VAT_RATE));
+  const vat = isTest ? 0 : gross - net;
+
+  const orderNumber = `${isTest ? "TEST" : "AP"}-${Date.now().toString(36).toUpperCase()}`;
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
@@ -90,6 +107,9 @@ Deno.serve(async (req) => {
       total_gross_cents: gross,
       currency: "EUR",
       payment_method: "mollie",
+      coupon_code: appliedCode,
+      discount_net_cents: discountNet,
+      is_test: isTest,
     })
     .select("id, order_number")
     .single();
@@ -120,10 +140,17 @@ Deno.serve(async (req) => {
     },
     body: JSON.stringify({
       amount: { currency: "EUR", value: (gross / 100).toFixed(2) },
-      description: `Bestellung ${order.order_number}`,
+      description: isTest
+        ? `TESTBESTELLUNG ${order.order_number}`
+        : `Bestellung ${order.order_number}`,
       redirectUrl: `${origin}/bestellung?o=${order.id}`,
       webhookUrl,
-      metadata: { orderId: order.id, orderNumber: order.order_number },
+      metadata: {
+        orderId: order.id,
+        orderNumber: order.order_number,
+        isTest,
+        couponCode: appliedCode,
+      },
       billingEmail: customer.email,
       locale: customer.country === "DE" ? "de_DE" : undefined,
     }),
@@ -139,9 +166,22 @@ Deno.serve(async (req) => {
   const payment = await mollieRes.json();
   await supabase.from("orders").update({ mollie_payment_id: payment.id }).eq("id", order.id);
 
+  if (appliedCode) {
+    const { data: current } = await supabase
+      .from("coupons")
+      .select("redemptions")
+      .ilike("code", appliedCode)
+      .maybeSingle();
+    await supabase
+      .from("coupons")
+      .update({ redemptions: ((current?.redemptions as number | undefined) ?? 0) + 1 })
+      .ilike("code", appliedCode);
+  }
+
   return json({
     orderId: order.id,
     orderNumber: order.order_number,
+    isTest,
     checkoutUrl: payment._links?.checkout?.href,
   });
 });

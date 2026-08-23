@@ -12,17 +12,30 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import PaymentMethods from "@/components/PaymentMethods";
 import { useCartStore } from "@/stores/cartStore";
-import { formatGross, formatNet, grossPrice, VAT_RATE } from "@/lib/pricing";
+import { formatNet, grossPrice, VAT_RATE } from "@/lib/pricing";
 import { SHIPPING_COUNTRIES, shippingNet } from "@/lib/shipping";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/tracking";
 import { track } from "@/lib/analytics";
+
+interface AppliedCoupon {
+  code: string;
+  label: string;
+  isTest: boolean;
+  freeShipping: boolean;
+  discountNetCents: number;
+  shippingNetCents: number;
+  totalGrossCents: number;
+}
 
 const Checkout = () => {
   const items = useCartStore((s) => s.items);
   const [loading, setLoading] = useState(false);
   const [agb, setAgb] = useState(false);
   const [isBusiness, setIsBusiness] = useState(false);
+  const [couponInput, setCouponInput] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [coupon, setCoupon] = useState<AppliedCoupon | null>(null);
   const [form, setForm] = useState({
     email: "",
     firstName: "",
@@ -42,10 +55,55 @@ const Checkout = () => {
 
   const totals = useMemo(() => {
     const subtotalNet = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const shipping = shippingNet(form.country);
-    const net = subtotalNet + shipping;
-    return { subtotalNet, shipping, net, vat: grossPrice(net) - net, gross: grossPrice(net) };
-  }, [items, form.country]);
+    const discount = coupon ? coupon.discountNetCents / 100 : 0;
+    const shipping = coupon ? coupon.shippingNetCents / 100 : shippingNet(form.country);
+    const net = Math.max(subtotalNet - discount + shipping, 0);
+    const gross = coupon?.isTest ? coupon.totalGrossCents / 100 : grossPrice(net);
+    return { subtotalNet, discount, shipping, net, vat: gross - net, gross };
+  }, [items, form.country, coupon]);
+
+  const subtotalNetCents = useMemo(
+    () => Math.round(items.reduce((sum, i) => sum + i.price * i.quantity, 0) * 100),
+    [items]
+  );
+
+  const applyCouponCode = async () => {
+    const code = couponInput.trim();
+    if (!code) return;
+    setCouponLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("validate-coupon", {
+        body: { code, subtotalNetCents, country: form.country },
+      });
+      if (error) throw error;
+      const res = data as (AppliedCoupon & { valid: boolean; error?: string }) | null;
+      if (!res?.valid) {
+        setCoupon(null);
+        toast.error(res?.error ?? "Dieser Gutscheincode ist ungültig.");
+        return;
+      }
+      setCoupon({
+        code: res.code,
+        label: res.label,
+        isTest: res.isTest,
+        freeShipping: res.freeShipping,
+        discountNetCents: res.discountNetCents,
+        shippingNetCents: res.shippingNetCents,
+        totalGrossCents: res.totalGrossCents,
+      });
+      toast.success(res.isTest ? "Testmodus aktiv: Zahlbetrag 0,01 €." : `Gutschein aktiv: ${res.label}`);
+    } catch (err) {
+      console.error("validate-coupon failed", err);
+      toast.error("Gutschein konnte nicht geprüft werden.");
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setCoupon(null);
+    setCouponInput("");
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,22 +122,26 @@ const Checkout = () => {
     }
     setLoading(true);
     try {
-      trackEvent("begin_checkout", {
-        value: totals.subtotalNet,
-        currency: "EUR",
-        contentType: "product",
-        items: items.map((i) => ({ id: i.slug, name: i.name, quantity: i.quantity, price: i.price })),
-      });
-      track("checkout_started", {
-        answer_option: String(Math.round(totals.gross * 100)),
-        value_cents: Math.round(totals.gross * 100),
-        currency: "EUR",
-      });
+      // Testbestellungen werden nicht als Conversion getrackt.
+      if (!coupon?.isTest) {
+        trackEvent("begin_checkout", {
+          value: totals.subtotalNet,
+          currency: "EUR",
+          contentType: "product",
+          items: items.map((i) => ({ id: i.slug, name: i.name, quantity: i.quantity, price: i.price })),
+        });
+        track("checkout_started", {
+          answer_option: String(Math.round(totals.gross * 100)),
+          value_cents: Math.round(totals.gross * 100),
+          currency: "EUR",
+        });
+      }
 
       const { data, error } = await supabase.functions.invoke("create-order", {
         body: {
           items: items.map((i) => ({ variantId: i.variantId, quantity: i.quantity })),
           customer: { ...form, isBusiness },
+          couponCode: coupon?.code ?? "",
           origin: window.location.origin,
         },
       });
@@ -194,13 +256,64 @@ const Checkout = () => {
                 ))}
               </div>
 
+              {/* Gutschein */}
+              <div className="border-t border-border pt-4 space-y-2">
+                <Label htmlFor="coupon" className="text-sm">Gutschein- oder Testcode</Label>
+                {coupon ? (
+                  <div className="flex items-center justify-between gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 py-2">
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold break-words">{coupon.code.toUpperCase()}</p>
+                      <p className="text-xs text-muted-foreground">{coupon.label}</p>
+                    </div>
+                    <Button type="button" variant="ghost" size="sm" onClick={removeCoupon}>
+                      Entfernen
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <Input
+                      id="coupon"
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value)}
+                      placeholder="Code eingeben"
+                      maxLength={60}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          void applyCouponCode();
+                        }
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => void applyCouponCode()}
+                      disabled={couponLoading || !couponInput.trim()}
+                    >
+                      {couponLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Einlösen"}
+                    </Button>
+                  </div>
+                )}
+                {coupon?.isTest && (
+                  <p className="text-xs font-medium text-amber-500">
+                    Testmodus: Diese Bestellung wird als Testbestellung markiert, kostet 0,01 € und wird nicht
+                    als Conversion getrackt.
+                  </p>
+                )}
+              </div>
+
               <div className="border-t border-border pt-4 space-y-1.5 text-sm">
                 <div className="flex justify-between gap-2"><span className="text-muted-foreground">Zwischensumme netto</span><span>{formatNet(totals.subtotalNet)}</span></div>
+                {totals.discount > 0 && (
+                  <div className="flex justify-between gap-2 text-primary"><span>Rabatt ({coupon?.code.toUpperCase()})</span><span>-{formatNet(totals.discount)}</span></div>
+                )}
                 <div className="flex justify-between gap-2"><span className="text-muted-foreground">Versand netto</span><span>{formatNet(totals.shipping)}</span></div>
                 <div className="flex justify-between gap-2"><span className="text-muted-foreground">USt. {Math.round(VAT_RATE * 100)}%</span><span>{totals.vat.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€</span></div>
                 <div className="flex justify-between gap-2 items-baseline border-t border-border pt-3 mt-2">
                   <span className="font-semibold">Gesamt</span>
-                  <span className="text-2xl font-bold text-primary break-words">{formatGross(totals.net)}</span>
+                  <span className="text-2xl font-bold text-primary break-words">
+                    {totals.gross.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€
+                  </span>
                 </div>
                 <p className="text-xs text-muted-foreground">inkl. 19% MwSt. und Versand</p>
               </div>
