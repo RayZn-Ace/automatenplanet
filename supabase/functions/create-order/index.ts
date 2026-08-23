@@ -140,10 +140,17 @@ Deno.serve(async (req) => {
     },
     body: JSON.stringify({
       amount: { currency: "EUR", value: (gross / 100).toFixed(2) },
-      description: `Bestellung ${order.order_number}`,
+      description: isTest
+        ? `TESTBESTELLUNG ${order.order_number}`
+        : `Bestellung ${order.order_number}`,
       redirectUrl: `${origin}/bestellung?o=${order.id}`,
       webhookUrl,
-      metadata: { orderId: order.id, orderNumber: order.order_number },
+      metadata: {
+        orderId: order.id,
+        orderNumber: order.order_number,
+        isTest,
+        couponCode: appliedCode,
+      },
       billingEmail: customer.email,
       locale: customer.country === "DE" ? "de_DE" : undefined,
     }),
@@ -159,9 +166,22 @@ Deno.serve(async (req) => {
   const payment = await mollieRes.json();
   await supabase.from("orders").update({ mollie_payment_id: payment.id }).eq("id", order.id);
 
+  if (appliedCode) {
+    const { data: current } = await supabase
+      .from("coupons")
+      .select("redemptions")
+      .ilike("code", appliedCode)
+      .maybeSingle();
+    await supabase
+      .from("coupons")
+      .update({ redemptions: ((current?.redemptions as number | undefined) ?? 0) + 1 })
+      .ilike("code", appliedCode);
+  }
+
   return json({
     orderId: order.id,
     orderNumber: order.order_number,
+    isTest,
     checkoutUrl: payment._links?.checkout?.href,
   });
 });
