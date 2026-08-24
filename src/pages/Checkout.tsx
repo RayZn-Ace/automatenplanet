@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import PaymentMethods from "@/components/PaymentMethods";
+import QuoteRequestDialog from "@/components/QuoteRequestDialog";
 import { useCartStore } from "@/stores/cartStore";
 import { formatNet, grossPrice, VAT_RATE } from "@/lib/pricing";
 import { SHIPPING_COUNTRIES, shippingNet } from "@/lib/shipping";
@@ -340,7 +341,22 @@ const Checkout = () => {
               <Button type="submit" size="lg" className="w-full h-14 text-base" disabled={loading}>
                 {loading ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Weiter zur Zahlung</> : <><Lock className="w-5 h-5 mr-2" /> Jetzt kaufen</>}
               </Button>
+
+              <div className="space-y-2">
+                <QuoteRequestDialog
+                  label="Angebot anfragen"
+                  variant="outline"
+                  productSlug={items[0]?.slug}
+                  productName={items.map((i) => `${i.quantity}x ${i.name}`).join(", ")}
+                  value={totals.subtotalNet}
+                />
+                <p className="text-xs text-muted-foreground text-center">
+                  Lieber erst ein schriftliches Angebot? Wir senden Ihnen ein unverbindliches Angebot inkl. Versand
+                  und Zahlung auf Rechnung.
+                </p>
+              </div>
               <PaymentMethods />
+
             </div>
           </form>
         )}
