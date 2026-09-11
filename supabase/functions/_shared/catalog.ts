@@ -9,7 +9,7 @@ export interface CatalogEntry {
 }
 
 const simple: Array<[string, string, number]> = [
-  ["greifautomat", "Greifautomat", 2499],
+  ["greifautomat", "Greifautomat", 2249],
   ["basketball-machine", "Basketball Machine", 2999],
   ["air-hockey-table", "Air Hockey Table", 2999],
   ["arcade-machine", "Arcade Machine", 1999],
