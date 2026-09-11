@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Building2, Eye, Users, CalendarCheck, Phone } from "lucide-react";
 import { trackContactClick } from "@/lib/contactTracking";
@@ -19,13 +19,14 @@ const points = [
 ];
 
 const ShowroomSection = () => {
+  const reduceMotion = useReducedMotion();
   return (
     <section id="showroom" className="py-20 md:py-24 bg-card/40 border-y border-border">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
             <p className="text-sm font-semibold uppercase tracking-wider text-primary">Showroom</p>
@@ -87,8 +88,8 @@ const ShowroomSection = () => {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.97 }}
+            whileInView={reduceMotion ? undefined : { opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             className="overflow-hidden rounded-3xl border border-border bg-background"
           >

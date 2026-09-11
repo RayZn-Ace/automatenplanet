@@ -87,6 +87,15 @@ All colors MUST be HSL.
   }
 }
 
+/* Fixer Header: Anker nicht unter der Navigation verstecken */
+#ablauf,
+#showroom,
+#kontakt,
+#service,
+#produkte {
+  scroll-margin-top: 7rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Bot, ArrowLeft, ArrowRight, RotateCcw, MessageCircle } from "lucide-react";
+import { Bot, ArrowLeft, ArrowRight, RotateCcw, MessageCircle, Info } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -15,8 +15,8 @@ import { trackContactClick } from "@/lib/contactTracking";
 import { whatsappHref } from "@/lib/supportContacts";
 
 /**
- * Automaten-Berater: rein regelbasierte Auswahl auf Basis des echten Katalogs.
- * Keine KI, kein Backend, keine erfundenen Produkte.
+ * Automaten-Berater: Auswahl aus dem echten Katalog.
+ * Budget und Stellflaeche sind harte Filter, der Standort bestimmt nur die Reihenfolge.
  */
 
 type Option = { value: string; label: string; hint?: string };
@@ -37,7 +37,7 @@ const questions: { id: "location" | "space" | "budget"; title: string; options: 
     id: "space",
     title: "Wie viel Stellfläche ist vorhanden?",
     options: [
-      { value: "klein", label: "Wenig Platz", hint: "unter 1 m² Stellfläche" },
+      { value: "klein", label: "Wenig Platz", hint: "bis etwa 1 m² Grundfläche" },
       { value: "mittel", label: "Normale Fläche", hint: "etwa 1 bis 2 m²" },
       { value: "gross", label: "Viel Platz", hint: "mehr als 2 m²" },
     ],
@@ -54,11 +54,12 @@ const questions: { id: "location" | "space" | "budget"; title: string; options: 
   },
 ];
 
+/** Kategorien exakt wie im Katalog. */
 const categoryPreference: Record<string, string[]> = {
-  gastro: ["Boxautomaten", "Tischspiele", "Arcade-Automaten", "Greifautomaten"],
-  fitness: ["Boxautomaten", "Sportautomaten", "Arcade-Automaten"],
-  kiosk: ["Greifautomaten", "Automaten", "Arcade-Automaten", "Boxautomaten"],
-  freizeit: ["Kinderfahrgeschäfte", "Sportautomaten", "Arcade-Automaten", "Greifautomaten"],
+  gastro: ["Boxautomaten", "Tischspiele", "Arcade", "Kraftspiele", "Greifautomaten"],
+  fitness: ["Boxautomaten", "Kraftspiele", "Basketball", "Verkaufsautomaten"],
+  kiosk: ["Greifautomaten", "Verkaufsautomaten", "Arcade", "Boxautomaten"],
+  freizeit: ["Kinderattraktionen", "Basketball", "Arcade", "Greifautomaten", "Tischspiele"],
   sonstiges: [],
 };
 
@@ -69,14 +70,19 @@ const priceRange: Record<string, [number, number]> = {
   open: [0, Number.MAX_SAFE_INTEGER],
 };
 
-const spaceScore = (dimensions: string | undefined, space: string): number => {
-  if (!dimensions) return 0;
-  const nums = dimensions.match(/\d+/g)?.map(Number) ?? [];
-  const footprint = nums.length >= 2 ? (nums[0] * nums[1]) / 10000 : 0;
-  if (!footprint) return 0;
-  if (space === "klein") return footprint <= 1 ? 2 : -2;
-  if (space === "mittel") return footprint <= 2.2 ? 2 : -1;
-  return footprint > 1.2 ? 2 : 0;
+/** Grundflaeche in m^2 aus "B × T × H cm". Ohne verwertbare Angabe: null. */
+const footprintM2 = (dimensions?: string): number | null => {
+  if (!dimensions) return null;
+  const nums = dimensions.match(/\d+(?:[.,]\d+)?/g)?.map((n) => Number(n.replace(",", "."))) ?? [];
+  if (nums.length < 2) return null;
+  const area = (nums[0] * nums[1]) / 10000;
+  return area > 0 ? area : null;
+};
+
+const spaceLimit: Record<string, [number, number]> = {
+  klein: [0, 1.0],
+  mittel: [0, 2.2],
+  gross: [0, Number.MAX_SAFE_INTEGER],
 };
 
 interface Props {
@@ -94,18 +100,24 @@ const AdvisorDialog = ({ open, onOpenChange }: Props) => {
   const results = useMemo(() => {
     if (!isResult) return [];
     const prefs = categoryPreference[answers.location ?? "sonstiges"] ?? [];
-    const [min, max] = priceRange[answers.budget ?? "open"];
-    const scored = products.map((p) => {
-      let score = 0;
-      const prefIndex = prefs.indexOf(p.category);
-      if (prefIndex >= 0) score += 6 - prefIndex;
-      if (p.price >= min && p.price <= max) score += 4;
-      else score -= 2;
-      score += spaceScore(p.dimensions, answers.space ?? "mittel");
-      return { p, score };
+    const [minPrice, maxPrice] = priceRange[answers.budget ?? "open"];
+    const [, maxArea] = spaceLimit[answers.space ?? "gross"];
+
+    // Harte Filter: Budget und bekannte Stellflaeche.
+    const candidates = products.filter((p) => {
+      if (p.price < minPrice || p.price > maxPrice) return false;
+      const area = footprintM2(p.dimensions);
+      if (area === null) return false; // ohne belegte Masse nicht als passend ausgeben
+      return area <= maxArea;
     });
-    return scored
-      .sort((a, b) => b.score - a.score || a.p.price - b.p.price)
+
+    // Standort bestimmt nur die Sortierung.
+    return candidates
+      .map((p) => {
+        const idx = prefs.indexOf(p.category);
+        return { p, rank: idx === -1 ? prefs.length : idx };
+      })
+      .sort((a, b) => a.rank - b.rank || a.p.price - b.p.price)
       .slice(0, 3)
       .map((s) => s.p);
   }, [isResult, answers, products]);
@@ -115,15 +127,22 @@ const AdvisorDialog = ({ open, onOpenChange }: Props) => {
     setAnswers({});
   };
 
-  const summary = () => {
-    const q = (id: string) =>
-      questions.find((x) => x.id === id)?.options.find((o) => o.value === answers[id])?.label ?? "-";
-    return `Standort: ${q("location")}, Platz: ${q("space")}, Budget: ${q("budget")}`;
+  const close = () => {
+    onOpenChange(false);
+    reset();
   };
 
-  const consultText = `Hallo, ich habe den Automaten-Berater genutzt. ${summary()}. Vorschläge: ${results
-    .map((r) => r.name)
-    .join(", ")}. Bitte beraten Sie mich dazu.`;
+  const answerLabel = (id: string) =>
+    questions.find((x) => x.id === id)?.options.find((o) => o.value === answers[id])?.label ?? "-";
+
+  const summary = () =>
+    `Standort: ${answerLabel("location")}, Platz: ${answerLabel("space")}, Budget: ${answerLabel("budget")}`;
+
+  const consultText = results.length
+    ? `Hallo, ich habe den Automaten-Berater genutzt. ${summary()}. Vorschläge: ${results
+        .map((r) => r.name)
+        .join(", ")}. Bitte beraten Sie mich dazu.`
+    : `Hallo, ich habe den Automaten-Berater genutzt. ${summary()}. Dazu wurde nichts angezeigt - bitte beraten Sie mich persönlich.`;
 
   const current = questions[Math.min(step, questions.length - 1)];
 
@@ -135,13 +154,13 @@ const AdvisorDialog = ({ open, onOpenChange }: Props) => {
         if (!v) reset();
       }}
     >
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[85dvh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Bot className="h-5 w-5 text-primary" /> Automaten-Berater
           </DialogTitle>
           <DialogDescription>
-            Regelbasierte Empfehlung aus unserem echten Sortiment - drei kurze Fragen, keine KI.
+            Drei kurze Fragen zu Standort, Platz und Budget. Entdecke passende Modelle.
           </DialogDescription>
         </DialogHeader>
 
@@ -181,36 +200,50 @@ const AdvisorDialog = ({ open, onOpenChange }: Props) => {
         ) : (
           <div>
             <p className="text-sm text-muted-foreground">{summary()}</p>
-            <h3 className="mt-2 mb-3 text-lg font-bold">Diese Automaten passen dazu</h3>
+
             {results.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                Aktuell finden wir dazu keinen klaren Treffer. Sieh dir gern die{" "}
-                <Link to="/#produkte" className="text-primary underline">
-                  gesamte Übersicht
-                </Link>{" "}
-                an oder lass dich persönlich beraten.
-              </p>
+              <div className="mt-3">
+                <h3 className="text-lg font-bold">Dazu passt aktuell kein Modell</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Mit dieser Kombination aus Budget und Stellfläche finden wir im aktuellen Sortiment
+                  keinen Automaten, den wir dir guten Gewissens empfehlen können. Sieh dir gern die{" "}
+                  <Link to="/#produkte" onClick={close} className="text-primary underline">
+                    gesamte Übersicht
+                  </Link>{" "}
+                  an oder lass dich persönlich beraten - oft finden wir gemeinsam doch eine Lösung.
+                </p>
+              </div>
             ) : (
-              <ul className="space-y-2">
-                {results.map((p) => (
-                  <li key={p.slug}>
-                    <Link
-                      to={`/produkte/${p.slug}`}
-                      onClick={() => onOpenChange(false)}
-                      className="flex items-center gap-3 rounded-xl border border-border p-3 transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    >
-                      <img src={p.image} alt={p.name} loading="lazy" className="h-14 w-14 object-contain" />
-                      <span className="min-w-0">
-                        <span className="block truncate text-sm font-semibold">{p.name}</span>
-                        <span className="block text-xs text-muted-foreground">
-                          {formatNet(p.price)} netto{p.dimensions ? ` · ${p.dimensions}` : ""}
+              <>
+                <h3 className="mt-2 mb-3 text-lg font-bold">
+                  {results.length === 1 ? "Dieser Automat passt dazu" : "Diese Automaten passen dazu"}
+                </h3>
+                <ul className="space-y-2">
+                  {results.map((p) => (
+                    <li key={p.slug}>
+                      <Link
+                        to={`/produkte/${p.slug}`}
+                        onClick={close}
+                        className="flex items-center gap-3 rounded-xl border border-border p-3 transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
+                        <img src={p.image} alt={p.name} loading="lazy" className="h-14 w-14 object-contain" />
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm font-semibold">{p.name}</span>
+                          <span className="block text-xs text-muted-foreground">
+                            {formatNet(p.price)} netto{p.dimensions ? ` · ${p.dimensions}` : ""}
+                          </span>
                         </span>
-                      </span>
-                      <ArrowRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+                        <ArrowRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
+                  <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                  Die Maße sind die Gerätemaße. Für Bedienung und Sicherheitsabstand plane je nach Modell
+                  zusätzliche Fläche ein - wir prüfen das gern mit dir.
+                </p>
+              </>
             )}
 
             <div className="mt-5 flex flex-col gap-2 sm:flex-row">

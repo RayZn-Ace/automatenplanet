@@ -9,7 +9,8 @@ const ScrollToTop = () => {
       const id = hash.slice(1);
       const scroll = () => {
         const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (el) el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
       };
       const t = window.setTimeout(scroll, 120);
       return () => window.clearTimeout(t);
