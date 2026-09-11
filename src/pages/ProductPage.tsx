@@ -7,6 +7,9 @@ import { getSeoContent } from "@/data/productSeoContent";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductJsonLd from "@/components/seo/ProductJsonLd";
+import PhoneBanner from "@/components/sections/PhoneBanner";
+import ServiceCards from "@/components/sections/ServiceCards";
+import SupportPreview from "@/components/sections/SupportPreview";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -126,6 +129,7 @@ const ProductPage = () => {
       </Helmet>
       <ProductJsonLd product={product} />
       <Navbar />
+      <PhoneBanner />
 
       {/* Breadcrumb */}
       <div className="pt-24 pb-2">
@@ -595,6 +599,9 @@ const ProductPage = () => {
           </div>
         </section>
       )}
+
+      <ServiceCards />
+      <SupportPreview />
 
       <Footer />
     </div>
