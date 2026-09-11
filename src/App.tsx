@@ -18,6 +18,7 @@ import Datenschutz from "./pages/Datenschutz";
 import AGB from "./pages/AGB";
 import Rueckgabe from "./pages/Rueckgabe";
 import Versand from "./pages/Versand";
+import Support from "./pages/Support";
 import Handbuch from "./pages/Handbuch";
 import HandbuchBoxautomat from "./pages/HandbuchBoxautomat";
 import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
@@ -76,6 +77,7 @@ const App = () => (
 
             <Route path="/kasse" element={<Checkout />} />
             <Route path="/bestellung" element={<OrderStatus />} />
+            <Route path="/support" element={<Support />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/standorte" element={<Standorte />} />
