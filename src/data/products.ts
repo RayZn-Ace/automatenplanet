@@ -42,6 +42,21 @@ export const products: ProductData[] = [
     metaDescription: "Boxautomat Premium kaufen: 2 Varianten (nur Münzfach oder Münz- & Geldscheinfach). LED-Display, Highscore-System. Ab 1.799€ netto. Versand in 24h.",
   },
   {
+    slug: "comboboxautomat",
+    name: "Comboboxautomat mit Münz- und Scheineinwurf",
+    description:
+      "Comboboxautomat für den gewerblichen Einsatz mit Münz- und Scheineinwurf. Digitales LED-Display, Highscore-System und robustes Boxpolster für Dauerbetrieb. Ideal für Bars, Clubs, Fitnessstudios, Spielhallen und Einkaufszentren.",
+    price: 2999,
+    image: "/images/products/boxing-machine-new.png",
+    dimensions: "70 × 65 × 230 cm",
+    power: "220V / 300W",
+    category: "Boxautomaten",
+    keywords: ["Comboboxautomat", "Boxautomat", "Münzeinwurf", "Scheineinwurf", "Geldscheinakzeptor"],
+    metaTitle: "Comboboxautomat mit Münz- und Scheineinwurf – 2.999€ netto | AutomatPlanet",
+    metaDescription:
+      "Comboboxautomat mit Münz- und Scheineinwurf kaufen: LED-Display, Highscore-System, robustes Boxpolster. 2.999€ netto bei AutomatPlanet.",
+  },
+  {
     slug: "basketball-machine",
     name: "Basketball Machine",
     description: "Arcade-Basketball mit Timer, Punktezähler und Multiplayer-Modus. Neon-LED-Beleuchtung sorgt für maximale Aufmerksamkeit. Perfekt für Arcades, Shoppingcenter und Events.",
