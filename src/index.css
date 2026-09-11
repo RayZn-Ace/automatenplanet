@@ -38,6 +38,10 @@ All colors MUST be HSL.
     --input: 240 15% 88%;
     --ring: 358 78% 48%;
 
+    /* Kontakt / Telefon: bewusst grün */
+    --contact: 142 70% 38%;
+    --contact-foreground: 0 0% 100%;
+
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 100%;
@@ -78,6 +82,19 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 25% 12%;
     --sidebar-border: 240 15% 88%;
     --sidebar-ring: 358 78% 48%;
+    --contact: 142 70% 38%;
+    --contact-foreground: 0 0% 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
