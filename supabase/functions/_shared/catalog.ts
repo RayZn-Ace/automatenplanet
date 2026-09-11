@@ -20,6 +20,7 @@ const simple: Array<[string, string, number]> = [
   ["air-hockey-premium", "Air Hockey Premium", 4999],
   ["basketball-arcade", "Basketball Arcade", 2999],
   ["champions-league-tischkicker", "Champions League Foosball Table", 1499],
+  ["billardtisch-muenzeinwurf", "Billardtisch mit Münzeinwurf", 2499],
   ["kinderkarussell", "Kids Carousel", 4999],
   ["parfuem-automat", "Perfume Vending Machine", 1999],
   ["snack-automat", "Snack Vending Machine", 6999],

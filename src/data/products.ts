@@ -172,6 +172,21 @@ export const products: ProductData[] = [
     metaDescription: "Champions League Tischkicker in Premium-Qualität kaufen. Schwarzes Hochglanz-Design. Ab 1.499€ netto bei AutomatPlanet.",
   },
   {
+    slug: "billardtisch-muenzeinwurf",
+    name: "Billardtisch mit Münzeinwurf",
+    description:
+      "Professioneller 8-Fuß-Billardtisch mit Münzprüfer für den gewerblichen Einsatz in Bars, Vereinsheimen, Spielhallen und Hotels. Münz- oder Tokenbetrieb individuell einstellbar, automatischer Kugelrücklauf, höhenverstellbare Füße. Schwarzbrauner Korpus, grünes Tuch, verchromte Eckelemente.",
+    price: 2499,
+    image: "/images/products/billardtisch-muenzeinwurf.png",
+    dimensions: "244 × 132 × 80 cm",
+    power: "Kein Strom benötigt",
+    category: "Tischspiele",
+    keywords: ["Billardtisch", "Billardtisch mit Münzeinwurf", "Münzbillard", "Poolbillard gewerblich"],
+    metaTitle: "Billardtisch mit Münzeinwurf kaufen – 8 Fuß ab 2.499 € netto | AutomatPlanet",
+    metaDescription:
+      "Professioneller 8-Fuß-Billardtisch mit Münzprüfer für den gewerblichen Einsatz. Kugelrücklauf, höhenverstellbare Füße. Ab 2.499 € netto.",
+  },
+  {
     slug: "kinderkarussell",
     name: "Kids Carousel",
     description: "Elektronisches Kinderkarussell mit bunter LED-Beleuchtung und Musik. Münzbetrieben für Supermärkte, Einkaufszentren und Freizeitparks. Sicher und robust gebaut.",
