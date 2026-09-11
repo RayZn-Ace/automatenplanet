@@ -5,10 +5,12 @@ import { useI18n } from "@/lib/i18n";
 import logo from "@/assets/logo-automatplanet.png";
 import CartDrawer from "@/components/CartDrawer";
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
+import ProductSearchDialog, { ProductSearchTrigger } from "@/components/ProductSearchDialog";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { lang, setLang, t } = useI18n();
   const location = useLocation();
   const isHome = location.pathname === "/";
@@ -20,6 +22,17 @@ const Navbar = () => {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setIsSearchOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
   const navLinks = [
@@ -68,6 +81,7 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex items-center gap-3">
+            <ProductSearchTrigger onClick={() => setIsSearchOpen(true)} />
             <WhatsAppConsultButton className="!h-10 !w-auto !px-4 !text-sm" label="WhatsApp Beratung" />
             <CartDrawer />
           </div>
@@ -75,6 +89,7 @@ const Navbar = () => {
 
         {/* Mobile Toggle */}
         <div className="md:hidden flex items-center gap-2">
+          <ProductSearchTrigger onClick={() => setIsSearchOpen(true)} />
           <CartDrawer />
           <button
             className="text-foreground"
@@ -116,6 +131,8 @@ const Navbar = () => {
           </div>
         </div>
       )}
+
+      <ProductSearchDialog open={isSearchOpen} onOpenChange={setIsSearchOpen} />
     </nav>
   );
 };
