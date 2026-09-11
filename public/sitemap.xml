@@ -66,4 +66,9 @@
   <url><loc>https://automatplanet.de/produkte/furby-car</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://automatplanet.de/produkte/helicopter-ride</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://automatplanet.de/produkte/electric-dino-ride</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url>
+    <loc>https://automatplanet.de/support</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
