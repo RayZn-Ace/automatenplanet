@@ -24,6 +24,17 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setIsSearchOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   const navLinks = [
     { name: t("nav.boxautomat"), href: "/produkte/boxautomat-premium", type: "route" as const },
     { name: t("nav.greifautomat"), href: "/produkte/greifautomat", type: "route" as const },
