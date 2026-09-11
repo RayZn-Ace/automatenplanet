@@ -61,21 +61,21 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          <ul className="flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-4 xl:gap-8">
+          <ul className="flex items-center gap-3 lg:gap-4 xl:gap-6">
             {navLinks.map((link) => (
               <li key={link.name}>
                 {link.type === "route" ? (
                   <Link
                     to={link.href}
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    className="whitespace-nowrap text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.name}
                   </Link>
                 ) : (
                   <a
                     href={link.href}
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    className="whitespace-nowrap text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.name}
                   </a>
@@ -89,7 +89,7 @@ const Navbar = () => {
               href={PHONE_HREF}
               onClick={() => trackContactClick("phone", { label: PHONE_DISPLAY, placement: "navbar" })}
               aria-label={`Telefonisch beraten lassen: ${PHONE_DISPLAY}`}
-              className="hidden lg:inline-flex items-center gap-2 h-10 rounded-xl border border-contact/40 px-3 text-sm font-bold text-foreground transition-colors hover:bg-contact/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-contact focus-visible:ring-offset-2"
+              className="hidden xl:inline-flex items-center gap-2 h-10 rounded-xl border border-contact/40 px-3 text-sm font-bold text-foreground transition-colors hover:bg-contact/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-contact focus-visible:ring-offset-2"
             >
               <Phone className="h-4 w-4 text-contact" />
               <span className="whitespace-nowrap">{PHONE_DISPLAY}</span>
