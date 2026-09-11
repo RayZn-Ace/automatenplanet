@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import logo from "@/assets/logo-automatplanet.png";
 import CartDrawer from "@/components/CartDrawer";
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
 import ProductSearchDialog, { ProductSearchTrigger } from "@/components/ProductSearchDialog";
+import { trackContactClick } from "@/lib/contactTracking";
+import { PHONE_DISPLAY, PHONE_HREF } from "@/lib/supportContacts";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -41,6 +43,7 @@ const Navbar = () => {
     { name: t("nav.allMachines"), href: hashHref("#produkte"), type: "hash" as const },
     { name: t("nav.locations"), href: "/standorte", type: "route" as const },
     { name: t("nav.blog"), href: "/blog", type: "route" as const },
+    { name: "Support", href: "/support", type: "route" as const },
   ];
 
   return (
@@ -53,26 +56,26 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
+        <Link to="/" className="flex shrink-0 items-center gap-2 group mr-4">
           <img src={logo} alt="AutomatPlanet" className="h-5 md:h-10 w-auto" />
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          <ul className="flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-4 xl:gap-8">
+          <ul className="flex items-center gap-3 lg:gap-4 xl:gap-6">
             {navLinks.map((link) => (
               <li key={link.name}>
                 {link.type === "route" ? (
                   <Link
                     to={link.href}
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    className="whitespace-nowrap text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.name}
                   </Link>
                 ) : (
                   <a
                     href={link.href}
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    className="whitespace-nowrap text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.name}
                   </a>
@@ -82,6 +85,15 @@ const Navbar = () => {
           </ul>
           <div className="flex items-center gap-3">
             <ProductSearchTrigger onClick={() => setIsSearchOpen(true)} />
+            <a
+              href={PHONE_HREF}
+              onClick={() => trackContactClick("phone", { label: PHONE_DISPLAY, placement: "navbar" })}
+              aria-label={`Telefonisch beraten lassen: ${PHONE_DISPLAY}`}
+              className="hidden xl:inline-flex items-center gap-2 h-10 rounded-xl border border-contact/40 px-3 text-sm font-bold text-foreground transition-colors hover:bg-contact/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-contact focus-visible:ring-offset-2"
+            >
+              <Phone className="h-4 w-4 text-contact" />
+              <span className="whitespace-nowrap">{PHONE_DISPLAY}</span>
+            </a>
             <WhatsAppConsultButton className="!h-10 !w-auto !px-4 !text-sm" label="WhatsApp Beratung" />
             <CartDrawer />
           </div>
@@ -127,6 +139,16 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex flex-col gap-3 mt-4">
+            <a
+              href={PHONE_HREF}
+              onClick={() => {
+                trackContactClick("phone", { label: PHONE_DISPLAY, placement: "navbar_mobile" });
+                setIsMobileMenuOpen(false);
+              }}
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-contact px-4 text-sm font-bold text-contact-foreground transition-colors hover:bg-contact/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-contact focus-visible:ring-offset-2"
+            >
+              <Phone className="h-4 w-4" /> {PHONE_DISPLAY} anrufen
+            </a>
             <WhatsAppConsultButton label="WhatsApp Beratung" />
           </div>
         </div>

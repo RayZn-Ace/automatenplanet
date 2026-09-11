@@ -21,6 +21,10 @@ const legalLinks = [
 
 const companyLinks = [
   { label: "Blog", to: "/blog" },
+  { label: "Support und Hilfe", to: "/support" },
+  { label: "Showroom Hannover", to: "/#showroom" },
+  { label: "Ablauf beim Kauf", to: "/#ablauf" },
+  { label: "Handbücher", to: "/handbuch" },
   { label: "Kontakt", to: "/#kontakt" },
 ];
 

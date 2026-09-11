@@ -3,6 +3,11 @@ import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/sections/Hero";
 import PhoneBanner from "@/components/sections/PhoneBanner";
 import Benefits from "@/components/sections/Benefits";
+import TrustBar from "@/components/sections/TrustBar";
+import PurchaseJourney from "@/components/sections/PurchaseJourney";
+import ServiceCards from "@/components/sections/ServiceCards";
+import ShowroomSection from "@/components/sections/ShowroomSection";
+import SupportPreview from "@/components/sections/SupportPreview";
 import ProductHighlight from "@/components/sections/ProductHighlight";
 import MoreProductsSlider from "@/components/sections/MoreProductsSlider";
 import HomeTestimonials from "@/components/sections/HomeTestimonials";
@@ -39,6 +44,7 @@ const Index = () => {
       <main>
         <Hero />
         <PhoneBanner />
+        <TrustBar />
         <ProductHighlight
           eyebrow="Bestseller 2026"
           title="Boxautomat Premium"
@@ -66,7 +72,7 @@ const Index = () => {
             "Einstellbare Greifkraft für maximale Erträge",
             "LED-Beleuchtung für maximale Aufmerksamkeit",
           ]}
-          priceFrom={2499}
+          priceFrom={2249}
           ctaHref="/produkte/greifautomat"
           ctaLabel="Zum Greifautomat"
           image="/images/products/claw-machine-new.png"
@@ -75,8 +81,12 @@ const Index = () => {
         />
         <MoreProductsSlider />
         <Benefits />
+        <PurchaseJourney />
+        <ServiceCards />
+        <ShowroomSection />
         <HomeTestimonials />
         <Team />
+        <SupportPreview />
         <BlogPreview limit={3} />
         <SEOInfo />
       </main>
