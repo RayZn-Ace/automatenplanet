@@ -56,7 +56,7 @@ const steps: Step[] = [
       "Du erfährst, welche Modelle für deinen Standort in Frage kommen.",
       "Direkt per WhatsApp oder Telefon - ohne Formularpflicht.",
     ],
-    contact: UFUK,
+    contact: RAPHAEL,
     cta: {
       label: "WhatsApp Beratung starten",
       href: whatsappHref("Ich komme von der Automatplanet Website und hätte gern eine Beratung."),
@@ -73,7 +73,7 @@ const steps: Step[] = [
       "Varianten wie Münz- oder Scheineinwurf direkt auf der Produktseite wählen.",
       "Unsicher? Der Automaten-Berater filtert nach Standort, Platz und Budget.",
     ],
-    contact: UFUK,
+    contact: RAPHAEL,
     cta: { label: "Automaten entdecken", to: "/#produkte" },
   },
   {
