@@ -5,10 +5,12 @@ import { useI18n } from "@/lib/i18n";
 import logo from "@/assets/logo-automatplanet.png";
 import CartDrawer from "@/components/CartDrawer";
 import WhatsAppConsultButton from "@/components/WhatsAppConsultButton";
+import ProductSearchDialog, { ProductSearchTrigger } from "@/components/ProductSearchDialog";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { lang, setLang, t } = useI18n();
   const location = useLocation();
   const isHome = location.pathname === "/";
