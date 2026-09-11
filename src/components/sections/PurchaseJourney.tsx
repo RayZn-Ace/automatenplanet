@@ -41,7 +41,7 @@ interface Step {
 }
 
 const DENNIS = { name: "Dennis P.", role: "Geschäftsführung", image: "/images/team/dennis-p.png" };
-const UFUK = { name: "Ufuk C.", role: "Account Manager", image: "/images/team/ufuk-c.png" };
+
 const KAY = { name: "Kay E.", role: "Technik & Service", image: "/images/team/kay-e.png" };
 const RAPHAEL = { name: "Raphael K.", role: "Logistik", image: "/images/team/raphael-k.png" };
 
@@ -56,7 +56,7 @@ const steps: Step[] = [
       "Du erfährst, welche Modelle für deinen Standort in Frage kommen.",
       "Direkt per WhatsApp oder Telefon - ohne Formularpflicht.",
     ],
-    contact: UFUK,
+    contact: RAPHAEL,
     cta: {
       label: "WhatsApp Beratung starten",
       href: whatsappHref("Ich komme von der Automatplanet Website und hätte gern eine Beratung."),
@@ -73,7 +73,7 @@ const steps: Step[] = [
       "Varianten wie Münz- oder Scheineinwurf direkt auf der Produktseite wählen.",
       "Unsicher? Der Automaten-Berater filtert nach Standort, Platz und Budget.",
     ],
-    contact: UFUK,
+    contact: RAPHAEL,
     cta: { label: "Automaten entdecken", to: "/#produkte" },
   },
   {
