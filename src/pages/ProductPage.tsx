@@ -129,10 +129,12 @@ const ProductPage = () => {
       </Helmet>
       <ProductJsonLd product={product} />
       <Navbar />
-      <PhoneBanner />
+      <div className="pt-20">
+        <PhoneBanner />
+      </div>
 
       {/* Breadcrumb */}
-      <div className="pt-24 pb-2">
+      <div className="pt-6 pb-2">
         <div className="container mx-auto px-4 md:px-6">
           <nav className="flex items-center gap-2 text-xs text-muted-foreground">
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
