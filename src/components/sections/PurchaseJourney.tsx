@@ -41,7 +41,7 @@ interface Step {
 }
 
 const DENNIS = { name: "Dennis P.", role: "Geschäftsführung", image: "/images/team/dennis-p.png" };
-const UFUK = { name: "Ufuk C.", role: "Account Manager", image: "/images/team/ufuk-c.png" };
+
 const KAY = { name: "Kay E.", role: "Technik & Service", image: "/images/team/kay-e.png" };
 const RAPHAEL = { name: "Raphael K.", role: "Logistik", image: "/images/team/raphael-k.png" };
 
