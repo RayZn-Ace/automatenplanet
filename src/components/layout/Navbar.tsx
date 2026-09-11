@@ -131,6 +131,8 @@ const Navbar = () => {
           </div>
         </div>
       )}
+
+      <ProductSearchDialog open={isSearchOpen} onOpenChange={setIsSearchOpen} />
     </nav>
   );
 };
