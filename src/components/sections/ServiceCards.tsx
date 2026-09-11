@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Truck, Wrench, FileText, LifeBuoy, ArrowRight, Building2 } from "lucide-react";
 
 const services = [
@@ -41,6 +41,7 @@ const services = [
 ];
 
 const ServiceCards = () => {
+  const reduceMotion = useReducedMotion();
   return (
     <section id="service" className="py-20 md:py-24">
       <div className="container mx-auto px-4 md:px-6">
@@ -58,8 +59,8 @@ const ServiceCards = () => {
             return (
               <motion.div
                 key={s.title}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
               >

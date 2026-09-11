@@ -61,8 +61,8 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-4 xl:gap-8">
-          <ul className="flex items-center gap-3 lg:gap-4 xl:gap-6">
+        <div className="hidden xl:flex items-center gap-6">
+          <ul className="flex items-center gap-4 2xl:gap-6">
             {navLinks.map((link) => (
               <li key={link.name}>
                 {link.type === "route" ? (
@@ -89,10 +89,10 @@ const Navbar = () => {
               href={PHONE_HREF}
               onClick={() => trackContactClick("phone", { label: PHONE_DISPLAY, placement: "navbar" })}
               aria-label={`Telefonisch beraten lassen: ${PHONE_DISPLAY}`}
-              className="hidden xl:inline-flex items-center gap-2 h-10 rounded-xl border border-contact/40 px-3 text-sm font-bold text-foreground transition-colors hover:bg-contact/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-contact focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-2 h-10 shrink-0 rounded-xl border border-contact/40 px-3 2xl:px-3 text-sm font-bold text-foreground transition-colors hover:bg-contact/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-contact focus-visible:ring-offset-2"
             >
               <Phone className="h-4 w-4 text-contact" />
-              <span className="whitespace-nowrap">{PHONE_DISPLAY}</span>
+              <span className="hidden whitespace-nowrap 2xl:inline">{PHONE_DISPLAY}</span>
             </a>
             <WhatsAppConsultButton className="!h-10 !w-auto !px-4 !text-sm" label="WhatsApp Beratung" />
             <CartDrawer />
@@ -100,7 +100,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Toggle */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="xl:hidden flex items-center gap-2">
           <ProductSearchTrigger onClick={() => setIsSearchOpen(true)} />
           <CartDrawer />
           <button
@@ -114,7 +114,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border p-4 flex flex-col gap-4">
+        <div className="xl:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border p-4 flex flex-col gap-4">
           <ul className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <li key={link.name}>

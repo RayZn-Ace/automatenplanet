@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Globe2, Building2, Headphones, ShieldCheck, Star } from "lucide-react";
 
@@ -34,6 +34,7 @@ const items = [
 ];
 
 const TrustBar = () => {
+  const reduceMotion = useReducedMotion();
   return (
     <section aria-label="Vertrauen und Service" className="py-12 md:py-16 bg-card/40 border-y border-border">
       <div className="container mx-auto px-4 md:px-6">
@@ -52,8 +53,8 @@ const TrustBar = () => {
             return (
               <motion.div
                 key={item.title}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
                 className="h-full"

@@ -64,14 +64,14 @@ export const supportFaqs: SupportFaqItem[] = [
     id: "lieferung-status",
     topic: "Lieferung",
     q: "Wo sehe ich den Status meiner Bestellung?",
-    a: "Über den Link in deiner Bestellbestätigung gelangst du zur Bestellstatus-Seite. Bei Fragen zur Sendung erreichst du uns telefonisch oder per E-Mail.",
-    links: [{ label: "Bestellstatus", to: "/bestellung" }],
+    a: "Über den persönlichen Link in deiner Bestellbestätigung gelangst du zur Bestellstatus-Seite. Bei Fragen zur Sendung erreichst du uns telefonisch oder per E-Mail.",
+    links: [{ label: "Frage zur Bestellung", to: "/support#kontakt" }],
   },
   {
     id: "aufbau-einweisung",
     topic: "Aufbau",
     q: "Muss ich den Automaten selbst aufbauen?",
-    a: "Die Geräte kommen betriebsbereit oder mit überschaubarem Montageaufwand an. Für die Inbetriebnahme gibt es Handbücher, und wir unterstützen dich telefonisch. Eine Einweisung vor Ort im Showroom ist nach Terminvereinbarung möglich.",
+    a: "Die Geräte kommen betriebsbereit oder mit überschaubarem Montageaufwand an. Für die Inbetriebnahme gibt es Handbücher, auch zu den Einstellungen am Münzprüfer, und wir unterstützen dich telefonisch. Eine Einweisung vor Ort im Showroom ist nach Terminvereinbarung möglich.",
     links: [{ label: "Handbücher", to: "/handbuch" }],
   },
   {
