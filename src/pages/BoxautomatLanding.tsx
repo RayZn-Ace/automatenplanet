@@ -510,11 +510,10 @@ const BoxautomatLanding = () => {
               />
               <div className="mt-5 flex items-center gap-3">
                 <img
-                  src="/kay-engelmann.jpg"
-                  alt="Kay Engelmann"
+                  src="/images/team/kay-e.png"
+                  alt="Kay Engelmann - Ansprechpartner AutomatPlanet"
                   loading="lazy"
-                  className="w-12 h-12 rounded-full object-cover border-2 border-primary/40"
-                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = "https://i.pravatar.cc/96?img=12"; }}
+                  className="w-12 h-12 rounded-full object-cover object-top border-2 border-primary/40"
                 />
                 <div>
                   <div className="text-xs text-neutral-500 uppercase tracking-wider">Dein Ansprechpartner</div>
