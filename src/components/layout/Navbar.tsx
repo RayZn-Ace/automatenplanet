@@ -81,6 +81,7 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex items-center gap-3">
+            <ProductSearchTrigger onClick={() => setIsSearchOpen(true)} />
             <WhatsAppConsultButton className="!h-10 !w-auto !px-4 !text-sm" label="WhatsApp Beratung" />
             <CartDrawer />
           </div>
@@ -88,6 +89,7 @@ const Navbar = () => {
 
         {/* Mobile Toggle */}
         <div className="md:hidden flex items-center gap-2">
+          <ProductSearchTrigger onClick={() => setIsSearchOpen(true)} />
           <CartDrawer />
           <button
             className="text-foreground"
