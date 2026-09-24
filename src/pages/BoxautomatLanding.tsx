@@ -306,6 +306,13 @@ const BoxautomatLanding = () => {
                   </a>
                   .
                 </p>
+                <p className="mt-2 text-xs text-muted-foreground text-center">
+                  Ersatzteile benötigt?{" "}
+                  <Link to="/ersatzteile" className="underline hover:text-foreground">
+                    Boxautomat-Ersatzteile ansehen
+                  </Link>
+                </p>
+
 
                 <PaymentMethods className="mt-6" />
               </div>
