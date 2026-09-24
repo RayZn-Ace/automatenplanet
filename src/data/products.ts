@@ -1,3 +1,4 @@
+import { spareParts } from "./spareParts";
 export interface ProductData {
   slug: string;
   name: string;
@@ -12,6 +13,9 @@ export interface ProductData {
   metaDescription: string;
   /** Verfuegbarkeit aus der Datenbank (Standard: in_stock). */
   availability?: "in_stock" | "out_of_stock" | "preorder" | "backorder";
+  /** Kurze Stichpunkte (z. B. bei Ersatzteilen). */
+  highlights?: string[];
+  mpn?: string;
 }
 
 export const products: ProductData[] = [
@@ -282,5 +286,5 @@ export const products: ProductData[] = [
 ];
 
 export const getProductBySlug = (slug: string): ProductData | undefined => {
-  return products.find((p) => p.slug === slug);
+  return products.find((p) => p.slug === slug) ?? spareParts.find((p) => p.slug === slug);
 };

@@ -11,7 +11,15 @@ export const formatGross = (net: number): string =>
   grossPrice(net).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "€";
 
 /** Nettopreis-Formatierung ohne Cent, z.B. "1.949€" */
-export const formatNet = (net: number): string => net.toLocaleString("de-DE") + "€";
+export const formatNet = (net: number): string => {
+  const whole = Math.abs(net - Math.round(net)) < 0.005;
+  return (
+    net.toLocaleString("de-DE", {
+      minimumFractionDigits: whole ? 0 : 2,
+      maximumFractionDigits: whole ? 0 : 2,
+    }) + "€"
+  );
+};
 
 /** Bruttopreis als reine Zahl-String für Feeds/JSON-LD, z.B. "2319.31" */
 export const grossPriceValue = (net: number): string => grossPrice(net).toFixed(2);

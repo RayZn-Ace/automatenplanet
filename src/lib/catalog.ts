@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { spareParts } from "@/data/spareParts";
 import { products as STATIC_PRODUCTS, type ProductData } from "@/data/products";
 
 export type DbProductRow = {
@@ -40,7 +41,7 @@ export function mapDbProduct(row: DbProductRow): ProductData {
     slug: row.slug,
     name: row.name,
     description: row.description,
-    price: Math.round(row.price_net_cents / 100),
+    price: row.price_net_cents / 100,
     image: row.image,
     dimensions: row.dimensions || undefined,
     power: row.power || undefined,
@@ -65,6 +66,11 @@ export async function fetchCatalog(): Promise<ProductData[]> {
     .eq("is_active", true)
     .order("sort_order", { ascending: true });
 
-  if (error || !data || data.length === 0) return STATIC_PRODUCTS;
-  return (data as DbProductRow[]).map(mapDbProduct);
+  if (error || !data || data.length === 0) return [...STATIC_PRODUCTS, ...spareParts];
+  const mapped = (data as DbProductRow[]).map(mapDbProduct);
+  // Statische Ersatzteil-Stichpunkte ergaenzen (nicht in der Datenbank gespeichert).
+  return mapped.map((p) => {
+    const s = spareParts.find((x) => x.slug === p.slug);
+    return s ? { ...p, highlights: s.highlights, mpn: s.mpn } : p;
+  });
 }
