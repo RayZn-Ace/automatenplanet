@@ -60,6 +60,28 @@ for (const [slug, name, price] of simple) {
   };
 }
 
+// Ersatzteile (Boxautomat-Shop). Preise netto in Cent.
+const spareParts: Array<[string, string, number]> = [
+  ["komplette-boxbirne", "Komplette Boxbirne", 11764],
+  ["plastikball-ersatzteil", "Plastikball", 2520],
+  ["lederball-ersatzteil", "Lederball Ersatzteil", 5882],
+  ["muenzpruefer-ersatzteil", "Münzprüfer", 3361],
+  ["scheinwurf-unterhaltungsautomat", "Scheinwurf Unterhaltungsautomat", 16806],
+  ["schlagkraftsensor-mit-kabel", "Schlagkraftsensor mit Kabel", 8403],
+  ["starterknopf-boxautomat", "Starterknopf Boxautomat", 2520],
+  ["hauptplatine-boxautomat", "Hauptplatine Boxautomat", 29411],
+];
+
+export const SPARE_PART_SLUGS = new Set(spareParts.map(([slug]) => slug));
+
+for (const [slug, name, cents] of spareParts) {
+  CATALOG[`${slug}--standard`] = { slug, name, variantLabel: "", priceNetCents: cents };
+}
+
+/** Reine Ersatzteilbestellung (keine Versandpauschale). */
+export const isSparePartsOnly = (slugs: string[]) =>
+  slugs.length > 0 && slugs.every((s) => SPARE_PART_SLUGS.has(s));
+
 export const VAT_RATE = 0.19;
 
 export const SHIPPING_NET_CENTS: Record<string, number> = {
@@ -78,3 +100,7 @@ export const SHIPPING_NET_CENTS: Record<string, number> = {
 };
 
 export const shippingNetCents = (country: string) => SHIPPING_NET_CENTS[country] ?? 35000;
+
+/** Versand fuer einen Warenkorb: 0 bei reinen Ersatzteilen, sonst Landespauschale. */
+export const cartShippingNetCents = (country: string, slugs: string[]) =>
+  isSparePartsOnly(slugs) ? 0 : shippingNetCents(country);

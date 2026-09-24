@@ -12,6 +12,7 @@ import {
 import { ShoppingCart, Minus, Plus, Trash2, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { formatGross, formatNet } from "@/lib/pricing";
+import { isSparePartsOnly } from "@/lib/shipping";
 
 const CartDrawer = () => {
   const items = useCartStore((s) => s.items);
@@ -116,7 +117,7 @@ const CartDrawer = () => {
                   <span className="text-xl font-bold text-primary">{formatGross(totalNet)}</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  inkl. 19% MwSt. · {formatNet(totalNet)} netto · zzgl. Versand
+                  inkl. 19% MwSt. · {formatNet(totalNet)} netto · {isSparePartsOnly(items.map((i) => i.slug)) ? "ohne Versandkosten" : "zzgl. Versand"}
                 </p>
                 <Button asChild className="w-full" size="lg">
                   <Link to="/kasse" onClick={closeCart}>

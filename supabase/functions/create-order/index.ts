@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
-import { CATALOG, shippingNetCents, VAT_RATE } from "../_shared/catalog.ts";
+import { CATALOG, cartShippingNetCents, SPARE_PART_SLUGS, VAT_RATE } from "../_shared/catalog.ts";
 import { applyCoupon, loadCoupon, TEST_ORDER_GROSS_CENTS } from "../_shared/coupons.ts";
 
 const BodySchema = z.object({
@@ -62,8 +62,32 @@ Deno.serve(async (req) => {
     { auth: { persistSession: false } },
   );
 
+  // Ersatzteile: Preis und Aktivstatus aus der Datenbank (Admin-Katalog) pruefen.
+  const spareVariantIds = lines.filter((l) => SPARE_PART_SLUGS.has(l.slug)).map((l) => l.variantId);
+  if (spareVariantIds.length > 0) {
+    const { data: dbVariants, error: dbErr } = await supabase
+      .from("product_variants")
+      .select("variant_id, price_net_cents, is_active, products!inner(is_active, name)")
+      .in("variant_id", spareVariantIds);
+    if (dbErr) {
+      console.error("spare part lookup failed", dbErr);
+      return json({ error: "Produkte konnten nicht geprueft werden" }, 500);
+    }
+    for (const line of lines) {
+      if (!SPARE_PART_SLUGS.has(line.slug)) continue;
+      // deno-lint-ignore no-explicit-any
+      const row = (dbVariants ?? []).find((r: any) => r.variant_id === line.variantId) as any;
+      const prod = Array.isArray(row?.products) ? row.products[0] : row?.products;
+      if (!row || !row.is_active || !prod?.is_active) {
+        return json({ error: `${line.name} ist aktuell nicht verfuegbar.` }, 400);
+      }
+      line.priceNetCents = row.price_net_cents;
+      if (prod.name) line.name = prod.name;
+    }
+  }
+
   const subtotalNet = lines.reduce((s, l) => s + l.priceNetCents * l.quantity, 0);
-  let shippingNet = shippingNetCents(customer.country);
+  let shippingNet = cartShippingNetCents(customer.country, lines.map((l) => l.slug));
   let discountNet = 0;
   let isTest = false;
   let appliedCode = "";

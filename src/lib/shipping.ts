@@ -1,3 +1,5 @@
+import { SPARE_PART_SLUGS } from "@/data/spareParts";
+
 // Versandkosten (netto, EUR) je Zielland – Speditionsversand.
 export const SHIPPING_NET_BY_COUNTRY: Record<string, number> = {
   DE: 150,
@@ -36,7 +38,6 @@ export const shippingNet = (country: string) => SHIPPING_NET_BY_COUNTRY[country]
  * Gemischte Koerbe und Maschinen: Speditionspauschale je Land.
  * Muss mit supabase/functions/_shared/catalog.ts uebereinstimmen.
  */
-import { SPARE_PART_SLUGS } from "@/data/spareParts";
 export const isSparePartsOnly = (slugs: string[]) =>
   slugs.length > 0 && slugs.every((s) => SPARE_PART_SLUGS.has(s));
 export const cartShippingNet = (country: string, slugs: string[]) =>
