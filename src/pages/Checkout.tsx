@@ -14,7 +14,7 @@ import PaymentMethods from "@/components/PaymentMethods";
 import QuoteRequestDialog from "@/components/QuoteRequestDialog";
 import { useCartStore } from "@/stores/cartStore";
 import { formatNet, grossPrice, VAT_RATE } from "@/lib/pricing";
-import { SHIPPING_COUNTRIES, shippingNet } from "@/lib/shipping";
+import { SHIPPING_COUNTRIES, cartShippingNet, isSparePartsOnly } from "@/lib/shipping";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/tracking";
 import { track } from "@/lib/analytics";
@@ -57,7 +57,7 @@ const Checkout = () => {
   const totals = useMemo(() => {
     const subtotalNet = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
     const discount = coupon ? coupon.discountNetCents / 100 : 0;
-    const shipping = coupon ? coupon.shippingNetCents / 100 : shippingNet(form.country);
+    const shipping = coupon ? coupon.shippingNetCents / 100 : cartShippingNet(form.country, items.map((i) => i.slug));
     const net = Math.max(subtotalNet - discount + shipping, 0);
     const gross = coupon?.isTest ? coupon.totalGrossCents / 100 : grossPrice(net);
     return { subtotalNet, discount, shipping, net, vat: gross - net, gross };
@@ -74,7 +74,7 @@ const Checkout = () => {
     setCouponLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("validate-coupon", {
-        body: { code, subtotalNetCents, country: form.country },
+        body: { code, subtotalNetCents, country: form.country, variantIds: items.map((i) => i.variantId) },
       });
       if (error) throw error;
       const res = data as (AppliedCoupon & { valid: boolean; error?: string }) | null;
@@ -308,7 +308,7 @@ const Checkout = () => {
                 {totals.discount > 0 && (
                   <div className="flex justify-between gap-2 text-primary"><span>Rabatt ({coupon?.code.toUpperCase()})</span><span>-{formatNet(totals.discount)}</span></div>
                 )}
-                <div className="flex justify-between gap-2"><span className="text-muted-foreground">Versand netto</span><span>{formatNet(totals.shipping)}</span></div>
+                <div className="flex justify-between gap-2"><span className="text-muted-foreground">{isSparePartsOnly(items.map((i) => i.slug)) ? "Versand netto (Ersatzteile, keine Versandkosten)" : "Versand netto"}</span><span>{formatNet(totals.shipping)}</span></div>
                 <div className="flex justify-between gap-2"><span className="text-muted-foreground">USt. {Math.round(VAT_RATE * 100)}%</span><span>{totals.vat.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€</span></div>
                 <div className="flex justify-between gap-2 items-baseline border-t border-border pt-3 mt-2">
                   <span className="font-semibold">Gesamt</span>

@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ProductJsonLd from "@/components/seo/ProductJsonLd";
 import { formatGross, formatNet, grossPriceValue } from "@/lib/pricing";
 
@@ -306,6 +306,13 @@ const BoxautomatLanding = () => {
                   </a>
                   .
                 </p>
+                <p className="mt-2 text-xs text-muted-foreground text-center">
+                  Ersatzteile benötigt?{" "}
+                  <Link to="/ersatzteile" className="underline hover:text-foreground">
+                    Boxautomat-Ersatzteile ansehen
+                  </Link>
+                </p>
+
 
                 <PaymentMethods className="mt-6" />
               </div>

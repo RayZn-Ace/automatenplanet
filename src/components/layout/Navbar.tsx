@@ -41,6 +41,7 @@ const Navbar = () => {
     { name: t("nav.boxautomat"), href: "/produkte/boxautomat-premium", type: "route" as const },
     { name: t("nav.greifautomat"), href: "/produkte/greifautomat", type: "route" as const },
     { name: t("nav.allMachines"), href: hashHref("#produkte"), type: "hash" as const },
+    { name: lang === "de" ? "Ersatzteile" : "Spare parts", href: "/ersatzteile", type: "route" as const },
     { name: t("nav.locations"), href: "/standorte", type: "route" as const },
     { name: t("nav.blog"), href: "/blog", type: "route" as const },
     { name: "Support", href: "/support", type: "route" as const },

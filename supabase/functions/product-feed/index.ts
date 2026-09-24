@@ -138,8 +138,8 @@ function renderItem(item: FeedItem): string {
       <g:product_type>${esc(item.category)}</g:product_type>
       <g:shipping>
         <g:country>DE</g:country>
-        <g:service>Spedition</g:service>
-        <g:price>${gross(SHIPPING_NET)} ${CURRENCY}</g:price>
+        <g:service>${item.category === "Ersatzteile" ? "Paket" : "Spedition"}</g:service>
+        <g:price>${gross(item.category === "Ersatzteile" ? 0 : SHIPPING_NET)} ${CURRENCY}</g:price>
       </g:shipping>
     </item>`;
 }
@@ -202,7 +202,8 @@ Deno.serve(async (req) => {
       .filter(Boolean)
       .join(" · ");
     const baseDescription = [p.description, specs].filter(Boolean).join(" ");
-    const link = `${SITE}/produkte/${p.slug}`;
+    const isSpare = p.category === "Ersatzteile";
+    const link = `${SITE}/${isSpare ? "ersatzteile" : "produkte"}/${p.slug}`;
     const productVariants = variantsByProduct.get(p.id) ?? [];
 
     if (productVariants.length === 0) {

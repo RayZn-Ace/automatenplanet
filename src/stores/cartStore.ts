@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { toast } from "sonner";
 import { products as ALL_PRODUCTS, type ProductData } from "@/data/products";
+import { spareParts } from "@/data/spareParts";
 import { defaultVariantId } from "@/lib/variants";
 import { trackEvent } from "@/lib/tracking";
 import { track } from "@/lib/analytics";
@@ -34,7 +35,7 @@ interface CartStore {
 }
 
 function findProductBySlug(slug: string): ProductData | undefined {
-  return ALL_PRODUCTS.find((p) => p.slug === slug);
+  return ALL_PRODUCTS.find((p) => p.slug === slug) ?? spareParts.find((p) => p.slug === slug);
 }
 
 export const useCartStore = create<CartStore>()(

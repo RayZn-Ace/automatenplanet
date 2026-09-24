@@ -71,4 +71,13 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url><loc>https://automatplanet.de/ersatzteile</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatplanet.de/ersatzteile/komplette-boxbirne</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://automatplanet.de/ersatzteile/plastikball-ersatzteil</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://automatplanet.de/ersatzteile/lederball-ersatzteil</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://automatplanet.de/ersatzteile/muenzpruefer-ersatzteil</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://automatplanet.de/ersatzteile/scheinwurf-unterhaltungsautomat</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://automatplanet.de/ersatzteile/schlagkraftsensor-mit-kabel</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://automatplanet.de/ersatzteile/starterknopf-boxautomat</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://automatplanet.de/ersatzteile/hauptplatine-boxautomat</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
 </urlset>

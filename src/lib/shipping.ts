@@ -1,3 +1,5 @@
+import { SPARE_PART_SLUGS } from "@/data/spareParts";
+
 // Versandkosten (netto, EUR) je Zielland – Speditionsversand.
 export const SHIPPING_NET_BY_COUNTRY: Record<string, number> = {
   DE: 150,
@@ -30,3 +32,13 @@ export const SHIPPING_COUNTRIES = [
 ];
 
 export const shippingNet = (country: string) => SHIPPING_NET_BY_COUNTRY[country] ?? 350;
+
+/**
+ * Reine Ersatzteilbestellungen: kein Versandaufschlag (wie im Boxautomat-Shop).
+ * Gemischte Koerbe und Maschinen: Speditionspauschale je Land.
+ * Muss mit supabase/functions/_shared/catalog.ts uebereinstimmen.
+ */
+export const isSparePartsOnly = (slugs: string[]) =>
+  slugs.length > 0 && slugs.every((s) => SPARE_PART_SLUGS.has(s));
+export const cartShippingNet = (country: string, slugs: string[]) =>
+  isSparePartsOnly(slugs) ? 0 : shippingNet(country);

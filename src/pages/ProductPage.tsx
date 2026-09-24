@@ -1,4 +1,5 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
+import { isSparePart } from "@/data/spareParts";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -33,7 +34,7 @@ import {
 
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { products: catalog } = useCatalog();
+  const { all: catalog } = useCatalog();
   const dbProduct = catalog.find((p) => p.slug === (slug || ""));
   const product = dbProduct ?? getProductBySlug(slug || "");
   const seoContent = getSeoContent(slug || "");
@@ -79,6 +80,8 @@ const ProductPage = () => {
       </div>
     );
   }
+
+  if (isSparePart(product)) return <Navigate to={`/ersatzteile/${product.slug}`} replace />;
 
   const availability = product.availability ?? "in_stock";
   const isOutOfStock = availability === "out_of_stock";

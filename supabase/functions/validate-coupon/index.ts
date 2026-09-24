@@ -2,7 +2,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
-import { shippingNetCents, VAT_RATE } from "../_shared/catalog.ts";
+import { CATALOG, cartShippingNetCents, VAT_RATE } from "../_shared/catalog.ts";
 import {
   applyCoupon,
   couponLabel,
@@ -14,6 +14,7 @@ const BodySchema = z.object({
   code: z.string().trim().min(2).max(60),
   subtotalNetCents: z.number().int().min(0).max(100_000_000),
   country: z.string().length(2).optional().default("DE"),
+  variantIds: z.array(z.string().max(120)).max(20).optional().default([]),
 });
 
 const json = (body: unknown, status = 200) =>
@@ -28,7 +29,7 @@ Deno.serve(async (req) => {
 
   const parsed = BodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return json({ valid: false, error: "Ungueltige Anfrage" }, 400);
-  const { code, subtotalNetCents, country } = parsed.data;
+  const { code, subtotalNetCents, country, variantIds } = parsed.data;
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -39,7 +40,8 @@ Deno.serve(async (req) => {
   const { coupon, error } = await loadCoupon(supabase, code);
   if (!coupon) return json({ valid: false, error: error ?? "Ungueltiger Code" });
 
-  const baseShipping = shippingNetCents(country);
+  const slugs = variantIds.map((v) => CATALOG[v]?.slug ?? v);
+  const baseShipping = cartShippingNetCents(country, slugs);
   const applied = applyCoupon(coupon, subtotalNetCents, baseShipping);
   if (applied.error) return json({ valid: false, error: applied.error });
 
