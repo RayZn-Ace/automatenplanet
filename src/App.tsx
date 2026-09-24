@@ -24,6 +24,8 @@ import HandbuchBoxautomat from "./pages/HandbuchBoxautomat";
 import HandbuchBoxautomatDownload from "./pages/HandbuchBoxautomatDownload";
 import BoxautomatLanding from "./pages/BoxautomatLanding";
 import Checkout from "./pages/Checkout";
+import SpareParts from "./pages/SpareParts";
+import SparePartPage from "./pages/SparePartPage";
 import OrderStatus from "./pages/OrderStatus";
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -98,6 +100,8 @@ const App = () => (
             />
             <Route path="/boxautomat" element={<Navigate to="/produkte/boxautomat-premium" replace />} />
             <Route path="/produkte/:slug" element={<ProductPage />} />
+            <Route path="/ersatzteile" element={<SpareParts />} />
+            <Route path="/ersatzteile/:slug" element={<SparePartPage />} />
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
             <Route path="/agb" element={<AGB />} />

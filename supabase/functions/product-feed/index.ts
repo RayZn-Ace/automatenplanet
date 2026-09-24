@@ -202,7 +202,8 @@ Deno.serve(async (req) => {
       .filter(Boolean)
       .join(" · ");
     const baseDescription = [p.description, specs].filter(Boolean).join(" ");
-    const link = `${SITE}/produkte/${p.slug}`;
+    const isSpare = p.category === "Ersatzteile";
+    const link = `${SITE}/${isSpare ? "ersatzteile" : "produkte"}/${p.slug}`;
     const productVariants = variantsByProduct.get(p.id) ?? [];
 
     if (productVariants.length === 0) {

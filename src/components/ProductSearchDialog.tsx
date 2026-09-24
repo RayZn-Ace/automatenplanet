@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/command";
 import { useCatalog } from "@/hooks/useCatalog";
 import { formatNet } from "@/lib/pricing";
+import { productPath } from "@/data/spareParts";
 
 interface ProductSearchDialogProps {
   open: boolean;
@@ -19,7 +20,7 @@ interface ProductSearchDialogProps {
 
 const ProductSearchDialog = ({ open, onOpenChange }: ProductSearchDialogProps) => {
   const navigate = useNavigate();
-  const { products } = useCatalog();
+  const { all: products } = useCatalog();
   const [query, setQuery] = useState("");
 
   useEffect(() => {
@@ -38,13 +39,13 @@ const ProductSearchDialog = ({ open, onOpenChange }: ProductSearchDialogProps) =
 
   const select = (slug: string) => {
     onOpenChange(false);
-    navigate(`/produkte/${slug}`);
+    navigate(productPath(products.find((p) => p.slug === slug) ?? { slug }));
   };
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
       <CommandInput
-        placeholder="Automaten suchen, z. B. Boxautomat, Greifautomat, Billard ..."
+        placeholder="Automaten oder Ersatzteile suchen, z. B. Boxautomat, Boxbirne ..."
         value={query}
         onValueChange={setQuery}
       />
