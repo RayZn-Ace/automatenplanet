@@ -138,8 +138,8 @@ function renderItem(item: FeedItem): string {
       <g:product_type>${esc(item.category)}</g:product_type>
       <g:shipping>
         <g:country>DE</g:country>
-        <g:service>Spedition</g:service>
-        <g:price>${gross(SHIPPING_NET)} ${CURRENCY}</g:price>
+        <g:service>${item.category === "Ersatzteile" ? "Paket" : "Spedition"}</g:service>
+        <g:price>${gross(item.category === "Ersatzteile" ? 0 : SHIPPING_NET)} ${CURRENCY}</g:price>
       </g:shipping>
     </item>`;
 }
