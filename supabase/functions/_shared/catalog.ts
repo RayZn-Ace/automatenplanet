@@ -62,14 +62,14 @@ for (const [slug, name, price] of simple) {
 
 // Ersatzteile (Boxautomat-Shop). Preise netto in Cent.
 const spareParts: Array<[string, string, number]> = [
-  ["komplette-boxbirne", "Komplette Boxbirne", 11764],
-  ["plastikball-ersatzteil", "Plastikball", 2520],
-  ["lederball-ersatzteil", "Lederball Ersatzteil", 5882],
-  ["muenzpruefer-ersatzteil", "Münzprüfer", 3361],
-  ["scheinwurf-unterhaltungsautomat", "Scheinwurf Unterhaltungsautomat", 16806],
-  ["schlagkraftsensor-mit-kabel", "Schlagkraftsensor mit Kabel", 8403],
-  ["starterknopf-boxautomat", "Starterknopf Boxautomat", 2520],
-  ["hauptplatine-boxautomat", "Hauptplatine Boxautomat", 29411],
+  ["komplette-boxbirne", "Komplette Boxbirne", 13999],
+  ["plastikball-ersatzteil", "Plastikball", 2999],
+  ["lederball-ersatzteil", "Lederball Ersatzteil", 6999],
+  ["muenzpruefer-ersatzteil", "Münzprüfer", 3999],
+  ["scheinwurf-unterhaltungsautomat", "Scheinwurf Unterhaltungsautomat", 19999],
+  ["schlagkraftsensor-mit-kabel", "Schlagkraftsensor mit Kabel", 9999],
+  ["starterknopf-boxautomat", "Starterknopf Boxautomat", 2999],
+  ["hauptplatine-boxautomat", "Hauptplatine Boxautomat", 34999],
 ];
 
 export const SPARE_PART_SLUGS = new Set(spareParts.map(([slug]) => slug));
